@@ -120,6 +120,20 @@ const config = {
           name: DEBUG ? '[path][name].[ext]?[hash]' : '[hash].[ext]',
         },
       },
+      // Loaders needed to avoid Bootstrap 3 problems:
+      {
+        test: /\.eot/,
+        loader: 'url-loader?mimetype=application/vnd.ms-fontobject'
+      }, {
+        test: /\.ttf/,
+        loader: 'url-loader?mimetype=application/x-font-ttf'
+      }, {
+        test: /\.woff/,
+        loader: 'url-loader?mimetype=application/font-woff'
+      }, {
+        test: /\.woff2/,
+        loader: 'url-loader?mimetype=application/font-woff2'
+      }
     ],
   },
 
@@ -199,7 +213,7 @@ const config = {
 // -----------------------------------------------------------------------------
 
 const clientConfig = extend(true, {}, config, {
-  entry: './client.js',
+  entry: ['./core/chess/libs/chessboard.js', './client.js'],
 
   output: {
     filename: DEBUG ? '[name].js?[chunkhash]' : '[name].[chunkhash].js',

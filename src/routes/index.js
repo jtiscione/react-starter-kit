@@ -12,6 +12,7 @@ import App from '../components/App';
 
 // Child routes
 import home from './home';
+import play from './play';
 import contact from './contact';
 import login from './login';
 import register from './register';
@@ -25,6 +26,7 @@ export default {
   // keep in mind, routes are evaluated in order
   children: [
     home,
+    play,
     contact,
     login,
     register,
