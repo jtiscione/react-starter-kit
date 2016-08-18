@@ -16,8 +16,7 @@ class BoardContainer extends Component {
   };
 
   componentWillMount() {
-    // console.log("BoardContainer: componentWillMount");
-    // console.log("jQuery: "+$);
+    console.log("BoardContainer: componentWillMount");
   }
 
   componentDidMount() {
@@ -27,7 +26,7 @@ class BoardContainer extends Component {
     console.log(typeof cfg);
     board = new window.ChessBoard(this.props.divID, cfg);
 
-    console.log("jQuery: "+$);
+    console.log("BoardContainer.js: jQuery: "+$);
 
     // $('#'+this.props.divID).resize(function() {
     //   board.resize();
