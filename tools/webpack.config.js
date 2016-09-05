@@ -49,7 +49,6 @@ const config = {
         test: /\.jsx?$/,
         loader: 'babel-loader',
         include: [
-          path.resolve(__dirname, '../node_modules/react-routing/src'),
           path.resolve(__dirname, '../src'),
         ],
         query: {
@@ -197,6 +196,9 @@ const config = {
         // Transforms :not() W3C CSS Level 4 pseudo class to :not() CSS Level 3 selectors
         // https://github.com/postcss/postcss-selector-not
         require('postcss-selector-not')(),
+        // Postcss flexbox bug fixer
+        // https://github.com/luisrudge/postcss-flexbugs-fixes
+        require('postcss-flexbugs-fixes')(),
         // Add vendor prefixes to CSS rules using values from caniuse.com
         // https://github.com/postcss/autoprefixer
         require('autoprefixer')({ browsers: AUTOPREFIXER_BROWSERS }),
@@ -277,7 +279,9 @@ const serverConfig = extend(true, {}, config, {
   entry: './server.js',
 
   output: {
-    filename: '../../server.js',
+    path: path.resolve(__dirname, '../build'),
+    filename: 'server.js',
+    chunkFilename: 'server.[name].js',
     libraryTarget: 'commonjs2',
   },
 
@@ -285,13 +289,7 @@ const serverConfig = extend(true, {}, config, {
 
   externals: [
     /^\.\/assets$/,
-    function filter(context, request, cb) {
-      const isExternal =
-        request.match(/^[@a-z][a-z\/\.\-0-9]*$/i) &&
-        !request.match(/^react-routing/) &&
-        !context.match(/[\\/]react-routing/);
-      cb(null, Boolean(isExternal));
-    },
+    /^[@a-z][a-z\/\.\-0-9]*$/i,
   ],
 
   plugins: [

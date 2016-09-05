@@ -9,16 +9,17 @@
 
 import React, { Component, PropTypes } from 'react';
 import emptyFunction from 'fbjs/lib/emptyFunction';
+import { Provider } from 'react-redux';
 import s from './App.css';
 import Header from '../Header';
 import Feedback from '../Feedback';
 import Footer from '../Footer';
-import { Provider } from 'react-redux';
 
 class App extends Component {
 
   static propTypes = {
     context: PropTypes.shape({
+      createHref: PropTypes.func.isRequired,
       store: PropTypes.object.isRequired,
       insertCss: PropTypes.func,
       setTitle: PropTypes.func,
@@ -29,7 +30,7 @@ class App extends Component {
   };
 
   static childContextTypes = {
-    store: PropTypes.object.isRequired,
+    createHref: PropTypes.func.isRequired,
     insertCss: PropTypes.func.isRequired,
     setTitle: PropTypes.func.isRequired,
     setMeta: PropTypes.func.isRequired,
@@ -38,7 +39,7 @@ class App extends Component {
   getChildContext() {
     const context = this.props.context;
     return {
-      store: context.store || {},
+      createHref: context.createHref,
       insertCss: context.insertCss || emptyFunction,
       setTitle: context.setTitle || emptyFunction,
       setMeta: context.setMeta || emptyFunction,
