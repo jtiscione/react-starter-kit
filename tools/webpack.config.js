@@ -123,17 +123,17 @@ const config = {
       // Loaders needed to avoid Bootstrap 3 problems:
       {
         test: /\.eot/,
-        loader: 'url-loader?mimetype=application/vnd.ms-fontobject'
+        loader: 'url-loader?mimetype=application/vnd.ms-fontobject',
       }, {
         test: /\.ttf/,
-        loader: 'url-loader?mimetype=application/x-font-ttf'
+        loader: 'url-loader?mimetype=application/x-font-ttf',
       }, {
         test: /\.woff/,
-        loader: 'url-loader?mimetype=application/font-woff'
+        loader: 'url-loader?mimetype=application/font-woff',
       }, {
         test: /\.woff2/,
-        loader: 'url-loader?mimetype=application/font-woff2'
-      }
+        loader: 'url-loader?mimetype=application/font-woff2',
+      },
     ],
   },
 
@@ -264,7 +264,9 @@ const clientConfig = extend(true, {}, config, {
 
   // Choose a developer tool to enhance debugging
   // http://webpack.github.io/docs/configuration.html#devtool
-  devtool: DEBUG ? 'cheap-module-eval-source-map' : false,
+  // ?? default line:  devtool: DEBUG ? 'cheap-module-eval-source-map' : false,
+
+  devtool: DEBUG ? 'source-map' : false,
 });
 
 //

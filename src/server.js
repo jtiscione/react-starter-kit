@@ -29,7 +29,10 @@ import routes from './routes';
 import assets from './assets'; // eslint-disable-line import/no-unresolved
 import configureStore from './store/configureStore';
 import { setRuntimeVariable } from './actions/runtime';
+import { createInitializeGamesAction } from './actions/gameplay';
 import { port, auth } from './config';
+
+const uuid = require('uuid');
 
 const app = express();
 
@@ -55,6 +58,15 @@ app.use(expressJwt({
   secret: auth.jwt.secret,
   credentialsRequired: false,
   getToken: req => req.cookies.id_token,
+  /*
+  getToken: function(req) {
+    let cook = req.cookies;
+    console.log('cook: ' + JSON.stringify(cook));
+    let id_token = cook.id_token;
+    console.log('id_token: '+ id_token);
+    return id_token;
+  }
+  */
 }));
 app.use(passport.initialize());
 
@@ -95,9 +107,16 @@ app.get('*', async (req, res, next) => {
     });
 
     store.dispatch(setRuntimeVariable({
+      name: 'clientUUID',
+      value: uuid.v4(),
+    }));
+
+    store.dispatch(setRuntimeVariable({
       name: 'initialNow',
       value: Date.now(),
     }));
+
+    store.dispatch(createInitializeGamesAction());
 
     await UniversalRouter.resolve(routes, {
       path: req.path,

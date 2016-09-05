@@ -4,5 +4,5 @@ import gameplay from './gameplay';
 
 export default combineReducers({
   runtime,
-  gameplay
+  gameplay,
 });

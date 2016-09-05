@@ -24,13 +24,10 @@ import {
   NavItem,
   NavDropdown,
   MenuItem,
-  Button,
 } from 'react-bootstrap';
 
 
 function Header() {
-  const chjs = require("chess.js");
-  console.log("chjs: "+chjs);
   return (
     /*
     <div className={s.root}>

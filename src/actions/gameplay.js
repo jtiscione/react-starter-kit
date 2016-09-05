@@ -1,20 +1,26 @@
-import { NEW_GAME, MAKE_MOVE } from '../constants';
+import { INITIALIZE_GAMES, NEW_GAME, MAKE_MOVE } from '../constants';
 
-export function createNewGameAction(username, side = 'white') {
+export function createInitializeGamesAction() {
+  return {
+    type: INITIALIZE_GAMES,
+    payload: {},
+  };
+}
+
+export function createNewGameAction(gameID) {
   return {
     type: NEW_GAME,
     payload: {
-      username,
-      side,
+      gameID,
     },
   };
 }
 
-export function createMakeMoveAction(username, move) {
+export function createMakeMoveAction(gameID, move) {
   return {
     type: MAKE_MOVE,
     payload: {
-      username,
+      gameID,
       move,
     },
   };

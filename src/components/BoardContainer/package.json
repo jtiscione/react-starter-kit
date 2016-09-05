@@ -1,6 +1,0 @@
-{
-  "name": "BoardContainer",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./BoardContainer.js"
-}
