@@ -48,19 +48,15 @@ function Header() {
     <Navbar>
       <Navbar.Header>
         <Navbar.Brand>
-          <Link className={s.brand} to="/">Your Company</Link>
+          <Link className={s.brand} to="/">Redux Chess</Link>
         </Navbar.Brand>
       </Navbar.Header>
       <Nav bsStyle="tabs">
-        <NavItem eventKey={1} href="/Play">Play</NavItem>
-        <NavItem eventKey={2} href="#">Link</NavItem>
-        <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
-          <MenuItem eventKey={3.1}>Action</MenuItem>
-          <MenuItem eventKey={3.2}>Another action</MenuItem>
-          <MenuItem eventKey={3.3}>Something else here</MenuItem>
-          <MenuItem divider />
-          <MenuItem eventKey={3.3}>Separated link</MenuItem>
-        </NavDropdown>
+        <NavItem eventKey={1} href="/play">Play Chess</NavItem>
+        <NavItem eventKey={2} href="/about">About</NavItem>
+        <NavItem eventKey={3} href="/contact">Contact</NavItem>
+        <NavItem eventKey={4} href="/login">Log In</NavItem>
+        <NavItem eventKey={5} href="/register">Sign Up</NavItem>
       </Nav>
     </Navbar>
   );

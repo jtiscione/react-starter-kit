@@ -1,5 +1,7 @@
 import { INITIALIZE_GAMES, NEW_GAME, MAKE_MOVE } from '../constants';
 
+import {fromJS, Map} from 'immutable';
+
 import {
   GameState,
 } from '../store/model/gameState.js';
@@ -16,7 +18,10 @@ export default function gameplay(state = {}, action) {
       gameID = action.payload.gameID;
       const games = Object.assign({}, state.games);
       games[gameID] = new GameState();
-      return Object.assign({}, state, { games });
+      //return fromJS(Object.assign({}, state, { games }));
+      //gameID = action.payload.gameID;
+      return Object.assign({}, state, {games});
+      //return state.set('games', state.get('games').set(gameID, fromJS(new GameState())));
     case MAKE_MOVE:
       gameID = action.payload.gameID;
       const move = action.payload.move;
@@ -35,6 +40,19 @@ export default function gameplay(state = {}, action) {
           games: newGames,
         };
       }
+      // gameID = action.payload.gameID;
+      // const move = action.payload.move;
+      // const gameData = state.get('games').get(gameID);
+      // if (gameData) {
+      //   const gameDataJS = gameData.toJS();
+      //   const gameState = new GameState(
+      //     gameDataJS.initialFEN,
+      //     gameDataJS.history,
+      //     gameDataJS.cursor,
+      //   )
+      //   const next = game.makeMove(move);
+      //   return state.set('games', state.get('games').set(gameID, fromJS(next)));
+      // }
       return state; // failure
     default:
       return state;

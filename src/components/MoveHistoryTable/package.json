@@ -1,0 +1,6 @@
+{
+  "name": "GameBoard",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./GameBoard.js"
+}

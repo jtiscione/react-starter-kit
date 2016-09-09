@@ -1,13 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {
-  Button,
-  ButtonGroup,
-  Glyphicon,
-} from 'react-bootstrap';
-
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './Game.css';
+import s from './GameBoard.css';
+
+const uuid = require ('uuid');
 
 import { createNewGameAction, createMakeMoveAction } from '../../actions/gameplay.js';
 
@@ -18,10 +14,14 @@ import {
 
 import Board from '../Board';
 
-export class Game extends Component {
+const $ = require('jquery');
+
+export class GameBoard extends Component {
 
   static propTypes = {
     gameID: PropTypes.string.isRequired,
+    dimensions: PropTypes.number.isRequired,
+    gridCols: PropTypes.number.isRequired,
     games: PropTypes.object,
     dispatchNewGame: PropTypes.func,
     dispatchMakeMove: PropTypes.func,
@@ -57,7 +57,6 @@ export class Game extends Component {
 
   render() {
     const gameID = this.props.gameID;
-    const divID = `div_${gameID}`;
 
     let fen = null;
 
@@ -72,44 +71,40 @@ export class Game extends Component {
         fen = game.fen();
       }
     }
-    let fenLabel = '';
-    if (fen) {
-      fenLabel = fen;
+    let divClass = null;
+    switch(this.props.gridCols) {
+      case 8:
+        divClass = (this.props.dimensions===3 ? s.box8_43 : s.box8_sq);
+        break;
+      default:
     }
-
+    //console.log("fen is "+fen);
+    //console.log("divClass is "+divClass);
+    //console.log("dimensions "+this.props.dimensions);
+    if (fen) {
+      return (
+        <Board
+          fen={fen}
+          divID={uuid.v4()}
+          divClass = {divClass}
+          dimensions = {this.props.dimensions}
+          allowMoves={true}
+          targetSquares={this.targetSquares.bind(this)}
+          makeMove={this.makeMove.bind(this)}
+        />
+      );
+    }
     return (
-      <div className="panel panel-primary">
-        <div className="panel-header">
-          {fenLabel}
-        </div>
-        <div className="panel-body">
-          {fen ?
-            <Board
-              fen={fen}
-              divID={divID}
-              allowMoves={true}
-              targetSquares={this.targetSquares.bind(this)}
-              makeMove={this.makeMove.bind(this)}
-            />
-            :
-            'LOADING...'
-          }
-        </div>
-        <div className="panel-footer clearfix btn-block">
-          <ButtonGroup justified>
-            <Button bsClass={s.fatbutton}>
-              <Glyphicon glyph="fast-backward" />
-            </Button>
-            <Button bsClass={s.fatbutton}>
-              <Glyphicon glyph="step-backward" />
-            </Button>
-            <Button bsClass={s.fatbutton}>
-              <Glyphicon glyph="step-forward" />
-            </Button>
-            <Button bsClass={s.fatbutton}>
-              <Glyphicon glyph="fast-forward" />
-            </Button>
-          </ButtonGroup>
+      <div className={divClass}>
+        <div className={s.cs_loader}>
+          <div className={s.cs_loader_inner}>
+            <label>	●</label>
+            <label>	●</label>
+            <label>	●</label>
+            <label>	●</label>
+            <label>	●</label>
+            <label>	●</label>
+          </div>
         </div>
       </div>
     );
@@ -133,4 +128,30 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export const GameContainer = withStyles(s)(connect(mapStateToProps, mapDispatchToProps)(Game));
+export const GameBoardContainer = withStyles(s)(connect(mapStateToProps, mapDispatchToProps)(GameBoard));
+
+
+/*
+ const voided = function(){
+
+ connect( (state) => {
+ return {
+ name: 'Jason Tiscione',
+ phone: '408-916-6477',
+ email: 'tiscione@gmail.com',
+ location: 'Salt Lake City, UT',
+ status: 'available',
+ ...state
+ };
+ }, (dispatch) => {
+ return {
+ reply: (interested) => {
+ if (interested)
+ dispatch(takeActions.acceptJob({time: Date.now()}));
+ }
+ };
+ }
+ );
+
+ };
+ */

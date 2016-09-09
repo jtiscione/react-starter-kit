@@ -1,0 +1,8 @@
+src/libs/chessboard.js
+src/libs/chessboard3.js
+src/libs/OrbitControls.js
+src/libs/three.js
+src/libs/threeloader.js
+src/libs/chess.js
+src/public/chess/engines/lozza_patches.js
+src/public/chess/engines/stockfish.js

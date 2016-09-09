@@ -215,8 +215,11 @@ const config = {
 // -----------------------------------------------------------------------------
 
 const clientConfig = extend(true, {}, config, {
-  entry: ['./core/chess/libs/chessboard.js', './client.js'],
-
+  entry: ['./libs/chessboard.js',
+    './libs/threeloader.js',
+    './libs/OrbitControls.js',
+    './libs/chessboard3.js',
+    './client.js'],
   output: {
     filename: DEBUG ? '[name].js?[chunkhash]' : '[name].[chunkhash].js',
     chunkFilename: DEBUG ? '[name].[id].js?[chunkhash]' : '[name].[id].[chunkhash].js',
