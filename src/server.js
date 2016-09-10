@@ -32,7 +32,7 @@ import configureStore from './store/configureStore';
 import { setRuntimeVariable } from './actions/runtime';
 import { createInitializeGamesAction } from './actions/gameplay';
 import { port, auth } from './config';
-
+import { Map } from 'immutable';
 const uuid = require('uuid');
 
 const app = express();
@@ -116,7 +116,7 @@ app.get('*', async (req, res, next) => {
   });
 
   try {
-    const store = configureStore({}, {
+    const store = configureStore(Map(), {
       cookie: req.headers.cookie,
       history,
     });

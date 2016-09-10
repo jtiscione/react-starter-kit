@@ -1,11 +1,13 @@
 import Chess from '../../libs/chess.js';
+import {Map} from 'immutable';
 
 export const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 export class GameState {
+
   constructor(_initialFEN = DEFAULT_FEN, _history = [], _cursor) {
     this.initialFEN = _initialFEN;
-    this.history = JSON.parse(JSON.stringify(_history));
+    this.history = _history;
     if (_cursor === undefined) {
       this.cursor = this.history.length;
     } else {
@@ -13,7 +15,11 @@ export class GameState {
     }
   }
 
-  toDynamicState() {
+  toImmutable() {
+    return Map(this);
+  }
+
+  toChessObject() {
     const chess = new Chess(this.initialFEN);
     for (let c = 0; c < this.cursor; c++) {
       chess.move(this.history[c].san);
@@ -22,7 +28,7 @@ export class GameState {
   }
 
   legalMoves() {
-    const chess = this.toDynamicState();
+    const chess = this.toChessObject();
     const sans = chess.moves();
     const moves = [];
     sans.forEach((san) => {
@@ -35,7 +41,7 @@ export class GameState {
   }
 
   makeMove(move) {
-    const chess = this.toDynamicState();
+    const chess = this.toChessObject();
     let obj = null;
     if (typeof move === 'string') {
       obj = chess.move(move, { sloppy: true });
@@ -71,7 +77,7 @@ export class GameState {
     if (includeFutureMoves) {
       return new GameState(this.initialFEN, this.history).toPGN(false);
     }
-    return this.toDynamicState().pgn();
+    return this.toChessObject().pgn();
   }
 
   back() {
@@ -97,8 +103,10 @@ export class GameState {
   }
 }
 
-export function createGameState({ initialFEN, history, cursor }) {
-  return new GameState(initialFEN, history, cursor);
+export function gameFromImmutable(immutable) {
+  return new GameState(immutable.get('initialFEN'),
+                      immutable.get('history'),
+                      immutable.get('cursor'));
 }
 
 export function fromPGN(pgn, initialFEN = DEFAULT_FEN) {

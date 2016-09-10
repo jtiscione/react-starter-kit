@@ -8,7 +8,7 @@ const uuid = require ('uuid');
 import { createNewGameAction, createMakeMoveAction } from '../../actions/gameplay.js';
 
 import {
-  GameState,
+  gameFromImmutable,
   legalTargetSquares,
 } from '../../store/model/gameState.js';
 
@@ -50,8 +50,8 @@ export class GameBoard extends Component {
   }
 
   targetSquares(sq) {
-    const gameData = this.props.games[this.props.gameID];
-    const game = new GameState(gameData.initialFEN, gameData.history, gameData.cursor);
+    const gameData = this.props.games.get(this.props.gameID);
+    const game = gameFromImmutable(gameData);
     return legalTargetSquares(game.fen(), sq);
   }
 
@@ -64,10 +64,8 @@ export class GameBoard extends Component {
       let game = null;
       let gameData = null;
       if (this.props.games) {
-        gameData = this.props.games[gameID];
-        game = new GameState(gameData.initialFEN,
-          gameData.history,
-          gameData.cursor);
+        gameData = this.props.games.get(gameID);
+        game = gameFromImmutable(gameData);
         fen = game.fen();
       }
     }
@@ -78,9 +76,6 @@ export class GameBoard extends Component {
         break;
       default:
     }
-    //console.log("fen is "+fen);
-    //console.log("divClass is "+divClass);
-    //console.log("dimensions "+this.props.dimensions);
     if (fen) {
       return (
         <Board
@@ -113,7 +108,7 @@ export class GameBoard extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    games: state.gameplay.games,
+    games: state.get('gameplay').get('games')
   };
 };
 
@@ -129,29 +124,3 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export const GameBoardContainer = withStyles(s)(connect(mapStateToProps, mapDispatchToProps)(GameBoard));
-
-
-/*
- const voided = function(){
-
- connect( (state) => {
- return {
- name: 'Jason Tiscione',
- phone: '408-916-6477',
- email: 'tiscione@gmail.com',
- location: 'Salt Lake City, UT',
- status: 'available',
- ...state
- };
- }, (dispatch) => {
- return {
- reply: (interested) => {
- if (interested)
- dispatch(takeActions.acceptJob({time: Date.now()}));
- }
- };
- }
- );
-
- };
- */

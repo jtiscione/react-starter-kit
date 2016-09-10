@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from 'redux-immutable';
 import runtime from './runtime';
 import gameplay from './gameplay';
 

@@ -1,12 +1,3 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-
 import 'babel-polyfill';
 import ReactDOM from 'react-dom';
 import FastClick from 'fastclick';
@@ -15,6 +6,7 @@ import { readState, saveState } from 'history/lib/DOMStateStorage';
 import routes from './routes';
 import createHistory from './core/createHistory';
 import configureStore from './store/configureStore';
+import { fromJS } from 'immutable';
 import {
   addEventListener,
   removeEventListener,
@@ -102,11 +94,11 @@ function render(container, location, component) {
 function run() {
   const history = createHistory();
   const container = document.getElementById('app');
-  const initialState = JSON.parse(
+  const initialState = fromJS(JSON.parse(
     document
       .getElementById('source')
       .getAttribute('data-initial-state')
-  );
+  ));
   let currentLocation = history.getCurrentLocation();
 
   // Make taps on links and buttons work fast on mobiles
