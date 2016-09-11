@@ -1,6 +1,6 @@
 {
-  "name": "GameBoard",
+  "name": "MoveHistoryTable",
   "version": "0.0.0",
   "private": true,
-  "main": "./GameBoard.js"
+  "main": "./MoveHistoryTable.js"
 }

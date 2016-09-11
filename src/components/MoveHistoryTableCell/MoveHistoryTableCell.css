@@ -1,0 +1,31 @@
+@import '../variables.css';
+
+.cell {
+  width: 40px;
+}
+
+td {
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.white {
+  color: #FFFFFF;
+}
+
+.black {
+  color: #000000;
+}
+
+.faintwhite {
+  color: #DDDDDD;
+}
+
+.faintBlack {
+  color: #DDDDDD;
+}
+
+.red {
+  color: red;
+}

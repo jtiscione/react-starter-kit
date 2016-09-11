@@ -54,37 +54,37 @@ class Board extends Component {
         if (targetSquares.length === 0) {
           return;
         }
-        if (chessboard.hasOwnProperty('greySquare')) {
+        if (this.chessboard.hasOwnProperty('greySquare')) {
           // highlight the square they moused over
-          chessboard.greySquare(square);
+          this.chessboard.greySquare(square);
           // highlight the possible squares for this piece
           targetSquares.forEach((sq) => {
-            chessboard.greySquare(sq);
+            this.chessboard.greySquare(sq);
           });
         }
       },
       onMouseoutSquare: () => { // square, piece) => {
-        if (chessboard.hasOwnProperty('removeGreySquares')) {
-          chessboard.removeGreySquares();
+        if (this.chessboard.hasOwnProperty('removeGreySquares')) {
+          this.chessboard.removeGreySquares();
         }
       },
     };
 
-    let chessboard;
     if (props.dimensions === 3) {
-      chessboard = new window.ChessBoard3(this.props.divID, cfg);
+      this.chessboard = new window.ChessBoard3(this.props.divID, cfg);
     } else {
-      chessboard = new window.ChessBoard(this.props.divID, cfg);
+      this.chessboard = new window.ChessBoard(this.props.divID, cfg);
     }
 
     $(window).resize(() => {
-      chessboard.resize();
+      this.chessboard.resize();
     });
   }
 
   // This component only needs to call render() once, so this method always returns false.
   // However it needs to intercept the new FEN so it can send any changes to the chessboard object.
   shouldComponentUpdate(nextProps) { // , nextState) {
+    console.log("shouldComponentUpdate");
     if (this.chessboard) {
       this.chessboard.position(nextProps.fen);
       return false;

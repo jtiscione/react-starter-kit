@@ -1,0 +1,6 @@
+{
+  "name": "MoveHistoryTableCell",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./MoveHistoryTableCell.js"
+}
