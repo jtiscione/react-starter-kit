@@ -1,37 +1,86 @@
 import React, { Component, PropTypes } from 'react';
-
-import {
-  Button,
-  ButtonGroup,
-  Glyphicon,
-} from 'react-bootstrap';
-
+import {connect} from 'react-redux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './PlayButtons.css';
+import cx from 'classnames';
 
-function PlayButtons({ className }) {
-  return (
-    <div className="panel-footer clearfix btn-block">
-      <ButtonGroup justified>
-        <Button bsClass={s.fatbutton}>
-          <Glyphicon glyph="fast-backward" />
-        </Button>
-        <Button bsClass={s.fatbutton}>
-          <Glyphicon glyph="step-backward" />
-        </Button>
-        <Button bsClass={s.fatbutton}>
-          <Glyphicon glyph="step-forward" />
-        </Button>
-        <Button bsClass={s.fatbutton}>
-          <Glyphicon glyph="fast-forward" />
-        </Button>
-      </ButtonGroup>
-    </div>
-  );
+import {createMoveCursorAction} from '../../actions/gameplay.js';
+
+import {Button, ButtonGroup, Glyphicon} from 'react-bootstrap';
+
+import {gameFromImmutable, GameState} from '../../store/model/gameState.js';
+
+class PlayButtons extends Component {
+
+  static propTypes = {
+    gameID: PropTypes.string.isRequired
+  };
+
+  currentCursorValue() {
+    return gameFromImmutable(this.props.games.get(this.props.gameID)).cursor;
+  }
+
+  historyLength() {
+    return gameFromImmutable(this.props.games.get(this.props.gameID)).history.length;
+  }
+
+  stepBack() {
+    this.props.dispatchMoveCursorAction(this.props.gameID, this.currentCursorValue()-1);
+  }
+
+  stepForward() {
+    this.props.dispatchMoveCursorAction(this.props.gameID, this.currentCursorValue()+1);
+  }
+
+  moveToStart() {
+    this.props.dispatchMoveCursorAction(this.props.gameID, 0);
+  }
+
+  moveToEnd() {
+    this.props.dispatchMoveCursorAction(this.props.gameID, this.historyLength());
+  }
+
+  render() {
+    const ccv = this.currentCursorValue(), histLength = this.historyLength();
+    const cannotMoveBack = (ccv === 0);
+    const cannotMoveForward = (ccv === histLength);
+    console.log("ccv: "+ccv);
+    console.log("histLength: "+histLength);
+    console.log("cannotMoveBack: "+cannotMoveBack);
+    console.log("cannotMoveForward: "+cannotMoveForward);
+    return(
+      <div className="panel-footer clearfix btn-block">
+        <ButtonGroup justified>
+          <Button bsClass={cannotMoveBack ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={this.moveToStart.bind(this)}>
+            <Glyphicon glyph="fast-backward" />
+          </Button>
+          <Button bsClass={cannotMoveBack ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={this.stepBack.bind(this)}>
+            <Glyphicon glyph="step-backward" />
+          </Button>
+          <Button  bsClass={cannotMoveForward ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={this.stepForward.bind(this)}>
+            <Glyphicon glyph="step-forward" />
+          </Button>
+          <Button  bsClass={cannotMoveForward ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={this.moveToEnd.bind(this)}>
+            <Glyphicon glyph="fast-forward" />
+          </Button>
+        </ButtonGroup>
+      </div>
+    );
+  }
 }
 
-PlayButtons.propTypes = {
-  className: PropTypes.string,
+const mapStateToProps = (state) => {
+  return {
+    games: state.get('gameplay').get('games')
+  };
 };
 
-export default withStyles(s)(PlayButtons);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    dispatchMoveCursorAction: (gameID, cursor) => {
+      dispatch(createMoveCursorAction(gameID, cursor));
+    },
+  };
+};
+
+export const PlayButtonsContainer = withStyles(s)(connect(mapStateToProps, mapDispatchToProps)(PlayButtons));

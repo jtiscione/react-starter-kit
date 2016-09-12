@@ -56,8 +56,7 @@ export class GameState {
       truncHistory.push(obj);
       return new GameState(this.initialFEN, truncHistory, this.cursor + 1);
     }
-
-      // illegal move
+    // illegal move
     return null;
   }
 
@@ -100,6 +99,10 @@ export class GameState {
 
   toEnd() {
     return new GameState(this.initialFEN, this.history);
+  }
+
+  moveCursor(_cursor) {
+    return new GameState(this.initialFEN, this.history, _cursor);
   }
 }
 

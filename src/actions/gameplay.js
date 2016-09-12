@@ -1,4 +1,7 @@
-import { INITIALIZE_GAMES, NEW_GAME, MAKE_MOVE } from '../constants';
+import {INITIALIZE_GAMES,
+  NEW_GAME,
+  MAKE_MOVE,
+  MOVE_CURSOR} from '../constants';
 
 export function createInitializeGamesAction() {
   return {
@@ -22,6 +25,16 @@ export function createMakeMoveAction(gameID, move) {
     payload: {
       gameID,
       move,
+    },
+  };
+}
+
+export function createMoveCursorAction(gameID, cursor) {
+  return {
+    type: MOVE_CURSOR,
+    payload: {
+      gameID,
+      cursor,
     },
   };
 }

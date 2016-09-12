@@ -4,18 +4,22 @@
   .box8_43 {
     width: 720px;
     height: 540px;
+    border: 1px solid black;
   }
   .box8_sq {
     width: 720px;
     height: 720px;
+    border: 1px solid black;
   }
   .box9_43 {
     width: 720px;
     height: 540px;
+    border: 1px solid black;
   }
   .box9_sq {
     width: 540px;
     height: 540px;
+    border: 1px solid black;
   }
 }
 
@@ -23,18 +27,22 @@
   .box8_43 {
     width: 616px;
     height: 462px;
+    border: 1px solid black;
   }
   .box8_sq {
     width: 616px;
     height: 616px;
+    border: 1px solid black;
   }
   .box9_43 {
     width: 697px;
     height: 523px;
+    border: 1px solid black;
   }
   .box9_sq {
     width: 697px;
     height: 697px;
+    border: 1px solid black;
   }
 }
 
@@ -42,18 +50,22 @@
   .box8_43 {
     width: 750px;
     height: 563px;
+    border: 1px solid black;
   }
   .box8_sq {
     width: 750px;
     height: 750px;
+    border: 1px solid black;
   }
   .box9_43 {
     width: 847px;
     height: 635px;
+    border: 1px solid black;
   }
   .box9_sq {
     width: 847px;
     height: 847px;
+    border: 1px solid black;
   }
 }
 

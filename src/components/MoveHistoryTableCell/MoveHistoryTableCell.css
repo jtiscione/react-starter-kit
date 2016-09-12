@@ -1,7 +1,8 @@
 @import '../variables.css';
 
 .cell {
-  width: 40px;
+  width: 80px;
+  border: 1px solid black;
 }
 
 td {
@@ -22,10 +23,10 @@ td {
   color: #DDDDDD;
 }
 
-.faintBlack {
-  color: #DDDDDD;
+.faintblack {
+  color: #888888;
 }
 
-.red {
-  color: red;
+.current {
+  font-weight: bold;
 }

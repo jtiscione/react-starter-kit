@@ -3,27 +3,22 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './MoveHistoryTableCell.css';
 import cx from 'classnames';
 
-
-import {Table, Button, Glyphicon} from 'react-bootstrap';
+import {Glyphicon} from 'react-bootstrap';
 
 class MoveHistoryTableCell extends Component {
 
   static propTypes = {
     side: PropTypes.string.isRequired,
     san: PropTypes.string.isRequired,
+    clickFunction: PropTypes.func.isRequired,
     faint: PropTypes.bool,
     hot: PropTypes.bool
   };
 
-  doNothing() {
-    console.log("Do nothing");
-  }
-
   render() {
-    console.log("MoveHistoryTableCell.render()");
     const san = this.props.san;
     if (!san) {
-      return <span></span>;
+      return <td><span></span></td>;
     }
     let glyph = '';
     if (san.match(/^K/) || san.match(/^O-O/)) {
@@ -41,12 +36,13 @@ class MoveHistoryTableCell extends Component {
     }
 
     const side = this.props.side;
-    const sideClass = this.props.faint ? "faint"+side : side;
+    const sideClassIcon = this.props.faint ? "faint"+side : side;
+    const sideClassText = this.props.faint ? "faintblack" : "black";
 
-    const classes = cx(s.cell, s[sideClass]);
-    return <td className={classes} onClick={this.doNothing}>
+    const classes = cx(s.cell, s[sideClassIcon]);
+    return <td className={classes} onClick={this.props.clickFunction}>
       {glyph}
-      <span className={this.props.hot ? s.red : s.black}>{san}</span>
+      <span className={this.props.hot ? cx(s.current, s[sideClassText]) : s[sideClassText]}>{san}</span>
     </td>;
   }
 }

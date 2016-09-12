@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './MoveHistoryTable.css';
 
-import {Table, Button, Glyphicon} from 'react-bootstrap';
+import {Table} from 'react-bootstrap';
 
 import {gameFromImmutable} from '../../store/model/gameState.js';
 import MoveHistoryTableCell from '../MoveHistoryTableCell';
+
+import {createMoveCursorAction} from '../../actions/gameplay.js';
 
 class MoveHistoryTable extends Component {
 
@@ -16,7 +18,6 @@ class MoveHistoryTable extends Component {
 
   constructor(...args) {
     super(...args);
-    console.log("MHTC: "+MoveHistoryTableCell);
   }
 
 
@@ -24,6 +25,12 @@ class MoveHistoryTable extends Component {
 
     console.log(san);
     // Figure out what the piece code is
+  }
+
+  clickFunction(moveNum) {
+    return () => {
+      this.props.dispatchMoveCursor(this.props.gameID, moveNum);
+    }
   }
 
   render() {
@@ -45,19 +52,29 @@ class MoveHistoryTable extends Component {
       const fullMoveNumber = 1 + i/2;
       rows.push(<tr key={fullMoveNumber}>
         <td>{fullMoveNumber}</td>
-        <MoveHistoryTableCell side="white" san={moveWhiteSAN} faint={i >= cursor} hot={i===cursor-1}/>
-        <MoveHistoryTableCell side="black" san={moveBlackSAN} faint={(i+1) > cursor} hot={(i+1)===cursor-1}/>
+        <MoveHistoryTableCell side="white"
+                              san={moveWhiteSAN}
+                              faint={i>= cursor}
+                              hot={i===cursor-1}
+                              clickFunction={this.clickFunction(i+1).bind(this)}
+        />
+        <MoveHistoryTableCell side="black"
+                              san={moveBlackSAN}
+                              faint={(i+1)>= cursor}
+                              hot={(i+1)===cursor-1}
+                              clickFunction={history.length % 1 ? ()=>{} : this.clickFunction(i+2).bind(this)}
+        />
       </tr>);
     }
 
     return (
       <div className={s.outer}>
-        <Table bordered condensed>
+        <Table condensed>
           <tbody>
             <tr>
-              <td>#</td>
-              <td className="width-forty">White</td>
-              <td className="width-forty">Black</td>
+              <td className={s.numbercolumn}>#</td>
+              <td className={s.movecolumn}>White</td>
+              <td className={s.movecolumn}>Black</td>
             </tr>
             {rows}
           </tbody>
@@ -76,8 +93,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchMakeMove: (gameID, move) => {
-      //dispatch(createMakeMoveAction(gameID, move));
+    dispatchMoveCursor: (gameID, cursor) => {
+      dispatch(createMoveCursorAction(gameID, cursor));
     },
   };
 };

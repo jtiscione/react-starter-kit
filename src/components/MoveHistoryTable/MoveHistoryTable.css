@@ -1,14 +1,30 @@
 @import '../variables.css';
 
+.numbercolumn {
+  width: 25px;
+  border: 1px solid black;
+}
+
+.movecolumn {
+  width: 80px;
+  border: 1px solid black;
+}
+
 .outer {
-  border: 3px solid black;
+  border: 1px solid black;
+  width: 200px;
+  /*
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  */
 }
 
 table {
   color: black;
-  background: #CCCCCC;
+  border: 1px solid black;
   table-layout: fixed;
-  border: 2px solid black;
+  background: #BBBBBB;
 }
 
 tbody {
@@ -21,5 +37,10 @@ thead {
 
 th {
   color: #000000;
+  border: 1px solid black;
+}
+
+td {
+  font-size: small;
   border: 1px solid black;
 }
