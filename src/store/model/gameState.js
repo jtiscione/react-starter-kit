@@ -5,7 +5,7 @@ export const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -
 
 export class GameState {
 
-  constructor(_initialFEN = DEFAULT_FEN, _history = [], _cursor) {
+  constructor(_initialFEN = DEFAULT_FEN, _history = [], _cursor, white = 'YOU', black='COMPUTER') {
     this.initialFEN = _initialFEN;
     this.history = _history;
     if (_cursor === undefined) {
@@ -13,6 +13,8 @@ export class GameState {
     } else {
       this.cursor = _cursor;
     }
+    this.white = white;
+    this.black = black;
   }
 
   toImmutable() {
@@ -54,7 +56,7 @@ export class GameState {
       obj.fen = chess.fen();
       const truncHistory = this.history.slice(0, this.cursor);
       truncHistory.push(obj);
-      return new GameState(this.initialFEN, truncHistory, this.cursor + 1);
+      return new GameState(this.initialFEN, truncHistory, this.cursor + 1, this.white, this.black);
     }
     // illegal move
     return null;
@@ -79,37 +81,17 @@ export class GameState {
     return this.toChessObject().pgn();
   }
 
-  back() {
-    if (this.cursor === 0) {
-      return null;
-    }
-    return new GameState(this.initialFEN, this.history, this.cursor - 1);
-  }
-
-  forward() {
-    if (this.cursor >= this.history.length) {
-      return null;
-    }
-    return new GameState(this.initialFEN, this.history, this.cursor + 1);
-  }
-
-  toStart() {
-    return new GameState(this.initialFEN, this.history, 0);
-  }
-
-  toEnd() {
-    return new GameState(this.initialFEN, this.history);
-  }
-
   moveCursor(_cursor) {
-    return new GameState(this.initialFEN, this.history, _cursor);
+    return new GameState(this.initialFEN, this.history, _cursor, this.white, this.black);
   }
 }
 
 export function gameFromImmutable(immutable) {
   return new GameState(immutable.get('initialFEN'),
                       immutable.get('history'),
-                      immutable.get('cursor'));
+                      immutable.get('cursor'),
+                      immutable.get('white'),
+                      immutable.get('black'));
 }
 
 export function fromPGN(pgn, initialFEN = DEFAULT_FEN) {

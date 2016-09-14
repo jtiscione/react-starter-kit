@@ -14,6 +14,8 @@ import {
   windowScrollY,
 } from './core/DOMUtils';
 
+import {connectStore} from './store/subscribers/engineManager.js';
+
 const context = {
   store: null,
   insertCss: (...styles) => {
@@ -106,6 +108,8 @@ function run() {
 
   context.store = configureStore(initialState, { history });
   context.createHref = history.createHref;
+
+  connectStore(context.store);
 
   // Re-render the app when window.location changes
   function onLocationChange(location) {
