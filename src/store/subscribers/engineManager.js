@@ -16,7 +16,6 @@ export function connectStore(store) {
     const games = state.getIn(['gameplay', 'games']);
     for (let gameID of games.keys()) {
       const gameImmutable = games.get(gameID);
-      debugger;
       const game = gameFromImmutable(gameImmutable);
       if (game.history.length === game.cursor) {
         const playerIsWhite = (game.white === 'YOU' && game.black === 'COMPUTER');

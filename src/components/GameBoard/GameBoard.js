@@ -69,28 +69,22 @@ export class GameBoard extends Component {
         fen = game.fen();
       }
     }
-    let divClass = null;
-    switch(this.props.gridCols) {
-      case 8:
-        divClass = (this.props.dimensions===3 ? s.box8_43 : s.box8_sq);
-        break;
-      default:
-    }
     if (fen) {
       return (
-        <Board
-          fen={fen}
-          divID={uuid.v4()}
-          divClass = {divClass}
-          dimensions = {this.props.dimensions}
-          allowMoves={true}
-          targetSquares={this.targetSquares.bind(this)}
-          makeMove={this.makeMove.bind(this)}
-        />
+        <div className={s.outer}>
+          <Board
+            fen={fen}
+            divID={uuid.v4()}
+            dimensions = {this.props.dimensions}
+            allowMoves={true}
+            targetSquares={this.targetSquares.bind(this)}
+            makeMove={this.makeMove.bind(this)}
+          />
+        </div>
       );
     }
     return (
-      <div className={divClass}>
+      <div className={s.outer}>
         <div className={s.cs_loader}>
           <div className={s.cs_loader_inner}>
             <label>	●</label>

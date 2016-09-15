@@ -1,85 +1,20 @@
 @import '../variables.css';
 
-@media (max-width: 991px) {
-  .box8_43 {
-    width: 720px;
-    height: 540px;
-    border: 1px solid black;
-  }
-  .box8_sq {
-    width: 720px;
-    height: 720px;
-    border: 1px solid black;
-  }
-  .box9_43 {
-    width: 720px;
-    height: 540px;
-    border: 1px solid black;
-  }
-  .box9_sq {
-    width: 540px;
-    height: 540px;
-    border: 1px solid black;
-  }
+.outer {
+  width: 100%;
+  padding-bottom: 78%;
+  margin: 0;
 }
-
-@media (min-width: 992px) and (max-width: 1199px) {
-  .box8_43 {
-    width: 616px;
-    height: 462px;
-    border: 1px solid black;
-  }
-  .box8_sq {
-    width: 616px;
-    height: 616px;
-    border: 1px solid black;
-  }
-  .box9_43 {
-    width: 697px;
-    height: 523px;
-    border: 1px solid black;
-  }
-  .box9_sq {
-    width: 697px;
-    height: 697px;
-    border: 1px solid black;
-  }
-}
-
-@media (min-width: 1200px) {
-  .box8_43 {
-    width: 750px;
-    height: 563px;
-    border: 1px solid black;
-  }
-  .box8_sq {
-    width: 750px;
-    height: 750px;
-    border: 1px solid black;
-  }
-  .box9_43 {
-    width: 847px;
-    height: 635px;
-    border: 1px solid black;
-  }
-  .box9_sq {
-    width: 847px;
-    height: 847px;
-    border: 1px solid black;
-  }
-}
-
 
 .cs_loader {
   margin: 0;
   padding: 0;
-  background: #222;
-
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
+  background: #222;
 }
 
 .cs_loader_inner {

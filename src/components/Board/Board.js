@@ -9,7 +9,6 @@ class Board extends Component {
   static propTypes = {
     fen: PropTypes.string.isRequired,
     divID: PropTypes.string.isRequired,
-    divClass: PropTypes.string.isRequired,
     dimensions: PropTypes.number.isRequired,
     allowMoves: PropTypes.bool.isRequired,
     targetSquares: PropTypes.func.isRequired,
@@ -94,7 +93,7 @@ class Board extends Component {
 
   render() {
     return (
-      <div id={this.props.divID} className={this.props.divClass}>
+      <div className={s.divClass} id={this.props.divID}>
       </div>
     );
   }
