@@ -20,13 +20,6 @@ class MoveHistoryTable extends Component {
     super(...args);
   }
 
-
-  moveToJSX(sideToMove, san) {
-
-    console.log(san);
-    // Figure out what the piece code is
-  }
-
   clickFunction(moveNum) {
     return () => {
       this.props.dispatchMoveCursor(this.props.gameID, moveNum);

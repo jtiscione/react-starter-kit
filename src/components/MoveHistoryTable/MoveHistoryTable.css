@@ -1,18 +1,17 @@
 @import '../variables.css';
 
 .numbercolumn {
-  width: 25px;
   border: 1px solid black;
+  width: 10%
 }
 
 .movecolumn {
-  width: 80px;
   border: 1px solid black;
+  width: 45%
 }
 
 .outer {
   border: 1px solid black;
-  width: 200px;
   /*
   position: absolute;
   top: 50%;
