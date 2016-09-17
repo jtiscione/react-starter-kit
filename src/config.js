@@ -28,9 +28,10 @@ export const auth = {
   jwt: { secret: process.env.JWT_SECRET || 'React Starter Kit' },
 
   // https://developers.facebook.com/
+
   facebook: {
-    id: process.env.FACEBOOK_APP_ID || '186244551745631',
-    secret: process.env.FACEBOOK_APP_SECRET || 'a970ae3240ab4b9b8aae0f9f0661c6fc',
+    id: process.env.FACEBOOK_APP_ID || '632695213577230',
+    secret: process.env.FACEBOOK_APP_SECRET || '85cf0a4725a5c0526f903c0a7209b329',
   },
 
   // https://cloud.google.com/console/project
