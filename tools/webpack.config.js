@@ -221,7 +221,8 @@ const clientConfig = extend(true, {}, config, {
     './libs/chessboard3.js',
     './client.js'],
   output: {
-    filename: DEBUG ? '[name].js?[chunkhash]' : '[name].[chunkhash].js',
+    filename: DEBUG ? '[name].js' : '[name].[hash].js',
+    //filename: DEBUG ? '[name].js?[chunkhash]' : '[name].[chunkhash].js',
     chunkFilename: DEBUG ? '[name].[id].js?[chunkhash]' : '[name].[id].[chunkhash].js',
   },
 
