@@ -29,12 +29,33 @@ import routes from './routes';
 import createHistory from './core/createHistory';
 import assets from './assets'; // eslint-disable-line import/no-unresolved
 import configureStore from './store/configureStore';
+import configureServerStore from './store/configureServerStore';
 import { setRuntimeVariable } from './actions/runtime';
-import { createInitializeGamesAction } from './actions/gameplay';
-import { port, auth } from './config';
+import { port, wsport, auth } from './config';
 import { Map } from 'immutable';
 const uuid = require('uuid');
 
+import Server from 'socket.io';
+
+
+const serverStore = configureServerStore(Map(
+  {clients:Map()}
+));
+/*
+const io = new Server().attach(wsport);
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
+
+serverStore.subscribe(
+  // fix later
+  () => io.emit('state', store.getState().toJS())
+);
+*/
 const app = express();
 
 //
@@ -52,22 +73,25 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+//app.use(function (req, res, next) {
+//  next(); // <-- important!
+//});
+
 //
 // Authentication
 // -----------------------------------------------------------------------------
 app.use(expressJwt({
   secret: auth.jwt.secret,
   credentialsRequired: false,
-  getToken: req => req.cookies.id_token,
-  /*
-  getToken: function(req) {
-    let cook = req.cookies;
-    console.log('cook: ' + JSON.stringify(cook));
-    let id_token = cook.id_token;
+//  getToken: req => req.cookies.id_token,
+
+  getToken: (req) => {
+    console.log('cookies: ' + JSON.stringify(req.cookies));
+    let id_token = req.cookies.id_token;
     console.log('id_token: '+ id_token);
     return id_token;
   }
-  */
+
 }));
 app.use(passport.initialize());
 
@@ -115,15 +139,49 @@ app.get('*', async (req, res, next) => {
     }
   });
 
+  let initialState = null;
+
+  console.log("req.headers.cookie:"+req.headers.cookie);
+  console.log("req.user: "+JSON.stringify(req.user));
+  console.log("req.cookies: "+JSON.stringify(req.cookies));
+
+  let clientStoreID = null;
+  if (req.method === 'GET') {
+
+    // check if client sent cookie
+    var cookie = req.cookies.clientStoreID;
+    if (cookie === undefined) {
+      // no: set a new cookie
+      clientStoreID = uuid.v1();
+      res.cookie('clientStoreID',clientStoreID, { maxAge: 900000, httpOnly: true });
+      console.log('cookie created successfully');
+    } else {
+    // yes, cookie was already present
+      clientStoreID = cookie;
+      console.log('cookie exists', cookie);
+    }
+  }
+
+  let clientState = serverStore.getState().get('clients').get(clientStoreID);
+  if (clientState) {
+    initialState = clientState;
+  } else {
+    initialState = fromJS({
+      gameplay: {
+        games: {}
+      }
+    });
+  }
+
   try {
-    const store = configureStore(Map(), {
+    const store = configureStore(initialState, {
       cookie: req.headers.cookie,
       history,
     });
 
     store.dispatch(setRuntimeVariable({
-      name: 'clientUUID',
-      value: uuid.v4(),
+      name: 'clientStoreID',
+      value: clientStoreID
     }));
 
     store.dispatch(setRuntimeVariable({
@@ -133,8 +191,6 @@ app.get('*', async (req, res, next) => {
     let css = new Set();
     let statusCode = 200;
     const data = { title: '', description: '', style: '', script: assets.main.js, children: '' };
-
-    store.dispatch(createInitializeGamesAction());
 
     await UniversalRouter.resolve(routes, {
       path: req.path,

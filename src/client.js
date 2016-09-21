@@ -14,7 +14,7 @@ import {
   windowScrollY,
 } from './core/DOMUtils';
 
-import {connectStore} from './store/subscribers/engineManager.js';
+import {connectStore} from './subscribers/engineManager.js';
 
 const context = {
   store: null,
@@ -94,6 +94,7 @@ function render(container, location, component) {
 }
 
 function run() {
+  console.log("run() is running.");
   const history = createHistory();
   const container = document.getElementById('app');
   const initialState = fromJS(JSON.parse(
