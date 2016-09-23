@@ -9,6 +9,7 @@
 
 import 'babel-polyfill';
 import path from 'path';
+import http from 'http';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
@@ -32,31 +33,49 @@ import configureStore from './store/configureStore';
 import configureServerStore from './store/configureServerStore';
 import { setRuntimeVariable } from './actions/runtime';
 import { port, wsport, auth } from './config';
-import { Map } from 'immutable';
+import { fromJS, Map } from 'immutable';
 const uuid = require('uuid');
 
-import Server from 'socket.io';
+import socketIO from 'socket.io';
 
+const serverStore = configureServerStore(Map());
 
-const serverStore = configureServerStore(Map(
-  {clients:Map()}
-));
-/*
-const io = new Server().attach(wsport);
-
-io.on('connection', function(socket){
-  console.log('a user connected');
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
-});
+const app = express();
+const httpServer = http.Server(app);
+const io = socketIO(httpServer);
 
 serverStore.subscribe(
   // fix later
-  () => io.emit('state', store.getState().toJS())
+  () => {
+    console.log('emitting state:');
+    io.emit('state', serverStore.getState().toJS());
+  }
 );
-*/
-const app = express();
+
+let ping = 0;
+setInterval(() => {
+  ping++;
+  console.log("emitting ping: "+ ping);
+  io.emit("ping", { ping }
+  )}, 1000);
+
+io.on('connection', function(socket){
+
+  console.log("Socket connected: "+socket.id);
+
+  socket.emit('state', serverStore.getState().toJS());
+  console.log('a user connected');
+
+  socket.on('action', (action) => {
+    console.log("io on action: "+JSON.stringify(action));
+  }); //serverStore.dispatch.bind(serverStore));
+
+  socket.on('disconnect', function(){
+    console.log('Socket disconnected: '+socket.id);
+  });
+
+});
+
 
 //
 // Tell any CSS tooling (such as Material UI) to use all vendor prefixes if the
@@ -162,15 +181,15 @@ app.get('*', async (req, res, next) => {
     }
   }
 
-  let clientState = serverStore.getState().get('clients').get(clientStoreID);
-  if (clientState) {
-    initialState = clientState;
-  } else {
-    initialState = fromJS({
-      gameplay: {
-        games: {}
-      }
-    });
+   let clientState = null;// serverStore.getState().get('clients').get(clientStoreID);
+   if (clientState) {
+     initialState = clientState;
+   } else {
+      initialState = fromJS({
+        gameplay: {
+          games: {}
+        }
+      });
   }
 
   try {
@@ -254,7 +273,7 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 // -----------------------------------------------------------------------------
 /* eslint-disable no-console */
 models.sync().catch(err => console.error(err.stack)).then(() => {
-  app.listen(port, () => {
+  httpServer.listen(port, () => {
     console.log(`The server is running at http://localhost:${port}/`);
   });
 });

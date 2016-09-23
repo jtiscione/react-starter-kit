@@ -1,8 +1,8 @@
-import { GameState, gameFromImmutable } from '../model/gameState.js';
+import { GameState, gameFromImmutable } from '../store/model/gameState.js';
 
-import {createMakeMoveAction} from '../../actions/gameplay.js';
+import {createMakeMoveAction} from '../actions/gameplay.js';
 
-export function connectStore(store) {
+export function subscribeEngineToStore(store) {
 
   const engine = new Worker("chess/engines/lozza_patches.js");
 

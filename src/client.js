@@ -5,6 +5,8 @@ import UniversalRouter from 'universal-router';
 import { readState, saveState } from 'history/lib/DOMStateStorage';
 import routes from './routes';
 import createHistory from './core/createHistory';
+import createSocketIoMiddleware from 'redux-socket.io';
+import io from 'socket.io-client';
 import configureStore from './store/configureStore';
 import { fromJS } from 'immutable';
 import {
@@ -13,8 +15,9 @@ import {
   windowScrollX,
   windowScrollY,
 } from './core/DOMUtils';
+import { host } from './config';
 
-import {connectStore} from './subscribers/engineManager.js';
+import {subscribeEngineToStore} from './subscribers/engineManager.js';
 
 const context = {
   store: null,
@@ -94,7 +97,9 @@ function render(container, location, component) {
 }
 
 function run() {
-  console.log("run() is running.");
+  const socket = io(`http://${host}`);
+  const socketIoMiddleware = createSocketIoMiddleware(socket, (type, action) => false);
+
   const history = createHistory();
   const container = document.getElementById('app');
   const initialState = fromJS(JSON.parse(
@@ -107,10 +112,18 @@ function run() {
   // Make taps on links and buttons work fast on mobiles
   FastClick.attach(document.body);
 
-  context.store = configureStore(initialState, { history });
+  context.store = configureStore(initialState, { history }, socketIoMiddleware);
   context.createHref = history.createHref;
 
-  connectStore(context.store);
+  socket.on('ping', data => {
+    console.log("socket on ping: " + JSON.stringify(data));
+  });
+  // socket.on('state', state => store.dispatch({
+  //   type: 'SET_STATE',
+  //   state
+  // }));
+
+  subscribeEngineToStore(context.store);
 
   // Re-render the app when window.location changes
   function onLocationChange(location) {

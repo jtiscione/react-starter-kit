@@ -4,11 +4,14 @@ import rootReducer from '../reducers';
 import createHelpers from './createHelpers';
 import createLogger from './logger';
 
-export default function configureStore(initialState, helpersConfig) {
+export default function configureStore(initialState, helpersConfig, ...extraMiddleware) {
   const helpers = createHelpers(helpersConfig);
   const middleware = [thunk.withExtraArgument(helpers)];
 
   let enhancer;
+  if (extraMiddleware) {
+    middleware.concat(extraMiddleware);
+  }
 
   if (__DEV__) {
     middleware.push(createLogger());
