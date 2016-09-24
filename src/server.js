@@ -55,7 +55,7 @@ serverStore.subscribe(
 let ping = 0;
 setInterval(() => {
   ping++;
-  console.log("emitting ping: "+ ping);
+  //console.log("emitting ping: "+ ping);
   io.emit("ping", { ping }
   )}, 1000);
 

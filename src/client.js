@@ -116,7 +116,7 @@ function run() {
   context.createHref = history.createHref;
 
   socket.on('ping', data => {
-    console.log("socket on ping: " + JSON.stringify(data));
+    //console.log("socket on ping: " + JSON.stringify(data));
   });
   // socket.on('state', state => store.dispatch({
   //   type: 'SET_STATE',

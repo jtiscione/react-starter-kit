@@ -19,26 +19,23 @@ export default function gameplay(state = Map(), action) {
       return state.set('games', Map());
     case NEW_GAME:
       gameID = action.payload.gameID;
-      let games = state.get('games');
-      games = games.set(gameID, new GameState().toImmutable());
-      return state.set('games', games);
+      return state.setIn(['games', gameID], new GameState().toImmutable());
     case MAKE_MOVE:
       gameID = action.payload.gameID;
       const move = action.payload.move;
-      gameData = state.get('games').get(gameID);
+      gameData = state.getIn(['games', gameID]);
       if (gameData) {
-        const gameState = gameFromImmutable(gameData);
-        const next = gameState.makeMove(move);
-        return state.set('games', state.get('games').set(gameID, next.toImmutable()));
+        const next = gameFromImmutable(gameData).makeMove(move);
+        return state.setIn(['games', gameID], next.toImmutable());
       }
       return state; // failure
     case MOVE_CURSOR:
       gameID = action.payload.gameID;
-      gameData = state.get('games').get(gameID);
+      gameData = state.getIn(['games', gameID]);
       if (gameData) {
         const gameState = gameFromImmutable(gameData);
         const next = gameState.moveCursor(action.payload.cursor);
-        return state.set('games', state.get('games').set(gameID, next.toImmutable()));
+        return state.setIn(['games', gameID], next.toImmutable());
       }
     default:
       return state;

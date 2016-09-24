@@ -21,8 +21,7 @@ export class GameBoard extends Component {
   static propTypes = {
     gameID: PropTypes.string.isRequired,
     dimensions: PropTypes.number.isRequired,
-    gridCols: PropTypes.number.isRequired,
-    games: PropTypes.object,
+    gameplay: PropTypes.object,
     dispatchNewGame: PropTypes.func,
     dispatchMakeMove: PropTypes.func,
   };
@@ -30,12 +29,6 @@ export class GameBoard extends Component {
   constructor(...args) {
     super(...args);
     this.state = { appIsMounted: false };
-  }
-
-  componentWillMount() {
-    if (!this.props.games || !this.props.games[this.props.gameID]) {
-      this.props.dispatchNewGame(this.props.gameID);
-    }
   }
 
   componentDidMount() {
@@ -50,7 +43,7 @@ export class GameBoard extends Component {
   }
 
   targetSquares(sq) {
-    const gameData = this.props.games.get(this.props.gameID);
+    const gameData = this.props.gameplay.get('games').get(this.props.gameID);
     const game = gameFromImmutable(gameData);
     return legalTargetSquares(game.fen(), sq);
   }
@@ -63,8 +56,8 @@ export class GameBoard extends Component {
     if (this.state.appIsMounted) {
       let game = null;
       let gameData = null;
-      if (this.props.games) {
-        gameData = this.props.games.get(gameID);
+      if (this.props.gameplay) {
+        gameData = this.props.gameplay.get('games').get(gameID);
         game = gameFromImmutable(gameData);
         fen = game.fen();
       }
@@ -102,7 +95,7 @@ export class GameBoard extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    games: state.get('gameplay').get('games')
+    gameplay: state.get('gameplay')
   };
 };
 

@@ -17,11 +17,11 @@ class PlayButtons extends Component {
   };
 
   currentCursorValue() {
-    return gameFromImmutable(this.props.games.get(this.props.gameID)).cursor;
+    return gameFromImmutable(this.props.gameplay.get('games').get(this.props.gameID)).cursor;
   }
 
   historyLength() {
-    return gameFromImmutable(this.props.games.get(this.props.gameID)).history.length;
+    return gameFromImmutable(this.props.gameplay.get('games').get(this.props.gameID)).history.length;
   }
 
   stepBack() {
@@ -44,10 +44,6 @@ class PlayButtons extends Component {
     const ccv = this.currentCursorValue(), histLength = this.historyLength();
     const cannotMoveBack = (ccv === 0);
     const cannotMoveForward = (ccv === histLength);
-    console.log("ccv: "+ccv);
-    console.log("histLength: "+histLength);
-    console.log("cannotMoveBack: "+cannotMoveBack);
-    console.log("cannotMoveForward: "+cannotMoveForward);
     return(
       <div className="panel-footer clearfix btn-block">
         <ButtonGroup justified>
@@ -71,7 +67,7 @@ class PlayButtons extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    games: state.get('gameplay').get('games')
+    gameplay: state.get('gameplay')
   };
 };
 

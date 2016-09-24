@@ -27,8 +27,9 @@ class MoveHistoryTable extends Component {
   }
 
   render() {
-
-    const gameState = gameFromImmutable(this.props.games.get(this.props.gameID));
+    console.log("render");
+    const immutable = this.props.gameplay.get('games').get(this.props.gameID);
+    const gameState = gameFromImmutable(immutable);
 
     const history = gameState.history;
     if (history.length % 1) {
@@ -80,7 +81,7 @@ class MoveHistoryTable extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    games: state.get('gameplay').get('games')
+    gameplay: state.get('gameplay')
   };
 };
 

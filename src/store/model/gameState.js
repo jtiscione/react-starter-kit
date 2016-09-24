@@ -1,5 +1,5 @@
 import Chess from '../../libs/chess.js';
-import {Map} from 'immutable';
+import {List, Map} from 'immutable';
 
 export const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -18,7 +18,7 @@ export class GameState {
   }
 
   toImmutable() {
-    return Map(this);
+    return Map(this).set('history', List(this.history));
   }
 
   toChessObject() {
@@ -88,7 +88,7 @@ export class GameState {
 
 export function gameFromImmutable(immutable) {
   return new GameState(immutable.get('initialFEN'),
-                      immutable.get('history'),
+                      immutable.get('history').toJS(),
                       immutable.get('cursor'),
                       immutable.get('white'),
                       immutable.get('black'));
