@@ -65,14 +65,16 @@ export class GameBoard extends Component {
     if (fen) {
       return (
         <div className={s.outer}>
-          <Board
-            fen={fen}
-            divID={uuid.v4()}
-            dimensions = {this.props.dimensions}
-            allowMoves={true}
-            targetSquares={this.targetSquares.bind(this)}
-            makeMove={this.makeMove.bind(this)}
-          />
+          <div className={s.inner}>
+            <Board
+              fen={fen}
+              divID={uuid.v4()}
+              dimensions = {this.props.dimensions}
+              allowMoves={true}
+              targetSquares={this.targetSquares.bind(this)}
+              makeMove={this.makeMove.bind(this)}
+            />
+          </div>
         </div>
       );
     }
