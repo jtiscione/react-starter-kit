@@ -2,12 +2,11 @@
 
 .numbercolumn {
   border: 1px solid black;
-  width: 10%
 }
 
 .movecolumn {
   border: 1px solid black;
-  width: 45%
+  width: 50%;
 }
 
 .outer {
