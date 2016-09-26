@@ -63,20 +63,34 @@ export class GameBoard extends Component {
       }
     }
     if (fen) {
-      return (
-        <div className={s.outer}>
-          <div className={s.inner}>
+      if (this.props.dimensions === 3) {
+        return (
+          <div className={s.outer}>
             <Board
               fen={fen}
-              divID={uuid.v4()}
-              dimensions = {this.props.dimensions}
+              divID={uuid.v1()}
+              dimensions={this.props.dimensions}
               allowMoves={true}
               targetSquares={this.targetSquares.bind(this)}
               makeMove={this.makeMove.bind(this)}
             />
           </div>
-        </div>
-      );
+        );
+      } else {
+        return (
+          <div className={s.outer}>
+            <div className={s.inner}>
+              <Board
+                fen={fen}
+                divID={uuid.v1()}
+                dimensions={this.props.dimensions}
+                allowMoves={true}
+                targetSquares={this.targetSquares.bind(this)}
+                makeMove={this.makeMove.bind(this)}
+              />
+            </div>
+        </div>);
+      }
     }
     return (
       <div className={s.outer}>

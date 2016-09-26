@@ -92,9 +92,9 @@ class Board extends Component {
   }
 
   render() {
+    const css = this.props.dimensions === 2 ? s.divClass2 : s.divClass3;
     return (
-      <div className={s.divClass} id={this.props.divID}>
-      </div>
+      <div className={css} id={this.props.divID}></div>
     );
   }
 
