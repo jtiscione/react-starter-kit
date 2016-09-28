@@ -31,7 +31,7 @@ class Board extends Component {
       fontData: '../../chess/assets/fonts/helvetiker_regular.typeface.json',
       pieceSet: '../../chess/assets/chesspieces/iconic/{piece}.json',
       draggable: true,
-      zoomable: true,
+      zoomControls: true,
       onDrop: (source, target) => { // , pieceCode, newPosition, priorPosition, orientation) => {
         // User's turn?
         if (!props.allowMoves) {

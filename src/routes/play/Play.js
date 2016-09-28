@@ -11,16 +11,29 @@ import {PlayButtonsContainer} from '../../components/PlayButtons';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import { createNewGameAction } from '../../actions/gameplay.js';
-
+import {
+  Tabs, Tab
+} from 'react-bootstrap';
 import s from './Play.css';
 
 class Play extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.state = {
+      tabKey: 2
+    }
+  }
+
+  handleTabSelect(tabKey) {
+    console.log("handleTableSelect: "+this.state.tabKey);
+    console.log("tabKey argument: "+tabKey);
+    this.setState({tabKey});
+    console.log(JSON.stringify(this.state));
   }
 
   render() {
+    console.log("render: "+this.state.tabKey);
 
     const gameID = 'defaultGame';
     if (!this.props.gameplay.get('games') || !this.props.gameplay.get('games').get(gameID)) {
@@ -35,7 +48,13 @@ class Play extends Component {
             <PlayButtonsContainer gameID={gameID}/>
           </div>
           <div className={s.box1}>
-            <GameBoardContainer gameID={gameID} dimensions={2}/>
+            <Tabs defaultActiveKey={this.state.tabKey} onSelect={this.handleTabSelect.bind(this)} id="board-dimension">
+              <Tab eventKey={2} title="2D">
+              </Tab>
+              <Tab eventKey={3} title="3D">
+              </Tab>
+            </Tabs>
+            <GameBoardContainer gameID={gameID} dimensions={this.state.tabKey}/>
           </div>
           <div className={s.box3}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
