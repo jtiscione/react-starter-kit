@@ -26,7 +26,7 @@ table {
 }
 
 tbody {
-  height:400px; overflow-y:scroll; display:block;
+  height:500px; overflow-y:scroll; display:block;
 }
 
 thead {

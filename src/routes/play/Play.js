@@ -12,6 +12,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import { createNewGameAction } from '../../actions/gameplay.js';
 import {
+  Grid, Row, Col,
   Tabs, Tab
 } from 'react-bootstrap';
 import s from './Play.css';
@@ -42,28 +43,30 @@ class Play extends Component {
 
     return (
       <div className={s.root}>
-        <div className={s.container}>
-          <div className={s.box2}>
-            <MoveHistoryTableContainer gameID={gameID}/>
-            <PlayButtonsContainer gameID={gameID}/>
-          </div>
-          <div className={s.box1}>
-            <Tabs defaultActiveKey={this.state.tabKey} onSelect={this.handleTabSelect.bind(this)} id="board-dimension">
-              <Tab eventKey={2} title="2D">
-              </Tab>
-              <Tab eventKey={3} title="3D">
-              </Tab>
-            </Tabs>
-            <GameBoardContainer gameID={gameID} dimensions={this.state.tabKey}/>
-          </div>
-          <div className={s.box3}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.
-          </div>
-        </div>
+        <Grid>
+          <Row>
+            <Col md={2} >
+              <MoveHistoryTableContainer gameID={gameID}/>
+              <PlayButtonsContainer gameID={gameID}/>
+            </Col>
+            <Col md={8} lg={8}>
+              <Tabs defaultActiveKey={this.state.tabKey} onSelect={this.handleTabSelect.bind(this)} id="board-dimension">
+                <Tab eventKey={2} title="2D">
+                </Tab>
+                <Tab eventKey={3} title="3D">
+                </Tab>
+              </Tabs>
+              <GameBoardContainer gameID={gameID} dimensions={this.state.tabKey}/>
+            </Col>
+            <Col md={2}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+              dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+              ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+              nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+              anim id est laborum.
+            </Col>
+          </Row>
+        </Grid>
       </div>
     );
   }

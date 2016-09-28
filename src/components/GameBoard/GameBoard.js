@@ -62,6 +62,22 @@ export class GameBoard extends Component {
         fen = game.fen();
       }
     }
+
+    if (this.props.dimensions === 3) {
+      // window function set by chessboard3.js
+      if (!window.ChessBoard3.webGLEnabled()) {
+        return (
+          <div className={s.outer}>
+            <div className={s.cs_loader}>
+              <div className={s.cs_loader_inner}>
+                This browser does not support webGL.
+              </div>
+            </div>
+         </div>
+        );
+      }
+    }
+
     if (fen) {
       if (this.props.dimensions === 3) {
         return (
