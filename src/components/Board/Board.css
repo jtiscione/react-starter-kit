@@ -8,6 +8,7 @@
   left: 0;
   width: 100%;
   height: 100%;
+  box-shadow: 5px 5px 5px black;
 }
 
 .divClass3 {
@@ -17,5 +18,6 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 561px;
+  box-shadow: 5px 5px 5px black;
 }

@@ -32,7 +32,7 @@ class MoveHistoryTable extends Component {
     const gameState = gameFromImmutable(immutable);
 
     const history = gameState.history;
-    if (history.length % 1) {
+    while (history.length % 1 || history.length < 40) {
       history.push(null);
     }
     const cursor = gameState.cursor;

@@ -45,7 +45,7 @@ class PlayButtons extends Component {
     const cannotMoveBack = (ccv === 0);
     const cannotMoveForward = (ccv === histLength);
     return(
-      <div className="panel-footer clearfix btn-block">
+      <div className={cx(["panel-footer","clearfix", "btn-block", s.nowrap, s.borderbox])}>
         <ButtonGroup justified>
           <Button bsClass={cannotMoveBack ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={this.moveToStart.bind(this)}>
             <Glyphicon glyph="fast-backward" />

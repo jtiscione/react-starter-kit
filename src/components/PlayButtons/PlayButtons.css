@@ -1,3 +1,11 @@
+.nowrap {
+  white-space: nowrap;
+}
+
+.borderbox {
+  box-shadow: 5px 5px 5px black;
+}
+
 .fatbutton {
   width: 25px;
   margin: 1px;

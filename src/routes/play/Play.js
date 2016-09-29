@@ -22,7 +22,7 @@ class Play extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      tabKey: 2
+      tabKey: 3
     }
   }
 
@@ -34,8 +34,6 @@ class Play extends Component {
   }
 
   render() {
-    console.log("render: "+this.state.tabKey);
-
     const gameID = 'defaultGame';
     if (!this.props.gameplay.get('games') || !this.props.gameplay.get('games').get(gameID)) {
       this.props.dispatchNewGame(gameID);
@@ -45,7 +43,7 @@ class Play extends Component {
       <div className={s.root}>
         <Grid>
           <Row>
-            <Col md={2} >
+            <Col xsHidden smHidden md={2} >
               <MoveHistoryTableContainer gameID={gameID}/>
               <PlayButtonsContainer gameID={gameID}/>
             </Col>
@@ -58,7 +56,7 @@ class Play extends Component {
               </Tabs>
               <GameBoardContainer gameID={gameID} dimensions={this.state.tabKey}/>
             </Col>
-            <Col md={2}>
+            <Col xsHidden smHidden md={2}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
               dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
               ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
