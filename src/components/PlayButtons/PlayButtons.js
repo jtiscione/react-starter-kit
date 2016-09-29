@@ -7,62 +7,61 @@ import {Button, ButtonGroup, Glyphicon} from 'react-bootstrap';
 
 import {gameFromImmutable} from '../../store/model/gameState.js';
 
-class PlayButtons extends Component {
 
-  static propTypes = {
-    clientStoreID: PropTypes.string.isRequired,
-    gameID: PropTypes.string.isRequired,
-    gameplay: PropTypes.object.isRequired,
-    dispatchMoveCursor: PropTypes.func.isRequired
-  };
+function PlayButtons({clientStoreID, gameID, gameplay, dispatchMoveCursor}) {
 
-  currentCursorValue() {
-    return gameFromImmutable(this.props.gameplay.getIn([this.props.clientStoreID, 'games', this.props.gameID])).cursor;
+  function currentCursorValue() {
+    return gameFromImmutable(gameplay.getIn([clientStoreID, 'games', gameID])).cursor;
   }
 
-  historyLength() {
-    return gameFromImmutable(this.props.gameplay.getIn([this.props.clientStoreID, 'games', this.props.gameID])).history.length;
+  function historyLength() {
+    return gameFromImmutable(gameplay.getIn([clientStoreID, 'games', gameID])).history.length;
   }
 
-  stepBack() {
-    this.props.dispatchMoveCursor(this.props.clientStoreID, this.props.gameID, this.currentCursorValue()-1);
+  function stepBack() {
+    dispatchMoveCursor(clientStoreID, gameID, currentCursorValue()-1);
   }
 
-  stepForward() {
-    this.props.dispatchMoveCursor(this.props.clientStoreID, this.props.gameID, this.currentCursorValue()+1);
+  function stepForward() {
+    dispatchMoveCursor(clientStoreID, gameID, currentCursorValue()+1);
   }
 
-  moveToStart() {
-    this.props.dispatchMoveCursor(this.props.clientStoreID, this.props.gameID, 0);
+  function moveToStart() {
+    dispatchMoveCursor(clientStoreID, gameID, 0);
   }
 
-  moveToEnd() {
-    this.props.dispatchMoveCursor(this.props.clientStoreID, this.props.gameID, this.historyLength());
+  function moveToEnd() {
+    dispatchMoveCursor(clientStoreID, gameID, historyLength());
   }
 
-  render() {
-    const ccv = this.currentCursorValue(), histLength = this.historyLength();
-    const cannotMoveBack = (ccv === 0);
-    const cannotMoveForward = (ccv === histLength);
-    return(
-      <div className={cx(["panel-footer","clearfix", "btn-block", s.nowrap, s.borderbox])}>
-        <ButtonGroup justified>
-          <Button bsClass={cannotMoveBack ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={this.moveToStart.bind(this)}>
-            <Glyphicon glyph="fast-backward" />
-          </Button>
-          <Button bsClass={cannotMoveBack ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={this.stepBack.bind(this)}>
-            <Glyphicon glyph="step-backward" />
-          </Button>
-          <Button  bsClass={cannotMoveForward ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={this.stepForward.bind(this)}>
-            <Glyphicon glyph="step-forward" />
-          </Button>
-          <Button  bsClass={cannotMoveForward ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={this.moveToEnd.bind(this)}>
-            <Glyphicon glyph="fast-forward" />
-          </Button>
-        </ButtonGroup>
-      </div>
-    );
-  }
+  const ccv = currentCursorValue(), histLength = historyLength();
+  const cannotMoveBack = (ccv === 0);
+  const cannotMoveForward = (ccv === histLength);
+  return(
+    <div className={cx(["panel-footer","clearfix", "btn-block", s.nowrap, s.borderbox])}>
+      <ButtonGroup justified>
+        <Button bsClass={cannotMoveBack ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={moveToStart}>
+          <Glyphicon glyph="fast-backward" />
+        </Button>
+        <Button bsClass={cannotMoveBack ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={stepBack}>
+          <Glyphicon glyph="step-backward" />
+        </Button>
+        <Button  bsClass={cannotMoveForward ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={stepForward}>
+          <Glyphicon glyph="step-forward" />
+        </Button>
+        <Button  bsClass={cannotMoveForward ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={moveToEnd}>
+          <Glyphicon glyph="fast-forward" />
+        </Button>
+      </ButtonGroup>
+    </div>
+  );
 }
+
+PlayButtons.propTypes = {
+  clientStoreID: PropTypes.string.isRequired,
+  gameID: PropTypes.string.isRequired,
+  gameplay: PropTypes.object.isRequired,
+  dispatchMoveCursor: PropTypes.func.isRequired
+};
 
 export default withStyles(s)(PlayButtons);

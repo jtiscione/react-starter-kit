@@ -5,46 +5,42 @@ import cx from 'classnames';
 
 import {Glyphicon} from 'react-bootstrap';
 
-class MoveHistoryTableCell extends Component {
+function MoveHistoryTableCell({ side, san, clickFunction, faint, hot }) {
 
-  static propTypes = {
-    side: PropTypes.string.isRequired,
-    san: PropTypes.string.isRequired,
-    clickFunction: PropTypes.func.isRequired,
-    faint: PropTypes.bool,
-    hot: PropTypes.bool
-  };
-
-  render() {
-    const san = this.props.san;
-    if (!san) {
-      return <td><span></span></td>;
-    }
-    let glyph = '';
-    if (san.match(/^K/) || san.match(/^O-O/)) {
-      glyph = <Glyphicon glyph="king"></Glyphicon>
-    } else if (san.match(/^Q/)) {
-      glyph = <Glyphicon glyph="queen"></Glyphicon>
-    } else if (san.match(/^R/)) {
-      glyph = <Glyphicon glyph="tower"></Glyphicon>
-    } else if (san.match(/^B/)) {
-      glyph = <Glyphicon glyph="bishop"></Glyphicon>
-    } else if (san.match(/^N/)) {
-      glyph = <Glyphicon glyph="knight"></Glyphicon>
-    } else {
-      glyph = <Glyphicon glyph="pawn"></Glyphicon>
-    }
-
-    const side = this.props.side;
-    const sideClassIcon = this.props.faint ? "faint"+side : side;
-    const sideClassText = this.props.faint ? "faintblack" : "black";
-
-    const classes = cx(s.cell, s[sideClassIcon]);
-    return <td className={classes} onClick={this.props.clickFunction}>
-      {glyph}
-      <span className={this.props.hot ? cx(s.current, s[sideClassText]) : s[sideClassText]}>{san}</span>
-    </td>;
+  if (!san) {
+    return <td><span></span></td>;
   }
+  let glyph = '';
+  if (san.match(/^K/) || san.match(/^O-O/)) {
+    glyph = <Glyphicon glyph="king"></Glyphicon>
+  } else if (san.match(/^Q/)) {
+    glyph = <Glyphicon glyph="queen"></Glyphicon>
+  } else if (san.match(/^R/)) {
+    glyph = <Glyphicon glyph="tower"></Glyphicon>
+  } else if (san.match(/^B/)) {
+    glyph = <Glyphicon glyph="bishop"></Glyphicon>
+  } else if (san.match(/^N/)) {
+    glyph = <Glyphicon glyph="knight"></Glyphicon>
+  } else {
+    glyph = <Glyphicon glyph="pawn"></Glyphicon>
+  }
+
+  const sideClassIcon = faint ? "faint"+side : side;
+  const sideClassText = faint ? "faintblack" : "black";
+
+  const classes = cx(s.cell, s[sideClassIcon]);
+  return <td className={classes} onClick={clickFunction}>
+    {glyph}
+    <span className={hot ? cx(s.current, s[sideClassText]) : s[sideClassText]}>{san}</span>
+  </td>;
 }
+
+MoveHistoryTableCell.propTypes = {
+  side: PropTypes.string.isRequired,
+  san: PropTypes.string.isRequired,
+  clickFunction: PropTypes.func.isRequired,
+  faint: PropTypes.bool,
+  hot: PropTypes.bool
+};
 
 export default withStyles(s)(MoveHistoryTableCell);
