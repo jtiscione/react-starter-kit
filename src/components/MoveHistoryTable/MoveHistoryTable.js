@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './MoveHistoryTable.css';
 
@@ -8,12 +7,13 @@ import {Table} from 'react-bootstrap';
 import {gameFromImmutable} from '../../store/model/gameState.js';
 import MoveHistoryTableCell from '../MoveHistoryTableCell';
 
-import {createMoveCursorAction} from '../../actions/gameplay.js';
-
 class MoveHistoryTable extends Component {
 
   static propTypes = {
-    gameID: PropTypes.string.isRequired
+    clientStoreID: PropTypes.string.isRequired,
+    gameID: PropTypes.string.isRequired,
+    gameplay: PropTypes.object.isRequired,
+    dispatchMoveCursor: PropTypes.func.isRequired
   };
 
   constructor(...args) {
@@ -22,13 +22,12 @@ class MoveHistoryTable extends Component {
 
   clickFunction(moveNum) {
     return () => {
-      this.props.dispatchMoveCursor(this.props.gameID, moveNum);
+      this.props.dispatchMoveCursor(this.props.clientStoreID, this.props.gameID, moveNum);
     }
   }
 
   render() {
-    console.log("render");
-    const immutable = this.props.gameplay.get('games').get(this.props.gameID);
+    const immutable = this.props.gameplay.getIn([this.props.clientStoreID, 'games', this.props.gameID]);
     const gameState = gameFromImmutable(immutable);
 
     const history = gameState.history;
@@ -79,23 +78,4 @@ class MoveHistoryTable extends Component {
 
 }
 
-let clientStoreID;
-
-const mapStateToProps = (state) => {
-
-  clientStoreID = state.getIn(['runtime', 'clientStoreID']);
-
-  return {
-    gameplay: state.get('gameplay').get(clientStoreID)
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    dispatchMoveCursor: (gameID, cursor) => {
-      dispatch(createMoveCursorAction(clientStoreID, gameID, cursor));
-    },
-  };
-};
-
-export const MoveHistoryTableContainer = withStyles(s)(connect(mapStateToProps, mapDispatchToProps)(MoveHistoryTable));
+export default withStyles(s)(MoveHistoryTable);

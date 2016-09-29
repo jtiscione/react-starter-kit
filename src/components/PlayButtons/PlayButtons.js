@@ -1,43 +1,43 @@
 import React, { Component, PropTypes } from 'react';
-import {connect} from 'react-redux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './PlayButtons.css';
 import cx from 'classnames';
 
-import {createMoveCursorAction} from '../../actions/gameplay.js';
-
 import {Button, ButtonGroup, Glyphicon} from 'react-bootstrap';
 
-import {gameFromImmutable, GameState} from '../../store/model/gameState.js';
+import {gameFromImmutable} from '../../store/model/gameState.js';
 
 class PlayButtons extends Component {
 
   static propTypes = {
-    gameID: PropTypes.string.isRequired
+    clientStoreID: PropTypes.string.isRequired,
+    gameID: PropTypes.string.isRequired,
+    gameplay: PropTypes.object.isRequired,
+    dispatchMoveCursor: PropTypes.func.isRequired
   };
 
   currentCursorValue() {
-    return gameFromImmutable(this.props.gameplay.get('games').get(this.props.gameID)).cursor;
+    return gameFromImmutable(this.props.gameplay.getIn([this.props.clientStoreID, 'games', this.props.gameID])).cursor;
   }
 
   historyLength() {
-    return gameFromImmutable(this.props.gameplay.get('games').get(this.props.gameID)).history.length;
+    return gameFromImmutable(this.props.gameplay.getIn([this.props.clientStoreID, 'games', this.props.gameID])).history.length;
   }
 
   stepBack() {
-    this.props.dispatchMoveCursorAction(this.props.gameID, this.currentCursorValue()-1);
+    this.props.dispatchMoveCursor(this.props.clientStoreID, this.props.gameID, this.currentCursorValue()-1);
   }
 
   stepForward() {
-    this.props.dispatchMoveCursorAction(this.props.gameID, this.currentCursorValue()+1);
+    this.props.dispatchMoveCursor(this.props.clientStoreID, this.props.gameID, this.currentCursorValue()+1);
   }
 
   moveToStart() {
-    this.props.dispatchMoveCursorAction(this.props.gameID, 0);
+    this.props.dispatchMoveCursor(this.props.clientStoreID, this.props.gameID, 0);
   }
 
   moveToEnd() {
-    this.props.dispatchMoveCursorAction(this.props.gameID, this.historyLength());
+    this.props.dispatchMoveCursor(this.props.clientStoreID, this.props.gameID, this.historyLength());
   }
 
   render() {
@@ -65,21 +65,4 @@ class PlayButtons extends Component {
   }
 }
 
-let clientStoreID;
-
-const mapStateToProps = (state) => {
-  clientStoreID = state.getIn(['runtime', 'clientStoreID']);
-  return {
-    gameplay: state.get('gameplay').get(clientStoreID)
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    dispatchMoveCursorAction: (gameID, cursor) => {
-      dispatch(createMoveCursorAction(clientStoreID, gameID, cursor));
-    },
-  };
-};
-
-export const PlayButtonsContainer = withStyles(s)(connect(mapStateToProps, mapDispatchToProps)(PlayButtons));
+export default withStyles(s)(PlayButtons);

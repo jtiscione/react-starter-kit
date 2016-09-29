@@ -4,13 +4,16 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import {GameBoardContainer} from '../../components/GameBoard';
-import {MoveHistoryTableContainer} from '../../components/MoveHistoryTable';
-import {PlayButtonsContainer} from '../../components/PlayButtons';
+import GameBoard from '../../components/GameBoard';
+import MoveHistoryTable from '../../components/MoveHistoryTable';
+import PlayButtons from '../../components/PlayButtons';
 
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
-import { createNewGameAction } from '../../actions/gameplay.js';
+import { createNewGameAction,
+  createMakeMoveAction,
+  createMoveCursorAction } from '../../actions/gameplay.js';
+
 import {
   Grid, Row, Col,
   Tabs, Tab
@@ -34,9 +37,10 @@ class Play extends Component {
   }
 
   render() {
+    const clientStoreID = this.props.clientStoreID;
     const gameID = 'defaultGame';
-    if (!this.props.gameplay.get('games') || !this.props.gameplay.get('games').get(gameID)) {
-      this.props.dispatchNewGame(gameID);
+    if (!this.props.gameplay.getIn([clientStoreID, 'games', gameID])) {
+      this.props.dispatchNewGame(clientStoreID, gameID);
     }
 
     return (
@@ -44,8 +48,18 @@ class Play extends Component {
         <Grid>
           <Row>
             <Col xsHidden smHidden md={2} >
-              <MoveHistoryTableContainer gameID={gameID}/>
-              <PlayButtonsContainer gameID={gameID}/>
+              <MoveHistoryTable
+                clientStoreID={clientStoreID}
+                gameID={gameID}
+                gameplay={this.props.gameplay}
+                dispatchMoveCursor={this.props.dispatchMoveCursor}
+              />
+              <PlayButtons
+                clientStoreID={clientStoreID}
+                gameID={gameID}
+                gameplay={this.props.gameplay}
+                dispatchMoveCursor={this.props.dispatchMoveCursor}
+              />
             </Col>
             <Col md={8} lg={8}>
               <Tabs defaultActiveKey={this.state.tabKey} onSelect={this.handleTabSelect.bind(this)} id="board-dimension">
@@ -54,7 +68,14 @@ class Play extends Component {
                 <Tab eventKey={3} title="3D">
                 </Tab>
               </Tabs>
-              <GameBoardContainer gameID={gameID} dimensions={this.state.tabKey}/>
+              <GameBoard
+                clientStoreID={clientStoreID}
+                gameID={gameID}
+                dimensions={this.state.tabKey}
+                gameplay={this.props.gameplay}
+                dispatchNewGame={this.props.dispatchNewGame}
+                dispatchMakeMove={this.props.dispatchMakeMove}
+              />
             </Col>
             <Col xsHidden smHidden md={2}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
@@ -78,15 +99,22 @@ const mapStateToProps = (state) => {
   clientStoreID = state.getIn(['runtime', 'clientStoreID']);
 
   return {
-    gameplay: state.get('gameplay').get(clientStoreID)
+    clientStoreID,
+    gameplay: state.get('gameplay')
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchNewGame: (gameID) => {
+    dispatchNewGame: (clientStoreID, gameID) => {
       dispatch(createNewGameAction(clientStoreID, gameID));
     },
+    dispatchMakeMove: (clientStoreID, gameID, move) => {
+      dispatch(createMakeMoveAction(clientStoreID, gameID, move));
+    },
+    dispatchMoveCursor: (clientStoreID, gameID, cursor) => {
+      dispatch(createMoveCursorAction(clientStoreID, gameID, cursor));
+    }
   };
 };
 

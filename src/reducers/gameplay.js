@@ -21,6 +21,12 @@ export default function gameplay(state = Map(), action) {
       return state.setIn([clientStoreID, 'games'], Map());
     case NEW_GAME:
       gameID = action.payload.gameID;
+      if (!state.get(clientStoreID)) {
+        state = state.set(clientStoreID, Map());
+      }
+      if (!state.get(clientStoreID).get('games')) {
+        state = state.setIn([clientStoreID, 'games'], Map());
+      }
       return state.setIn([clientStoreID, 'games', gameID], new GameState().toImmutable());
     case MAKE_MOVE:
       gameID = action.payload.gameID;

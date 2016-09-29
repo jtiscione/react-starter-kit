@@ -32,6 +32,7 @@ import assets from './assets'; // eslint-disable-line import/no-unresolved
 import configureStore from './store/configureStore';
 import configureServerStore from './store/configureServerStore';
 import { setRuntimeVariable } from './actions/runtime';
+import { createNewGameAction } from './actions/gameplay';
 import { port, wsport, auth } from './config';
 import { fromJS, Map } from 'immutable';
 const uuid = require('uuid');
@@ -189,13 +190,7 @@ app.get('*', async (req, res, next) => {
    if (clientState) {
      initialState = clientState;
    } else {
-     const js = {
-       gameplay: {}
-     };
-     js.gameplay[clientStoreID] = {
-       games: {}
-     };
-     initialState= fromJS(js);
+     initialState = Map();
      /*
       initialState = fromJS({
         gameplay: {
@@ -222,6 +217,11 @@ app.get('*', async (req, res, next) => {
       name: 'initialNow',
       value: Date.now(),
     }));
+
+    if (!clientState) {
+      store.dispatch(createNewGameAction(clientStoreID, 'defaultGame'));
+    }
+
     let css = new Set();
     let statusCode = 200;
     const data = { title: '', description: '', style: '', script: assets.main.js, children: '' };

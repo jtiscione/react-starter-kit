@@ -5,8 +5,6 @@ import s from './GameBoard.css';
 
 const uuid = require ('uuid');
 
-import { createNewGameAction, createMakeMoveAction } from '../../actions/gameplay.js';
-
 import {
   gameFromImmutable,
   legalTargetSquares,
@@ -19,6 +17,7 @@ const $ = require('jquery');
 export class GameBoard extends Component {
 
   static propTypes = {
+    clientStoreID: PropTypes.string.isRequired,
     gameID: PropTypes.string.isRequired,
     dimensions: PropTypes.number.isRequired,
     gameplay: PropTypes.object,
@@ -39,25 +38,23 @@ export class GameBoard extends Component {
   }
 
   makeMove(from, to) {
-    this.props.dispatchMakeMove(this.props.gameID, { from, to });
+    this.props.dispatchMakeMove(this.props.clientStoreID, this.props.gameID, { from, to });
   }
 
   targetSquares(sq) {
-    const gameData = this.props.gameplay.get('games').get(this.props.gameID);
+    const gameData = this.props.gameplay.getIn([this.props.clientStoreID, 'games', this.props.gameID]);
     const game = gameFromImmutable(gameData);
     return legalTargetSquares(game.fen(), sq);
   }
 
   render() {
-    const gameID = this.props.gameID;
-
     let fen = null;
 
     if (this.state.appIsMounted) {
       let game = null;
       let gameData = null;
       if (this.props.gameplay) {
-        gameData = this.props.gameplay.get('games').get(gameID);
+        gameData = this.props.gameplay.getIn([this.props.clientStoreID, 'games', this.props.gameID]);
         game = gameFromImmutable(gameData);
         fen = game.fen();
       }
@@ -127,24 +124,4 @@ export class GameBoard extends Component {
   }
 }
 
-let clientStoreID;
-
-const mapStateToProps = (state) => {
-  clientStoreID = state.getIn(['runtime', 'clientStoreID']);
-  return {
-    gameplay: state.get('gameplay').get(clientStoreID)
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    dispatchNewGame: (gameID) => {
-      dispatch(createNewGameAction(clientStoreID, gameID));
-    },
-    dispatchMakeMove: (gameID, move) => {
-      dispatch(createMakeMoveAction(clientStoreID, gameID, move));
-    },
-  };
-};
-
-export const GameBoardContainer = withStyles(s)(connect(mapStateToProps, mapDispatchToProps)(GameBoard));
+export default withStyles(s)(GameBoard);
