@@ -72,17 +72,20 @@ class Play extends Component {
 
 Play.contextTypes = { setTitle: PropTypes.func.isRequired };
 
+let clientStoreID;
 
 const mapStateToProps = (state) => {
+  clientStoreID = state.getIn(['runtime', 'clientStoreID']);
+
   return {
-    gameplay: state.get('gameplay')
+    gameplay: state.get('gameplay').get(clientStoreID)
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatchNewGame: (gameID) => {
-      dispatch(createNewGameAction(gameID));
+      dispatch(createNewGameAction(clientStoreID, gameID));
     },
   };
 };

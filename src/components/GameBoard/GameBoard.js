@@ -63,9 +63,10 @@ export class GameBoard extends Component {
       }
     }
 
+    /*
     if (this.props.dimensions === 3) {
       // window function set by chessboard3.js
-      if (!window.ChessBoard3.webGLEnabled()) {
+      if (window && !window.ChessBoard3.webGLEnabled()) {
         return (
           <div className={s.outer}>
             <div className={s.cs_loader}>
@@ -77,6 +78,7 @@ export class GameBoard extends Component {
         );
       }
     }
+    */
 
     if (fen) {
       if (this.props.dimensions === 3) {
@@ -125,19 +127,22 @@ export class GameBoard extends Component {
   }
 }
 
+let clientStoreID;
+
 const mapStateToProps = (state) => {
+  clientStoreID = state.getIn(['runtime', 'clientStoreID']);
   return {
-    gameplay: state.get('gameplay')
+    gameplay: state.get('gameplay').get(clientStoreID)
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatchNewGame: (gameID) => {
-      dispatch(createNewGameAction(gameID));
+      dispatch(createNewGameAction(clientStoreID, gameID));
     },
     dispatchMakeMove: (gameID, move) => {
-      dispatch(createMakeMoveAction(gameID, move));
+      dispatch(createMakeMoveAction(clientStoreID, gameID, move));
     },
   };
 };

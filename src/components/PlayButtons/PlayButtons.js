@@ -65,16 +65,19 @@ class PlayButtons extends Component {
   }
 }
 
+let clientStoreID;
+
 const mapStateToProps = (state) => {
+  clientStoreID = state.getIn(['runtime', 'clientStoreID']);
   return {
-    gameplay: state.get('gameplay')
+    gameplay: state.get('gameplay').get(clientStoreID)
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatchMoveCursorAction: (gameID, cursor) => {
-      dispatch(createMoveCursorAction(gameID, cursor));
+      dispatch(createMoveCursorAction(clientStoreID, gameID, cursor));
     },
   };
 };

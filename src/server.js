@@ -44,6 +44,7 @@ const app = express();
 const httpServer = http.Server(app);
 const io = socketIO(httpServer);
 
+/*
 serverStore.subscribe(
   // fix later
   () => {
@@ -51,13 +52,16 @@ serverStore.subscribe(
     io.emit('state', serverStore.getState().toJS());
   }
 );
+*/
 
+/*
 let ping = 0;
 setInterval(() => {
   ping++;
-  //console.log("emitting ping: "+ ping);
+  console.log("emitting ping: "+ ping);
   io.emit("ping", { ping }
   )}, 1000);
+*/
 
 io.on('connection', function(socket){
 
@@ -185,11 +189,22 @@ app.get('*', async (req, res, next) => {
    if (clientState) {
      initialState = clientState;
    } else {
+     const js = {
+       gameplay: {}
+     };
+     js.gameplay[clientStoreID] = {
+       games: {}
+     };
+     initialState= fromJS(js);
+     /*
       initialState = fromJS({
         gameplay: {
-          games: {}
+          'clientStoreID': {
+            games: {}
+          }
         }
       });
+      */
   }
 
   try {

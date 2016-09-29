@@ -12,8 +12,10 @@ export function subscribeEngineToStore(store) {
   store.subscribe(() => {
     const state = store.getState();
     console.log("state: "+state);
+    const clientStoreID = state.getIn(['runtime', 'clientStoreID']);
+
     // Check store to see if we need to fire the chess engine
-    const games = state.getIn(['gameplay', 'games']);
+    const games = state.getIn(['gameplay', clientStoreID, 'games']);
     for (let gameID of games.keys()) {
       const gameImmutable = games.get(gameID);
       const game = gameFromImmutable(gameImmutable);
@@ -30,7 +32,7 @@ export function subscribeEngineToStore(store) {
               const best = parseBestMove(line);
               if (best !== undefined) {
                 const move = chessjs.move(best);
-                store.dispatch(createMakeMoveAction(gameID, move));
+                store.dispatch(createMakeMoveAction(clientStoreID, gameID, move));
               }
             };
           }

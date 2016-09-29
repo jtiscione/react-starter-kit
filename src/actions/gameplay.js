@@ -10,18 +10,20 @@ export function createInitializeGamesAction() {
   };
 }
 
-export function createNewGameAction(gameID) {
+export function createNewGameAction(clientStoreID, gameID) {
   return {
     type: NEW_GAME,
+    clientStoreID,
     payload: {
       gameID,
     },
   };
 }
 
-export function createMakeMoveAction(gameID, move) {
+export function createMakeMoveAction(clientStoreID, gameID, move) {
   return {
     type: MAKE_MOVE,
+    clientStoreID,
     payload: {
       gameID,
       move,
@@ -29,9 +31,10 @@ export function createMakeMoveAction(gameID, move) {
   };
 }
 
-export function createMoveCursorAction(gameID, cursor) {
+export function createMoveCursorAction(clientStoreID, gameID, cursor) {
   return {
     type: MOVE_CURSOR,
+    clientStoreID,
     payload: {
       gameID,
       cursor,
