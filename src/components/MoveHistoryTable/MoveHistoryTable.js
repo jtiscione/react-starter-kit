@@ -6,6 +6,7 @@ import {Table} from 'react-bootstrap';
 
 import {gameFromImmutable} from '../../store/model/gameState.js';
 import MoveHistoryTableCell from '../MoveHistoryTableCell';
+import PlayButtons from '../PlayButtons';
 
 function MoveHistoryTable({ clientID, gameID, gameplay, dispatchMoveCursor}) {
 
@@ -52,7 +53,7 @@ function MoveHistoryTable({ clientID, gameID, gameplay, dispatchMoveCursor}) {
 
   return (
     <div className={s.outer}>
-      <Table condensed>
+      <Table condensed bsClass={"table "+s.no_bottom_margin}>
         <tbody>
         <tr>
           <td className={s.numbercolumn}>#</td>
@@ -62,6 +63,12 @@ function MoveHistoryTable({ clientID, gameID, gameplay, dispatchMoveCursor}) {
         {rows}
         </tbody>
       </Table>
+      <PlayButtons
+        clientID={clientID}
+        gameID={gameID}
+        gameplay={gameplay}
+        dispatchMoveCursor={dispatchMoveCursor}
+      />
     </div>
   );
 

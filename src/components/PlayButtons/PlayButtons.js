@@ -38,7 +38,7 @@ function PlayButtons({clientID, gameID, gameplay, dispatchMoveCursor}) {
   const cannotMoveBack = (ccv === 0);
   const cannotMoveForward = (ccv === histLength);
   return(
-    <div className={cx(["panel-footer","clearfix", "btn-block", s.nowrap, s.borderbox])}>
+    <div className={cx(["panel-footer","clearfix", "btn-block", s.nowrap, s.margin_bottom_30])}>
       <ButtonGroup justified>
         <Button bsClass={cannotMoveBack ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={moveToStart}>
           <Glyphicon glyph="fast-backward" />

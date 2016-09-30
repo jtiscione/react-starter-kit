@@ -10,12 +10,11 @@
 }
 
 .outer {
-  /*
-  position: absolute;
-  top: 50%;
-  left: 0%;
-  */
   box-shadow: 5px 5px 5px black;
+}
+
+.no_bottom_margin {
+  margin-bottom: 0px;
 }
 
 table {
@@ -23,6 +22,7 @@ table {
   border: 1px solid black;
   table-layout: fixed;
   background: #BBBBBB;
+  margin-bottom: 0px;
 }
 
 tbody {

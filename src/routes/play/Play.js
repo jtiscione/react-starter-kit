@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 
 import GameBoard from '../../components/GameBoard';
 import MoveHistoryTable from '../../components/MoveHistoryTable';
-import PlayButtons from '../../components/PlayButtons';
 
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
@@ -58,12 +57,6 @@ class Play extends Component {
           <Row>
             <Col xsHidden smHidden md={2} >
               <MoveHistoryTable
-                clientID={clientID}
-                gameID={gameID}
-                gameplay={this.props.gameplay}
-                dispatchMoveCursor={this.props.dispatchMoveCursor}
-              />
-              <PlayButtons
                 clientID={clientID}
                 gameID={gameID}
                 gameplay={this.props.gameplay}
