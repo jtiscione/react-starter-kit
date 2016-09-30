@@ -1,27 +1,11 @@
 .nowrap {
   white-space: nowrap;
-}
-
-.margin_bottom_30 {
+  background-color: #BBBBBB;
+  padding-left: 5px;
+  padding-right: 5px;
   margin-bottom: 30px;
 }
 
-.fatbutton {
-  width: 25px;
-  margin: 1px;
-  color: #ffffff;
-  background-color: #337ab7;
-  border-color: #2e6da4;
-  display: inline-block;
-  font-size: 14px;
-  font-weight: 400;
-  text-align: center;
-  vertical-align: middle;
-  touch-action: manipulation;
-  border-radius: 4px;
-}
-
-.disabledbutton {
-  cursor: not-allowed;
-  opacity: .65;
+.quarterwidth {
+  width: 25%;
 }

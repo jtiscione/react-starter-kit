@@ -38,18 +38,18 @@ function PlayButtons({clientID, gameID, gameplay, dispatchMoveCursor}) {
   const cannotMoveBack = (ccv === 0);
   const cannotMoveForward = (ccv === histLength);
   return(
-    <div className={cx(["panel-footer","clearfix", "btn-block", s.nowrap, s.margin_bottom_30])}>
-      <ButtonGroup justified>
-        <Button bsClass={cannotMoveBack ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={moveToStart}>
+    <div className={cx(["panel-footer", "clearfix", "btn-block", s.nowrap, s.margin_bottom_30])}>
+      <ButtonGroup>
+        <Button bsClass={cx('btn', 'btn-default', s.quarterwidth)} disabled={cannotMoveBack} onClick={moveToStart}>
           <Glyphicon glyph="fast-backward" />
         </Button>
-        <Button bsClass={cannotMoveBack ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={stepBack}>
+        <Button bsClass={cx('btn', 'btn-default', s.quarterwidth)} disabled={cannotMoveBack} onClick={stepBack}>
           <Glyphicon glyph="step-backward" />
         </Button>
-        <Button  bsClass={cannotMoveForward ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={stepForward}>
+        <Button bsClass={cx('btn', 'btn-default', s.quarterwidth)} disabled={cannotMoveForward} onClick={stepForward}>
           <Glyphicon glyph="step-forward" />
         </Button>
-        <Button  bsClass={cannotMoveForward ? cx(s.fatbutton, s.disabledbutton) : s.fatbutton} onClick={moveToEnd}>
+        <Button bsClass={cx('btn', 'btn-default', s.quarterwidth)} disabled={cannotMoveForward} onClick={moveToEnd}>
           <Glyphicon glyph="fast-forward" />
         </Button>
       </ButtonGroup>
