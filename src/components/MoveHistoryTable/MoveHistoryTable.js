@@ -7,17 +7,17 @@ import {Table} from 'react-bootstrap';
 import {gameFromImmutable} from '../../store/model/gameState.js';
 import MoveHistoryTableCell from '../MoveHistoryTableCell';
 
-function MoveHistoryTable({ clientStoreID, gameID, gameplay, dispatchMoveCursor}) {
+function MoveHistoryTable({ clientID, gameID, gameplay, dispatchMoveCursor}) {
 
 
   function clickFunction(moveNum) {
     return () => {
-      dispatchMoveCursor(clientStoreID, gameID, moveNum);
+      dispatchMoveCursor(clientID, gameID, moveNum);
     }
   }
 
 
-  const immutable = gameplay.getIn([clientStoreID, 'games', gameID]);
+  const immutable = gameplay.getIn([clientID, 'games', gameID]);
   const gameState = gameFromImmutable(immutable);
 
   const history = gameState.history;
@@ -69,7 +69,7 @@ function MoveHistoryTable({ clientStoreID, gameID, gameplay, dispatchMoveCursor}
 }
 
 MoveHistoryTable.propTypes = {
-    clientStoreID: PropTypes.string.isRequired,
+    clientID: PropTypes.string.isRequired,
     gameID: PropTypes.string.isRequired,
     gameplay: PropTypes.object.isRequired,
     dispatchMoveCursor: PropTypes.func.isRequired

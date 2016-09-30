@@ -8,30 +8,30 @@ import {Button, ButtonGroup, Glyphicon} from 'react-bootstrap';
 import {gameFromImmutable} from '../../store/model/gameState.js';
 
 
-function PlayButtons({clientStoreID, gameID, gameplay, dispatchMoveCursor}) {
+function PlayButtons({clientID, gameID, gameplay, dispatchMoveCursor}) {
 
   function currentCursorValue() {
-    return gameFromImmutable(gameplay.getIn([clientStoreID, 'games', gameID])).cursor;
+    return gameFromImmutable(gameplay.getIn([clientID, 'games', gameID])).cursor;
   }
 
   function historyLength() {
-    return gameFromImmutable(gameplay.getIn([clientStoreID, 'games', gameID])).history.length;
+    return gameFromImmutable(gameplay.getIn([clientID, 'games', gameID])).history.length;
   }
 
   function stepBack() {
-    dispatchMoveCursor(clientStoreID, gameID, currentCursorValue()-1);
+    dispatchMoveCursor(clientID, gameID, currentCursorValue()-1);
   }
 
   function stepForward() {
-    dispatchMoveCursor(clientStoreID, gameID, currentCursorValue()+1);
+    dispatchMoveCursor(clientID, gameID, currentCursorValue()+1);
   }
 
   function moveToStart() {
-    dispatchMoveCursor(clientStoreID, gameID, 0);
+    dispatchMoveCursor(clientID, gameID, 0);
   }
 
   function moveToEnd() {
-    dispatchMoveCursor(clientStoreID, gameID, historyLength());
+    dispatchMoveCursor(clientID, gameID, historyLength());
   }
 
   const ccv = currentCursorValue(), histLength = historyLength();
@@ -58,7 +58,7 @@ function PlayButtons({clientStoreID, gameID, gameplay, dispatchMoveCursor}) {
 }
 
 PlayButtons.propTypes = {
-  clientStoreID: PropTypes.string.isRequired,
+  clientID: PropTypes.string.isRequired,
   gameID: PropTypes.string.isRequired,
   gameplay: PropTypes.object.isRequired,
   dispatchMoveCursor: PropTypes.func.isRequired

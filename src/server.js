@@ -169,24 +169,24 @@ app.get('*', async (req, res, next) => {
   console.log("req.user: "+JSON.stringify(req.user));
   console.log("req.cookies: "+JSON.stringify(req.cookies));
 
-  let clientStoreID = null;
+  let clientID = null;
   if (req.method === 'GET') {
 
     // check if client sent cookie
-    var cookie = req.cookies.clientStoreID;
+    var cookie = req.cookies.clientID;
     if (cookie === undefined) {
       // no: set a new cookie
-      clientStoreID = uuid.v1();
-      res.cookie('clientStoreID',clientStoreID, { maxAge: 900000, httpOnly: true });
+      clientID = uuid.v1();
+      res.cookie('clientID',clientID, { maxAge: 900000, httpOnly: true });
       console.log('cookie created successfully');
     } else {
     // yes, cookie was already present
-      clientStoreID = cookie;
+      clientID = cookie;
       console.log('cookie exists', cookie);
     }
   }
 
-   let clientState = null;// serverStore.getState().get('clients').get(clientStoreID);
+   let clientState = null;// serverStore.getState().get('clients').get(clientID);
    if (clientState) {
      initialState = clientState;
    } else {
@@ -194,7 +194,7 @@ app.get('*', async (req, res, next) => {
      /*
       initialState = fromJS({
         gameplay: {
-          'clientStoreID': {
+          'clientID': {
             games: {}
           }
         }
@@ -209,8 +209,8 @@ app.get('*', async (req, res, next) => {
     });
 
     store.dispatch(setRuntimeVariable({
-      name: 'clientStoreID',
-      value: clientStoreID
+      name: 'clientID',
+      value: clientID
     }));
 
     store.dispatch(setRuntimeVariable({
@@ -219,7 +219,7 @@ app.get('*', async (req, res, next) => {
     }));
 
     if (!clientState) {
-      store.dispatch(createNewGameAction(clientStoreID, 'defaultGame'));
+      store.dispatch(createNewGameAction(clientID, 'defaultGame'));
     }
 
     let css = new Set();

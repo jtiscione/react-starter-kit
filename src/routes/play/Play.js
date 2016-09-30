@@ -37,10 +37,19 @@ class Play extends Component {
   }
 
   render() {
-    const clientStoreID = this.props.clientStoreID;
+    if (process.env.BROWSER) {
+      if (!window.ChessBoard3.webGLEnabled()) {
+        setTimeout(() => {
+          this.setState({
+            tabKey: 2
+          });
+        }, 5000);
+      }
+    }
+    const clientID = this.props.clientID;
     const gameID = 'defaultGame';
-    if (!this.props.gameplay.getIn([clientStoreID, 'games', gameID])) {
-      this.props.dispatchNewGame(clientStoreID, gameID);
+    if (!this.props.gameplay.getIn([clientID, 'games', gameID])) {
+      this.props.dispatchNewGame(clientID, gameID);
     }
 
     return (
@@ -49,13 +58,13 @@ class Play extends Component {
           <Row>
             <Col xsHidden smHidden md={2} >
               <MoveHistoryTable
-                clientStoreID={clientStoreID}
+                clientID={clientID}
                 gameID={gameID}
                 gameplay={this.props.gameplay}
                 dispatchMoveCursor={this.props.dispatchMoveCursor}
               />
               <PlayButtons
-                clientStoreID={clientStoreID}
+                clientID={clientID}
                 gameID={gameID}
                 gameplay={this.props.gameplay}
                 dispatchMoveCursor={this.props.dispatchMoveCursor}
@@ -69,7 +78,7 @@ class Play extends Component {
                 </Tab>
               </Tabs>
               <GameBoard
-                clientStoreID={clientStoreID}
+                clientID={clientID}
                 gameID={gameID}
                 dimensions={this.state.tabKey}
                 gameplay={this.props.gameplay}
@@ -93,27 +102,27 @@ class Play extends Component {
 
 Play.contextTypes = { setTitle: PropTypes.func.isRequired };
 
-let clientStoreID;
+let clientID;
 
 const mapStateToProps = (state) => {
-  clientStoreID = state.getIn(['runtime', 'clientStoreID']);
+  clientID = state.getIn(['runtime', 'clientID']);
 
   return {
-    clientStoreID,
+    clientID,
     gameplay: state.get('gameplay')
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchNewGame: (clientStoreID, gameID) => {
-      dispatch(createNewGameAction(clientStoreID, gameID));
+    dispatchNewGame: (clientID, gameID) => {
+      dispatch(createNewGameAction(clientID, gameID));
     },
-    dispatchMakeMove: (clientStoreID, gameID, move) => {
-      dispatch(createMakeMoveAction(clientStoreID, gameID, move));
+    dispatchMakeMove: (clientID, gameID, move) => {
+      dispatch(createMakeMoveAction(clientID, gameID, move));
     },
-    dispatchMoveCursor: (clientStoreID, gameID, cursor) => {
-      dispatch(createMoveCursorAction(clientStoreID, gameID, cursor));
+    dispatchMoveCursor: (clientID, gameID, cursor) => {
+      dispatch(createMoveCursorAction(clientID, gameID, cursor));
     }
   };
 };

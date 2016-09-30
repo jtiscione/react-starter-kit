@@ -17,7 +17,7 @@ const $ = require('jquery');
 export class GameBoard extends Component {
 
   static propTypes = {
-    clientStoreID: PropTypes.string.isRequired,
+    clientID: PropTypes.string.isRequired,
     gameID: PropTypes.string.isRequired,
     dimensions: PropTypes.number.isRequired,
     gameplay: PropTypes.object,
@@ -38,11 +38,11 @@ export class GameBoard extends Component {
   }
 
   makeMove(from, to) {
-    this.props.dispatchMakeMove(this.props.clientStoreID, this.props.gameID, { from, to });
+    this.props.dispatchMakeMove(this.props.clientID, this.props.gameID, { from, to });
   }
 
   targetSquares(sq) {
-    const gameData = this.props.gameplay.getIn([this.props.clientStoreID, 'games', this.props.gameID]);
+    const gameData = this.props.gameplay.getIn([this.props.clientID, 'games', this.props.gameID]);
     const game = gameFromImmutable(gameData);
     return legalTargetSquares(game.fen(), sq);
   }
@@ -54,28 +54,28 @@ export class GameBoard extends Component {
       let game = null;
       let gameData = null;
       if (this.props.gameplay) {
-        gameData = this.props.gameplay.getIn([this.props.clientStoreID, 'games', this.props.gameID]);
+        gameData = this.props.gameplay.getIn([this.props.clientID, 'games', this.props.gameID]);
         game = gameFromImmutable(gameData);
         fen = game.fen();
       }
     }
 
-    /*
-    if (this.props.dimensions === 3) {
-      // window function set by chessboard3.js
-      if (window && !window.ChessBoard3.webGLEnabled()) {
-        return (
-          <div className={s.outer}>
-            <div className={s.cs_loader}>
-              <div className={s.cs_loader_inner}>
-                This browser does not support webGL.
+    if (process.env.BROWSER) {
+      if (this.props.dimensions === 3) {
+        if (!window.ChessBoard3.webGLEnabled()) {
+          return (
+            <div className={s.outer}>
+              <div className={s.cs_loader}>
+                <div className={s.cs_loader_inner}>
+                  This browser does not support webGL.
+                </div>
               </div>
             </div>
-         </div>
-        );
+          );
+        }
       }
     }
-    */
+
 
     if (fen) {
       if (this.props.dimensions === 3) {
