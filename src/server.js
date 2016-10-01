@@ -192,21 +192,12 @@ app.get('*', async (req, res, next) => {
     }
   }
 
-   let clientState = null; // pruneState(serverStore.getState(), clientID);
+   let clientState = pruneState(serverStore.getState(), clientID);
 
    if (clientState) {
      initialState = clientState;
    } else {
      initialState = Map();
-     /*
-      initialState = fromJS({
-        gameplay: {
-          'clientID': {
-            games: {}
-          }
-        }
-      });
-      */
   }
 
   try {
@@ -225,8 +216,10 @@ app.get('*', async (req, res, next) => {
       value: Date.now(),
     }));
 
-    if (!clientState) {
-      store.dispatch(createNewGameAction(clientID, 'defaultGame'));
+    if (!clientState || clientState.getIn(['gameplay', clientID, 'defaultGame'])) {
+      const action = createNewGameAction(clientID, 'defaultGame');
+      serverStore.dispatch(action);
+      store.dispatch(action);
     }
 
     let css = new Set();

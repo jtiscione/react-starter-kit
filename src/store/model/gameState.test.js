@@ -26,21 +26,6 @@ describe('game logic', () => {
     expect(posAdvanced).equal(ADVANCED_FEN);
   });
 
-  it('Handles moveBack, moveForward, rewind, fastForward', () => {
-    const start = new GameState();
-    const e4 = start.makeMove('e4');
-    const Nf6 = e4.makeMove('Nf6');
-    const Nc3 = Nf6.makeMove('Nc3');
-    expect(Nc3.back().back().fen()).equal(e4.fen());
-    expect(e4.back().fen()).equal(start.fen());
-    const moveBackNf6 = Nf6.back();
-    const moveBackThenForwardNf6 = moveBackNf6.forward();
-    expect(moveBackThenForwardNf6).eql(Nf6);
-    expect(Nc3.toStart().fen()).equal(start.fen());
-    expect(Nc3.toStart().forward().fen()).equal(e4.fen());
-    expect(Nc3.toStart().toEnd()).eql(Nc3);
-  });
-
   it('Handles makeMove() and currentMove() correctly', () => {
     const start = new GameState();
     expect(start.makeMove('epic fail')).to.be.null;
@@ -65,18 +50,21 @@ describe('game logic', () => {
       piece: 'n',
     };
     expect(e4).eql({
+      white: 'YOU',
+      black: 'COMPUTER',
       history: [FIRST_MOVE_OBJECT],
       initialFEN: DEFAULT_FEN,
       cursor: 1,
     });
     let Nf6 = e4.makeMove('Nf6');
     expect(Nf6).eql({
+      white: 'YOU',
+      black: 'COMPUTER',
       history: [FIRST_MOVE_OBJECT, SECOND_MOVE_OBJECT],
       initialFEN: DEFAULT_FEN,
       cursor: 2,
     });
     expect(Nf6.currentMove()).eql(SECOND_MOVE_OBJECT);
-    expect(Nf6.back().currentMove()).eql(FIRST_MOVE_OBJECT);
   });
   it('handles toPGN and fromPGN', () => {
     const start = new GameState();
@@ -85,9 +73,6 @@ describe('game logic', () => {
     const pgn = Nf6.toPGN();
     const reconstituted = fromPGN(pgn);
     expect(reconstituted).eql(Nf6);
-    const back_to_e4 = Nf6.back();
-    const back_to_e4_pgn = back_to_e4.toPGN(true);
-    expect(pgn).to.equal(back_to_e4_pgn);
   });
 
   it('generates legal moves correctly',() => {
@@ -97,9 +82,6 @@ describe('game logic', () => {
     const e4 = start.makeMove('e4');
     const e4moves = e4.legalMoves();
     expect(e4moves.length).equal(20);
-    const backToStart = e4.back();
-    const backToStartMoves = backToStart.legalMoves();
-    expect(startMoves).eql(backToStartMoves);
   });
 
   it ('Finds target squares correctly', () => {
