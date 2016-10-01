@@ -21,7 +21,6 @@ class Board extends Component {
   }
 
   componentDidMount() {
-    console.log("componentDidMount");
     const props = this.props;
 
     var cfg = {
@@ -83,7 +82,6 @@ class Board extends Component {
   // This component only needs to call render() once, so this method always returns false.
   // However it needs to intercept the new FEN so it can send any changes to the chessboard object.
   shouldComponentUpdate(nextProps) { // , nextState) {
-    console.log("shouldComponentUpdate");
     if (this.chessboard) {
       this.chessboard.position(nextProps.fen);
       return false;

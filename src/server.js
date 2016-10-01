@@ -35,6 +35,8 @@ import { setRuntimeVariable } from './actions/runtime';
 import { createNewGameAction } from './actions/gameplay';
 import { port, wsport, auth } from './config';
 import { fromJS, Map } from 'immutable';
+import pruneState from './store/pruneState';
+
 const uuid = require('uuid');
 
 import socketIO from 'socket.io';
@@ -45,38 +47,42 @@ const app = express();
 const httpServer = http.Server(app);
 const io = socketIO(httpServer);
 
-/*
+function log(s) {
+  //console.log(s);
+}
+
 serverStore.subscribe(
   // fix later
   () => {
-    console.log('emitting state:');
-    io.emit('state', serverStore.getState().toJS());
+    console.log('My current state:');
+    console.log(JSON.stringify(serverStore.getState().toJS()));
+    //io.emit('state', serverStore.getState().toJS());
   }
 );
-*/
 
-/*
+
 let ping = 0;
 setInterval(() => {
   ping++;
-  console.log("emitting ping: "+ ping);
+  //log("emitting ping: "+ ping);
   io.emit("ping", { ping }
   )}, 1000);
-*/
+
 
 io.on('connection', function(socket){
 
-  console.log("Socket connected: "+socket.id);
+  log("Socket connected: "+socket.id);
 
   socket.emit('state', serverStore.getState().toJS());
-  console.log('a user connected');
+  log('a user connected');
 
   socket.on('action', (action) => {
-    console.log("io on action: "+JSON.stringify(action));
+    log("io on action: "+JSON.stringify(action));
+    serverStore.dispatch(action);
   }); //serverStore.dispatch.bind(serverStore));
 
   socket.on('disconnect', function(){
-    console.log('Socket disconnected: '+socket.id);
+    log('Socket disconnected: '+socket.id);
   });
 
 });
@@ -110,9 +116,9 @@ app.use(expressJwt({
 //  getToken: req => req.cookies.id_token,
 
   getToken: (req) => {
-    console.log('cookies: ' + JSON.stringify(req.cookies));
+    log('cookies: ' + JSON.stringify(req.cookies));
     let id_token = req.cookies.id_token;
-    console.log('id_token: '+ id_token);
+    log('id_token: '+ id_token);
     return id_token;
   }
 
@@ -152,7 +158,7 @@ app.get('*', async (req, res, next) => {
   const removeHistoryListener = history.listen(location => {
     const newUrl = `${location.pathname}${location.search}`;
     if (req.originalUrl !== newUrl) {
-      // console.log(`R ${req.originalUrl} -> ${newUrl}`); // eslint-disable-line no-console
+      // log(`R ${req.originalUrl} -> ${newUrl}`); // eslint-disable-line no-console
       if (!sent) {
         res.redirect(303, newUrl);
         sent = true;
@@ -165,9 +171,9 @@ app.get('*', async (req, res, next) => {
 
   let initialState = null;
 
-  console.log("req.headers.cookie:"+req.headers.cookie);
-  console.log("req.user: "+JSON.stringify(req.user));
-  console.log("req.cookies: "+JSON.stringify(req.cookies));
+  log("req.headers.cookie:"+req.headers.cookie);
+  log("req.user: "+JSON.stringify(req.user));
+  log("req.cookies: "+JSON.stringify(req.cookies));
 
   let clientID = null;
   if (req.method === 'GET') {
@@ -178,15 +184,16 @@ app.get('*', async (req, res, next) => {
       // no: set a new cookie
       clientID = uuid.v1();
       res.cookie('clientID',clientID, { maxAge: 900000, httpOnly: true });
-      console.log('cookie created successfully');
+      log('cookie created successfully');
     } else {
     // yes, cookie was already present
       clientID = cookie;
-      console.log('cookie exists', cookie);
+      log('cookie exists', cookie);
     }
   }
 
-   let clientState = null;// serverStore.getState().get('clients').get(clientID);
+   let clientState = null; // pruneState(serverStore.getState(), clientID);
+
    if (clientState) {
      initialState = clientState;
    } else {
@@ -268,7 +275,7 @@ pe.skipNodeFiles();
 pe.skipPackage('express');
 
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-  console.log(pe.render(err)); // eslint-disable-line no-console
+  log(pe.render(err)); // eslint-disable-line no-console
   const statusCode = err.status || 500;
   const html = ReactDOM.renderToStaticMarkup(
     <Html

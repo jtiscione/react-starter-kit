@@ -29,10 +29,7 @@ class Play extends Component {
   }
 
   handleTabSelect(tabKey) {
-    console.log("handleTableSelect: "+this.state.tabKey);
-    console.log("tabKey argument: "+tabKey);
     this.setState({tabKey});
-    console.log(JSON.stringify(this.state));
   }
 
   render() {

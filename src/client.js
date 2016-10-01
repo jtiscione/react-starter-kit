@@ -15,7 +15,6 @@ import {
   windowScrollX,
   windowScrollY,
 } from './core/DOMUtils';
-import { host } from './config';
 
 import {subscribeEngineToStore} from './subscribers/engineManager.js';
 
@@ -97,8 +96,8 @@ function render(container, location, component) {
 }
 
 function run() {
-  const socket = io(`http://${host}`);
-  const socketIoMiddleware = createSocketIoMiddleware(socket, (type, action) => false);
+  const socket = io();
+  const socketIoMiddleware = createSocketIoMiddleware(socket, (type, action) => true);
 
   const history = createHistory();
   const container = document.getElementById('app');
@@ -124,6 +123,8 @@ function run() {
   // }));
 
   subscribeEngineToStore(context.store);
+
+  context.createHref = history.createHref;
 
   // Re-render the app when window.location changes
   function onLocationChange(location) {

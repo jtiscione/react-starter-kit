@@ -6,11 +6,11 @@ import createLogger from './logger';
 
 export default function configureStore(initialState, helpersConfig, ...extraMiddleware) {
   const helpers = createHelpers(helpersConfig);
-  const middleware = [thunk.withExtraArgument(helpers)];
+  let middleware = [thunk.withExtraArgument(helpers)];
 
   let enhancer;
   if (extraMiddleware) {
-    middleware.concat(extraMiddleware);
+    middleware = middleware.concat(extraMiddleware);
   }
 
   if (__DEV__) {

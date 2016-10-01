@@ -11,7 +11,7 @@ export function subscribeEngineToStore(store) {
 
   store.subscribe(() => {
     const state = store.getState();
-    console.log("state: "+state);
+
     const clientID = state.getIn(['runtime', 'clientID']);
 
     // Check store to see if we need to fire the chess engine
