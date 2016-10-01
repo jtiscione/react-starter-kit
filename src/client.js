@@ -16,7 +16,7 @@ import {
   windowScrollY,
 } from './core/DOMUtils';
 
-import {subscribeEngineToStore} from './subscribers/engineManager.js';
+import clientListener from './subscribers/clientListener.js';
 
 const context = {
   store: null,
@@ -121,8 +121,9 @@ function run() {
   //   type: 'SET_STATE',
   //   state
   // }));
+  const engine = new Worker("chess/engines/lozza_patches.js");
 
-  subscribeEngineToStore(context.store);
+  context.store.subscribe(clientListener(context.store, engine));
 
   context.createHref = history.createHref;
 

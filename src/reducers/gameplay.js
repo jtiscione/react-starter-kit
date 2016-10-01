@@ -31,10 +31,11 @@ export default function gameplay(state = Map(), action) {
     case MAKE_MOVE:
       gameID = action.payload.gameID;
       const move = action.payload.move;
+      const imperative = action.payload.imperative;
       gameData = state.getIn([clientID, 'games', gameID]);
       if (gameData) {
-        const next = gameFromImmutable(gameData).makeMove(move);
-        return state.setIn([clientID, 'games', gameID], next.toImmutable());
+        let next = gameFromImmutable(gameData).makeMove(move, imperative);
+        state = state.setIn([clientID, 'games', gameID], next.toImmutable());
       }
       return state; // failure
     case MOVE_CURSOR:

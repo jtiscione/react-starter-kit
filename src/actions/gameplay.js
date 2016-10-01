@@ -20,13 +20,14 @@ export function createNewGameAction(clientID, gameID) {
   };
 }
 
-export function createMakeMoveAction(clientID, gameID, move) {
+export function createMakeMoveAction(clientID, gameID, move, imperative) {
   return {
     type: MAKE_MOVE,
     clientID,
     payload: {
       gameID,
       move,
+      imperative
     },
   };
 }

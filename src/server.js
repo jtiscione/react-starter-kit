@@ -41,6 +41,11 @@ const uuid = require('uuid');
 
 import socketIO from 'socket.io';
 
+// https://www.bennadel.com/blog/2908-you-can-use-require-to-load-json-javascript-object-notation-files-in-node-js.htm
+console.time("BOOK LOADED:");
+const BOOK = require('../tiny_book');
+console.timeEnd("BOOK LOADED:");
+
 const serverStore = configureServerStore(Map());
 
 const app = express();
