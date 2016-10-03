@@ -8,21 +8,16 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { createPath } from 'history/PathUtils';
 import App from './components/App';
 import configureStore from './store/configureStore';
-import createSocketIoMiddleware from 'redux-socket-io';
-import io from 'socket.io.client';
+import createSocketIoMiddleware from 'redux-socket.io';
+import io from 'socket.io-client';
 import { fromJS } from 'immutable';
 
 
 const socket = io();
 const socketIoMiddleware = createSocketIoMiddleware(socket, (type, action) => (action.origin == 'browser'));
-const initialState = fromJS(JSON.parse(
-  document
-    .getElementById('source')
-    .getAttribute('data-initial-state')
-));
-let currentLocation = history.getCurrentLocation();
 
-const clientID = initialState.getIn(['runtime', 'clientID']);
+const clientID = (window.APP_STATE? (window.APP_STATE.runtime ? window.APP_STATE.runtime.clientID : null) : null);
+
 if (clientID) {
   // tell server which clientID the socket is associated with
   socket.emit('clientID', clientID);
@@ -47,7 +42,7 @@ const context = {
   },
   // Initialize a new Redux store
   // http://redux.js.org/docs/basics/UsageWithReact.html
-  store: configureStore(window.APP_STATE, initialState, { history }, socketIoMiddleware),
+  store: configureStore(fromJS(window.APP_STATE), { history }, socketIoMiddleware),
 };
 
 const engine = new Worker("chess/engines/lozza_patches.js");

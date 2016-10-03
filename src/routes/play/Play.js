@@ -3,7 +3,7 @@
  */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-
+import Layout from '../../components/Layout';
 import GameBoard from '../../components/GameBoard';
 import MoveHistoryTable from '../../components/MoveHistoryTable';
 
@@ -49,48 +49,49 @@ class Play extends Component {
     }
 
     return (
-      <div className={s.root}>
-        <Grid>
-          <Row>
-            <Col xsHidden smHidden md={2} >
-              <MoveHistoryTable
-                clientID={clientID}
-                gameID={gameID}
-                gameplay={this.props.gameplay}
-                dispatchMoveCursor={this.props.dispatchMoveCursor}
-              />
-            </Col>
-            <Col md={8} lg={8}>
-              <Tabs defaultActiveKey={this.state.tabKey} onSelect={this.handleTabSelect.bind(this)} id="board-dimension">
-                <Tab eventKey={2} title="2D">
-                </Tab>
-                <Tab eventKey={3} title="3D">
-                </Tab>
-              </Tabs>
-              <GameBoard
-                clientID={clientID}
-                gameID={gameID}
-                dimensions={this.state.tabKey}
-                gameplay={this.props.gameplay}
-                dispatchNewGame={this.props.dispatchNewGame}
-                dispatchMakeMove={this.props.dispatchMakeMove}
-              />
-            </Col>
-            <Col xsHidden smHidden md={2}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-              dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-              ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-              anim id est laborum.
-            </Col>
-          </Row>
-        </Grid>
-      </div>
+      <Layout>
+        <div className={s.root}>
+          <Grid>
+            <Row>
+              <Col xsHidden smHidden md={2} >
+                <MoveHistoryTable
+                  clientID={clientID}
+                  gameID={gameID}
+                  gameplay={this.props.gameplay}
+                  dispatchMoveCursor={this.props.dispatchMoveCursor}
+                />
+              </Col>
+              <Col md={8} lg={8}>
+                <Tabs defaultActiveKey={this.state.tabKey} onSelect={this.handleTabSelect.bind(this)} id="board-dimension">
+                  <Tab eventKey={2} title="2D">
+                  </Tab>
+                  <Tab eventKey={3} title="3D">
+                  </Tab>
+                </Tabs>
+                <GameBoard
+                  clientID={clientID}
+                  gameID={gameID}
+                  dimensions={this.state.tabKey}
+                  gameplay={this.props.gameplay}
+                  dispatchNewGame={this.props.dispatchNewGame}
+                  dispatchMakeMove={this.props.dispatchMakeMove}
+                />
+              </Col>
+              <Col xsHidden smHidden md={2}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+                ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+                anim id est laborum.
+              </Col>
+            </Row>
+          </Grid>
+        </div>
+      </Layout>
     );
   }
 }
 
-Play.contextTypes = { setTitle: PropTypes.func.isRequired };
 
 let clientID;
 

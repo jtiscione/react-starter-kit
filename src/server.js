@@ -174,13 +174,17 @@ app.get('*', async (req, res, next) => {
   } else {
      initialState = Map();
   }
-  initialState = initialState.set('user', req.user || null);
 
   try {
     const store = configureStore(initialState, {
       cookie: req.headers.cookie,
       history,
     });
+
+    store.dispatch(setRuntimeVariable({
+      name: 'user',
+      value: req.user ? JSON.parse(JSON.stringify(req.user)) : null
+    }));
 
     store.dispatch(setRuntimeVariable({
       name: 'clientID',
