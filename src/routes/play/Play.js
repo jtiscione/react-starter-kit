@@ -106,13 +106,13 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatchNewGame: (clientID, gameID) => {
-      dispatch(createNewGameAction(clientID, gameID));
+      dispatch(createNewGameAction('browser', clientID, gameID));
     },
     dispatchMakeMove: (clientID, gameID, move) => {
-      dispatch(createMakeMoveAction(clientID, gameID, move));
+      dispatch(createMakeMoveAction('browser', clientID, gameID, move));
     },
     dispatchMoveCursor: (clientID, gameID, cursor) => {
-      dispatch(createMoveCursorAction(clientID, gameID, cursor));
+      dispatch(createMoveCursorAction('browser', clientID, gameID, cursor));
     }
   };
 };

@@ -4,10 +4,14 @@ import rootReducer from '../reducers';
 import { setRuntimeVariable } from '../actions/runtime';
 import createLogger from './logger';
 
-export default function configureServerStore(initialState) {
+export default function configureServerStore(initialState, ...extraMiddleware) {
 
   const helpers = {}; // put stuff in later
-  const middleware = [thunk.withExtraArgument(helpers)];
+  let middleware = [thunk.withExtraArgument(helpers)];
+
+  if (extraMiddleware) {
+    middleware = middleware.concat(extraMiddleware);
+  }
 
   if (__DEV__) {
     middleware.push(createLogger());

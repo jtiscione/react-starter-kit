@@ -56,7 +56,7 @@ export default function(store, engine) {
                 const best = parseBestMove(line);
                 if (best !== undefined) {
                   const move = chessjs.move(best);
-                  store.dispatch(createMakeMoveAction(clientID, gameID, move, ''));
+                  store.dispatch(createMakeMoveAction('browser', clientID, gameID, move, ''));
                 }
               };
             }

@@ -41,53 +41,32 @@ const uuid = require('uuid');
 
 import socketIO from 'socket.io';
 
-// https://www.bennadel.com/blog/2908-you-can-use-require-to-load-json-javascript-object-notation-files-in-node-js.htm
 console.time("BOOK LOADED:");
 const BOOK = require('../tiny_book');
 console.timeEnd("BOOK LOADED:");
 
-const serverStore = configureServerStore(Map());
+import socketIoServerMiddlewareManager from './middleware/socketIoServerMiddlewareManager';
+
+const manager = socketIoServerMiddlewareManager((type,action) => {action.origin == 'server'});
+
+const serverStore = configureServerStore(Map(), manager.middleware());
 
 const app = express();
 const httpServer = http.Server(app);
 const io = socketIO(httpServer);
 
-function log(s) {
-  //console.log(s);
-}
-
-serverStore.subscribe(
-  // fix later
-  () => {
-    console.log('My current state:');
-    console.log(JSON.stringify(serverStore.getState().toJS()));
-    //io.emit('state', serverStore.getState().toJS());
-  }
-);
-
-
+/*
 let ping = 0;
 setInterval(() => {
   ping++;
-  //log("emitting ping: "+ ping);
   io.emit("ping", { ping }
   )}, 1000);
-
+*/
 
 io.on('connection', function(socket){
 
-  log("Socket connected: "+socket.id);
-
-  socket.emit('state', serverStore.getState().toJS());
-  log('a user connected');
-
-  socket.on('action', (action) => {
-    log("io on action: "+JSON.stringify(action));
-    serverStore.dispatch(action);
-  }); //serverStore.dispatch.bind(serverStore));
-
-  socket.on('disconnect', function(){
-    log('Socket disconnected: '+socket.id);
+  socket.on('clientID', (clientID) => {
+    manager.registerSocket(clientID, socket);
   });
 
 });
@@ -118,15 +97,7 @@ app.use(bodyParser.json());
 app.use(expressJwt({
   secret: auth.jwt.secret,
   credentialsRequired: false,
-//  getToken: req => req.cookies.id_token,
-
-  getToken: (req) => {
-    log('cookies: ' + JSON.stringify(req.cookies));
-    let id_token = req.cookies.id_token;
-    log('id_token: '+ id_token);
-    return id_token;
-  }
-
+  getToken: req => req.cookies.id_token,
 }));
 app.use(passport.initialize());
 
@@ -163,7 +134,7 @@ app.get('*', async (req, res, next) => {
   const removeHistoryListener = history.listen(location => {
     const newUrl = `${location.pathname}${location.search}`;
     if (req.originalUrl !== newUrl) {
-      // log(`R ${req.originalUrl} -> ${newUrl}`); // eslint-disable-line no-console
+      // console.log(`R ${req.originalUrl} -> ${newUrl}`); // eslint-disable-line no-console
       if (!sent) {
         res.redirect(303, newUrl);
         sent = true;
@@ -176,9 +147,11 @@ app.get('*', async (req, res, next) => {
 
   let initialState = null;
 
-  log("req.headers.cookie:"+req.headers.cookie);
-  log("req.user: "+JSON.stringify(req.user));
-  log("req.cookies: "+JSON.stringify(req.cookies));
+  /*
+  console.log("req.headers.cookie:"+req.headers.cookie);
+  console.log("req.user: "+JSON.stringify(req.user));
+  console.log("req.cookies: "+JSON.stringify(req.cookies));
+  */
 
   let clientID = null;
   if (req.method === 'GET') {
@@ -189,19 +162,17 @@ app.get('*', async (req, res, next) => {
       // no: set a new cookie
       clientID = uuid.v1();
       res.cookie('clientID',clientID, { maxAge: 900000, httpOnly: true });
-      log('cookie created successfully');
     } else {
     // yes, cookie was already present
       clientID = cookie;
-      log('cookie exists', cookie);
     }
   }
 
-   let clientState = pruneState(serverStore.getState(), clientID);
+  let clientState = pruneState(serverStore.getState(), clientID);
 
-   if (clientState) {
-     initialState = clientState;
-   } else {
+  if (clientState) {
+    initialState = clientState;
+  } else {
      initialState = Map();
   }
 
@@ -222,7 +193,7 @@ app.get('*', async (req, res, next) => {
     }));
 
     if (!clientState || clientState.getIn(['gameplay', clientID, 'defaultGame'])) {
-      const action = createNewGameAction(clientID, 'defaultGame');
+      const action = createNewGameAction('pageload', clientID, 'defaultGame');
       serverStore.dispatch(action);
       store.dispatch(action);
     }
@@ -273,7 +244,7 @@ pe.skipNodeFiles();
 pe.skipPackage('express');
 
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-  log(pe.render(err)); // eslint-disable-line no-console
+  console.log(pe.render(err)); // eslint-disable-line no-console
   const statusCode = err.status || 500;
   const html = ReactDOM.renderToStaticMarkup(
     <Html

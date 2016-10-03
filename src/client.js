@@ -97,7 +97,7 @@ function render(container, location, component) {
 
 function run() {
   const socket = io();
-  const socketIoMiddleware = createSocketIoMiddleware(socket, (type, action) => true);
+  const socketIoMiddleware = createSocketIoMiddleware(socket, (type, action) => true); // replace with {action.origin == 'server'}
 
   const history = createHistory();
   const container = document.getElementById('app');
@@ -108,19 +108,23 @@ function run() {
   ));
   let currentLocation = history.getCurrentLocation();
 
+  const clientID = initialState.getIn(['runtime', 'clientID']);
+  if (clientID) {
+    // tell server which clientID the socket is associated with
+    socket.emit('clientID', clientID);
+  }
+
   // Make taps on links and buttons work fast on mobiles
   FastClick.attach(document.body);
 
   context.store = configureStore(initialState, { history }, socketIoMiddleware);
   context.createHref = history.createHref;
 
+  /*
   socket.on('ping', data => {
-    //console.log("socket on ping: " + JSON.stringify(data));
+    console.log("socket on ping: " + JSON.stringify(data));
   });
-  // socket.on('state', state => store.dispatch({
-  //   type: 'SET_STATE',
-  //   state
-  // }));
+  */
   const engine = new Worker("chess/engines/lozza_patches.js");
 
   context.store.subscribe(clientListener(context.store, engine));
