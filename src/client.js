@@ -97,7 +97,7 @@ function render(container, location, component) {
 
 function run() {
   const socket = io();
-  const socketIoMiddleware = createSocketIoMiddleware(socket, (type, action) => true); // replace with {action.origin == 'server'}
+  const socketIoMiddleware = createSocketIoMiddleware(socket, (type, action) => (action.origin == 'browser'));
 
   const history = createHistory();
   const container = document.getElementById('app');
