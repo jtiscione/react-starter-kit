@@ -270,8 +270,6 @@ const clientConfig = extend(true, {}, config, {
 
   // Choose a developer tool to enhance debugging
   // http://webpack.github.io/docs/configuration.html#devtool
-  // ?? default line:  devtool: DEBUG ? 'cheap-module-eval-source-map' : false,
-
   devtool: DEBUG ? 'source-map' : false,
 });
 

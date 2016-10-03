@@ -4,15 +4,18 @@
 import React from 'react';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
+import App from '../App';
 import { createStore } from 'redux';
-import App from './App';
+import Layout from './Layout';
 
-describe('App', () => {
+describe('Layout', () => {
 
   it('renders children correctly', () => {
     const wrapper = shallow(
       <App context={{ store: createStore(() => {}), insertCss: () => {} }}>
-        <div className="child" />
+        <Layout>
+          <div className="child" />
+        </Layout>
       </App>
     );
 

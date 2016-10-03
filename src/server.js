@@ -19,7 +19,9 @@ import jwt from 'jsonwebtoken';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import UniversalRouter from 'universal-router';
+import createMemoryHistory from 'history/createMemoryHistory';
 import PrettyError from 'pretty-error';
+import App from './components/App';
 import Html from './components/Html';
 import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
 import errorPageStyle from './routes/error/ErrorPage.css';
@@ -27,13 +29,12 @@ import passport from './core/passport';
 import models from './data/models';
 import schema from './data/schema';
 import routes from './routes';
-import createHistory from './core/createHistory';
 import assets from './assets'; // eslint-disable-line import/no-unresolved
 import configureStore from './store/configureStore';
 import configureServerStore from './store/configureServerStore';
 import { setRuntimeVariable } from './actions/runtime';
 import { createNewGameAction } from './actions/gameplay';
-import { port, wsport, auth } from './config';
+import { port, auth } from './config';
 import { fromJS, Map } from 'immutable';
 import pruneState from './store/pruneState';
 
@@ -87,10 +88,6 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-//app.use(function (req, res, next) {
-//  next(); // <-- important!
-//});
-
 //
 // Authentication
 // -----------------------------------------------------------------------------
@@ -128,7 +125,9 @@ app.use('/graphql', expressGraphQL(req => ({
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------
 app.get('*', async (req, res, next) => {
-  const history = createHistory(req.url);
+  const history = createMemoryHistory({
+    initialEntries: [req.url],
+  });
   // let currentLocation = history.getCurrentLocation();
   let sent = false;
   const removeHistoryListener = history.listen(location => {
@@ -175,6 +174,7 @@ app.get('*', async (req, res, next) => {
   } else {
      initialState = Map();
   }
+  initialState = initialState.set('user', req.user || null);
 
   try {
     const store = configureStore(initialState, {
@@ -198,37 +198,39 @@ app.get('*', async (req, res, next) => {
       store.dispatch(action);
     }
 
-    let css = new Set();
-    let statusCode = 200;
-    const data = { title: '', description: '', style: '', script: assets.main.js, children: '' };
+    const css = new Set();
 
-    await UniversalRouter.resolve(routes, {
+    // Global (context) variables that can be easily accessed from any React component
+    // https://facebook.github.io/react/docs/context.html
+    const context = {
+      // Navigation manager, e.g. history.push('/home')
+      // https://github.com/mjackson/history
+      history,
+      // Enables critical path CSS rendering
+      // https://github.com/kriasoft/isomorphic-style-loader
+      insertCss: (...styles) => {
+        // eslint-disable-next-line no-underscore-dangle
+        styles.forEach(style => css.add(style._getCss()));
+      },
+      // Initialize a new Redux store
+      // http://redux.js.org/docs/basics/UsageWithReact.html
+      store,
+    };
+
+    const route = await UniversalRouter.resolve(routes, {
       path: req.path,
       query: req.query,
-      context: {
-        store,
-        createHref: history.createHref,
-        insertCss: (...styles) => {
-          styles.forEach(style => css.add(style._getCss())); // eslint-disable-line no-underscore-dangle, max-len
-        },
-        setTitle: value => (data.title = value),
-        setMeta: (key, value) => (data[key] = value),
-      },
-      render(component, status = 200) {
-        css = new Set();
-        statusCode = status;
-        data.children = ReactDOM.renderToString(component);
-        data.state = store.getState();
-        data.style = [...css].join('');
-        return true;
-      },
     });
 
-    if (!sent) {
-      const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
-      res.status(statusCode);
-      res.send(`<!doctype html>${html}`);
-    }
+    const data = { ...route };
+    data.children = ReactDOM.renderToString(<App context={context}>{route.component}</App>);
+    data.style = [...css].join('');
+    data.script = assets.main.js;
+    data.state = context.store.getState();
+    const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
+
+    res.status(route.status || 200);
+    res.send(`<!doctype html>${html}`);
   } catch (err) {
     next(err);
   } finally {
@@ -245,7 +247,6 @@ pe.skipPackage('express');
 
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   console.log(pe.render(err)); // eslint-disable-line no-console
-  const statusCode = err.status || 500;
   const html = ReactDOM.renderToStaticMarkup(
     <Html
       title="Internal Server Error"
@@ -255,7 +256,7 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
       {ReactDOM.renderToString(<ErrorPageWithoutStyle error={err} />)}
     </Html>
   );
-  res.status(statusCode);
+  res.status(err.status || 500);
   res.send(`<!doctype html>${html}`);
 });
 
