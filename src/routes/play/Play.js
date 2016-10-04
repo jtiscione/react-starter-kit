@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import Layout from '../../components/Layout';
 import GameBoard from '../../components/GameBoard';
 import MoveHistoryTable from '../../components/MoveHistoryTable';
-
+import { gameFromImmutable } from '../../store/model/gameState';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import { newGameAction,
@@ -24,12 +24,22 @@ class Play extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      tabKey: 3
+      tabKey: 3,
+      renderCount: 0
     }
   }
 
   handleTabSelect(tabKey) {
     this.setState({tabKey});
+  }
+
+  makeUserMove(clientID, gameID, move) {
+    const immGame = this.props.gameplay.getIn([clientID, 'games', gameID]);
+    const game = gameFromImmutable(immGame);
+    const turn = game.toChessObject().turn();
+    if ((game.white == 'YOU' && turn == 'w') || (game.black == 'YOU' && turn == 'b')) {
+      this.props.dispatchMakeMove(clientID, gameID, move);
+    }
   }
 
   componentDidMount() {
@@ -38,14 +48,20 @@ class Play extends Component {
         this.setState({ tabKey: 2 });
       });
     }
+    const clientID = this.props.clientID;
+    const gameID = 'defaultGame';
+    if (!this.props.gameplay.getIn([clientID, 'games', gameID])) {
+      this.props.dispatchNewGame(clientID, gameID);
+    } else {
+      // The user wasn't allowed to make this move, but chessboard.js is showing the bad position.
+      // This should get it to re-render.
+      this.setState({ renderCount: this.state.renderCount + 1 });
+    }
   }
 
   render() {
     const clientID = this.props.clientID;
     const gameID = 'defaultGame';
-    if (!this.props.gameplay.getIn([clientID, 'games', gameID])) {
-      this.props.dispatchNewGame(clientID, gameID);
-    }
 
     return (
       <Layout>
@@ -73,7 +89,7 @@ class Play extends Component {
                   dimensions={this.state.tabKey}
                   gameplay={this.props.gameplay}
                   dispatchNewGame={this.props.dispatchNewGame}
-                  dispatchMakeMove={this.props.dispatchMakeMove}
+                  dispatchMakeMove={this.makeUserMove.bind(this)}
                 />
               </Col>
               <Col xsHidden smHidden md={2}>
