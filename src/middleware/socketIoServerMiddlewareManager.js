@@ -40,11 +40,11 @@ export default function socketIoServerMiddlewareManager(testFunction, { eventNam
           }
         }
         return next => action => {
-          const { type, clientID } = action;
-          if ( type ) {
+          const { type, payload } = action;
+          if ( type && payload ) {
             if (testFunction(type, action)) {
-              if (clientSockets.has(clientID)) {
-                clientSockets.get(clientID).emit('action', action);
+              if (clientSockets.has(payload.clientID)) {
+                clientSockets.get(payload.clientID).emit('action', action);
               }
             }
           }

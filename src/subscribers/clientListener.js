@@ -1,6 +1,6 @@
 import { GameState, gameFromImmutable } from '../store/model/gameState.js';
 
-import {createMakeMoveAction} from '../actions/gameplay.js';
+import {makeMoveAction} from '../actions/gameplay.js';
 
 export default function(store, engine) {
 
@@ -56,7 +56,7 @@ export default function(store, engine) {
                 const best = parseBestMove(line);
                 if (best !== undefined) {
                   const move = chessjs.move(best);
-                  store.dispatch(createMakeMoveAction('browser', clientID, gameID, move, 'player'));
+                  store.dispatch(makeMoveAction('browser', clientID, gameID, move, 'player'));
                 }
               };
             }

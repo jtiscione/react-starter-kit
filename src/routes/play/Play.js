@@ -9,9 +9,9 @@ import MoveHistoryTable from '../../components/MoveHistoryTable';
 
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
-import { createNewGameAction,
-  createMakeMoveAction,
-  createMoveCursorAction } from '../../actions/gameplay.js';
+import { newGameAction,
+  makeMoveAction,
+  moveCursorAction } from '../../actions/gameplay.js';
 
 import {
   Grid, Row, Col,
@@ -106,13 +106,13 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatchNewGame: (clientID, gameID) => {
-      dispatch(createNewGameAction('browser', clientID, gameID));
+      dispatch(newGameAction('browser', clientID, gameID));
     },
     dispatchMakeMove: (clientID, gameID, move) => {
-      dispatch(createMakeMoveAction('browser', clientID, gameID, move, 'book'));
+      dispatch(makeMoveAction('browser', clientID, gameID, move, 'book'));
     },
     dispatchMoveCursor: (clientID, gameID, cursor) => {
-      dispatch(createMoveCursorAction('browser', clientID, gameID, cursor));
+      dispatch(moveCursorAction('browser', clientID, gameID, cursor));
     }
   };
 };

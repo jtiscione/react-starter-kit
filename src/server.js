@@ -34,7 +34,7 @@ import configureStore from './store/configureStore';
 import configureServerStore from './store/configureServerStore';
 import serverListener from './subscribers/serverListener';
 import { setRuntimeVariable } from './actions/runtime';
-import { createNewGameAction } from './actions/gameplay';
+import { newGameAction } from './actions/gameplay';
 import { port, auth } from './config';
 import { Map } from 'immutable';
 import pruneState from './store/pruneState';
@@ -49,7 +49,7 @@ console.timeEnd("BOOK LOADED:");
 
 import socketIoServerMiddlewareManager from './middleware/socketIoServerMiddlewareManager';
 
-const manager = socketIoServerMiddlewareManager((type,action) => (action.origin == 'server'));
+const manager = socketIoServerMiddlewareManager((type,action) => (action.payload && (action.payload.origin == 'server')));
 
 const serverStore = configureServerStore(Map(), manager.middleware());
 
@@ -200,7 +200,7 @@ app.get('*', async (req, res, next) => {
     }));
 
     if (!clientState || clientState.getIn(['gameplay', clientID, 'defaultGame'])) {
-      const action = createNewGameAction('pageload', clientID, 'defaultGame');
+      const action = newGameAction('pageload', clientID, 'defaultGame');
       serverStore.dispatch(action);
       store.dispatch(action);
     }

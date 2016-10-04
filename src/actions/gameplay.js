@@ -5,23 +5,23 @@ import {
   SET_GAME_EVALUATOR,
 } from '../constants';
 
-export function createNewGameAction(origin, clientID, gameID) {
+export function newGameAction(origin, clientID, gameID) {
   return {
     type: NEW_GAME,
-    origin,
-    clientID,
     payload: {
+      origin,
+      clientID,
       gameID,
     },
   };
 }
 
-export function createMakeMoveAction(origin, clientID, gameID, move, evaluator) {
+export function makeMoveAction(origin, clientID, gameID, move, evaluator) {
   return {
     type: MAKE_MOVE,
-    origin,
-    clientID,
     payload: {
+      origin,
+      clientID,
       gameID,
       move,
       evaluator
@@ -29,24 +29,24 @@ export function createMakeMoveAction(origin, clientID, gameID, move, evaluator) 
   };
 }
 
-export function createMoveCursorAction(origin, clientID, gameID, cursor) {
+export function moveCursorAction(origin, clientID, gameID, cursor) {
   return {
     type: MOVE_CURSOR,
-    origin,
-    clientID,
     payload: {
+      origin,
+      clientID,
       gameID,
       cursor,
     },
   };
 }
 
-export function createSetGameEvaluatorAction(origin, clientID, gameID, evaluator) {
+export function setGameEvaluatorAction(origin, clientID, gameID, evaluator) {
   return {
     type: SET_GAME_EVALUATOR,
-    origin,
-    clientID,
     payload: {
+      origin,
+      clientID,
       gameID,
       evaluator
     }

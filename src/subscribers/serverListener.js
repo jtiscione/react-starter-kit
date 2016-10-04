@@ -1,6 +1,6 @@
 import { GameState, gameFromImmutable } from '../store/model/gameState.js';
 
-import { createMakeMoveAction, createSetGameEvaluatorAction } from '../actions/gameplay.js';
+import { makeMoveAction, setGameEvaluatorAction } from '../actions/gameplay.js';
 
 export default (store, BOOK) => {
   return (() => {
@@ -52,11 +52,11 @@ export default (store, BOOK) => {
                 if (bookMove === null) {
                   // Mark the game as awaiting a move from the engine
                   console.log("Out of book.");
-                  store.dispatch(createSetGameEvaluatorAction('server', clientID, gameID, 'engine'));
+                  store.dispatch(setGameEvaluatorAction('server', clientID, gameID, 'engine'));
                 } else {
                   // Found a book move
                   console.log("Found book move: " + bookMove);
-                  store.dispatch(createMakeMoveAction('server', clientID, gameID, bookMove, 'player'));
+                  store.dispatch(makeMoveAction('server', clientID, gameID, bookMove, 'player'));
                 }
               }
             }

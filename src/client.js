@@ -14,7 +14,7 @@ import { fromJS } from 'immutable';
 
 
 const socket = io();
-const socketIoMiddleware = createSocketIoMiddleware(socket, (type, action) => (action.origin == 'browser'));
+const socketIoMiddleware = createSocketIoMiddleware(socket, (type, action) => (action.payload && (action.payload.origin == 'browser')));
 
 const clientID = (window.APP_STATE? (window.APP_STATE.runtime ? window.APP_STATE.runtime.clientID : null) : null);
 
