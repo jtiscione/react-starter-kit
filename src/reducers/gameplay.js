@@ -1,7 +1,8 @@
 import { INITIALIZE_GAMES,
         NEW_GAME,
         MAKE_MOVE,
-        MOVE_CURSOR
+        MOVE_CURSOR,
+        SET_GAME_EVALUATOR
       } from '../constants';
 
 import {Map} from 'immutable';
@@ -31,10 +32,10 @@ export default function gameplay(state = Map(), action) {
     case MAKE_MOVE:
       gameID = action.payload.gameID;
       const move = action.payload.move;
-      const imperative = action.payload.imperative;
+      const evaluator = action.payload.evaluator;
       gameData = state.getIn([clientID, 'games', gameID]);
       if (gameData) {
-        let next = gameFromImmutable(gameData).makeMove(move, imperative);
+        let next = gameFromImmutable(gameData).makeMove(move, evaluator);
         state = state.setIn([clientID, 'games', gameID], next.toImmutable());
       }
       return state; // failure
@@ -46,6 +47,16 @@ export default function gameplay(state = Map(), action) {
         const next = gameState.moveCursor(action.payload.cursor);
         return state.setIn([clientID, 'games', gameID], next.toImmutable());
       }
+      return state;
+    case SET_GAME_EVALUATOR:
+      gameID = action.payload.gameID;
+      gameData = state.getIn([clientID, 'games', gameID]);
+      if (gameData) {
+        const gameState = gameFromImmutable(gameData);
+        const next = gameState.setEvaluator(action.payload.evaluator);
+        return state.setIn([clientID, 'games', gameID], next.toImmutable());
+      }
+      return state;
     default:
       return state;
   }

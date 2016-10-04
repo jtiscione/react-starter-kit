@@ -44,7 +44,7 @@ export default function socketIoServerMiddlewareManager(testFunction, { eventNam
           if ( type ) {
             if (testFunction(type, action)) {
               if (clientSockets.has(clientID)) {
-                clientSockets.get(clientID, socket).emit(action);
+                clientSockets.get(clientID).emit('action', action);
               }
             }
           }

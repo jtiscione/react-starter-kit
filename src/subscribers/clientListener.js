@@ -15,7 +15,7 @@ export default function(store, engine) {
     for (let gameID of games.keys()) {
       const gameImmutable = games.get(gameID);
       const game = gameFromImmutable(gameImmutable);
-//      if (game.imperative='engine') {
+      if (game.evaluator == 'engine') {
         if (game.history.length === game.cursor) {
           const playerIsWhite = (game.white === 'YOU' && game.black === 'COMPUTER');
           const playerIsBlack = (game.white === 'COMPUTER' && game.black === 'YOU');
@@ -56,13 +56,13 @@ export default function(store, engine) {
                 const best = parseBestMove(line);
                 if (best !== undefined) {
                   const move = chessjs.move(best);
-                  store.dispatch(createMakeMoveAction('browser', clientID, gameID, move, ''));
+                  store.dispatch(createMakeMoveAction('browser', clientID, gameID, move, 'player'));
                 }
               };
             }
           }
         }
-//      }
+      }
     }
   });
 };

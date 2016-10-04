@@ -32,10 +32,11 @@ import routes from './routes';
 import assets from './assets'; // eslint-disable-line import/no-unresolved
 import configureStore from './store/configureStore';
 import configureServerStore from './store/configureServerStore';
+import serverListener from './subscribers/serverListener';
 import { setRuntimeVariable } from './actions/runtime';
 import { createNewGameAction } from './actions/gameplay';
 import { port, auth } from './config';
-import { fromJS, Map } from 'immutable';
+import { Map } from 'immutable';
 import pruneState from './store/pruneState';
 
 const uuid = require('uuid');
@@ -48,9 +49,11 @@ console.timeEnd("BOOK LOADED:");
 
 import socketIoServerMiddlewareManager from './middleware/socketIoServerMiddlewareManager';
 
-const manager = socketIoServerMiddlewareManager((type,action) => {action.origin == 'server'});
+const manager = socketIoServerMiddlewareManager((type,action) => (action.origin == 'server'));
 
 const serverStore = configureServerStore(Map(), manager.middleware());
+
+serverStore.subscribe(serverListener(serverStore, BOOK));
 
 const app = express();
 const httpServer = http.Server(app);

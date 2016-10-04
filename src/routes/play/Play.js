@@ -32,16 +32,15 @@ class Play extends Component {
     this.setState({tabKey});
   }
 
-  render() {
-    if (process.env.BROWSER) {
-      if (!window.ChessBoard3.webGLEnabled()) {
-        setTimeout(() => {
-          this.setState({
-            tabKey: 2
-          });
-        }, 5000);
-      }
+  componentDidMount() {
+    if (!window.ChessBoard3.webGLEnabled()) {
+      requestAnimationFrame(() => {
+        this.setState({ tabKey: 2 });
+      });
     }
+  }
+
+  render() {
     const clientID = this.props.clientID;
     const gameID = 'defaultGame';
     if (!this.props.gameplay.getIn([clientID, 'games', gameID])) {
@@ -110,7 +109,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(createNewGameAction('browser', clientID, gameID));
     },
     dispatchMakeMove: (clientID, gameID, move) => {
-      dispatch(createMakeMoveAction('browser', clientID, gameID, move));
+      dispatch(createMakeMoveAction('browser', clientID, gameID, move, 'book'));
     },
     dispatchMoveCursor: (clientID, gameID, cursor) => {
       dispatch(createMoveCursorAction('browser', clientID, gameID, cursor));

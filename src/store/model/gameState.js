@@ -5,7 +5,7 @@ export const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -
 
 export class GameState {
 
-  constructor(_initialFEN = DEFAULT_FEN, _history = [], _cursor, white = 'YOU', black='COMPUTER', imperative='') {
+  constructor(_initialFEN = DEFAULT_FEN, _history = [], _cursor, white = 'YOU', black='COMPUTER', evaluator='player') {
     this.initialFEN = _initialFEN;
     this.history = _history;
     if (_cursor === undefined) {
@@ -15,7 +15,7 @@ export class GameState {
     }
     this.white = white;
     this.black = black;
-    this.imperative = imperative;
+    this.evaluator = evaluator;
   }
 
   toImmutable() {
@@ -43,7 +43,7 @@ export class GameState {
     return moves;
   }
 
-  makeMove(move, imperative='') {
+  makeMove(move, evaluator) {
     const chess = this.toChessObject();
     let obj = null;
     if (typeof move === 'string') {
@@ -57,7 +57,7 @@ export class GameState {
       obj.fen = chess.fen();
       const truncHistory = this.history.slice(0, this.cursor);
       truncHistory.push(obj);
-      return new GameState(this.initialFEN, truncHistory, this.cursor + 1, this.white, this.black, imperative);
+      return new GameState(this.initialFEN, truncHistory, this.cursor + 1, this.white, this.black, evaluator);
     }
     // illegal move
     return null;
@@ -83,11 +83,11 @@ export class GameState {
   }
 
   moveCursor(_cursor) {
-    return new GameState(this.initialFEN, this.history, _cursor, this.white, this.black, this.imperative);
+    return new GameState(this.initialFEN, this.history, _cursor, this.white, this.black, this.evaluator);
   }
 
-  setimperative(_imperative) {
-    return new GameState(this.initialFEN, this.history, this.cursor, this.white, this.black, _imperative);
+  setEvaluator(_evaluator) {
+    return new GameState(this.initialFEN, this.history, this.cursor, this.white, this.black, _evaluator);
   }
 }
 
@@ -97,7 +97,7 @@ export function gameFromImmutable(immutable) {
                       immutable.get('cursor'),
                       immutable.get('white'),
                       immutable.get('black'),
-                      immutable.get('imperative'));
+                      immutable.get('evaluator'));
 }
 
 export function fromPGN(pgn, initialFEN = DEFAULT_FEN) {

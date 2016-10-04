@@ -1,14 +1,9 @@
-import {INITIALIZE_GAMES,
+import {
   NEW_GAME,
   MAKE_MOVE,
-  MOVE_CURSOR} from '../constants';
-
-export function createInitializeGamesAction() {
-  return {
-    type: INITIALIZE_GAMES,
-    payload: {},
-  };
-}
+  MOVE_CURSOR,
+  SET_GAME_EVALUATOR,
+} from '../constants';
 
 export function createNewGameAction(origin, clientID, gameID) {
   return {
@@ -21,7 +16,7 @@ export function createNewGameAction(origin, clientID, gameID) {
   };
 }
 
-export function createMakeMoveAction(origin, clientID, gameID, move, imperative) {
+export function createMakeMoveAction(origin, clientID, gameID, move, evaluator) {
   return {
     type: MAKE_MOVE,
     origin,
@@ -29,7 +24,7 @@ export function createMakeMoveAction(origin, clientID, gameID, move, imperative)
     payload: {
       gameID,
       move,
-      imperative
+      evaluator
     },
   };
 }
@@ -43,5 +38,17 @@ export function createMoveCursorAction(origin, clientID, gameID, cursor) {
       gameID,
       cursor,
     },
+  };
+}
+
+export function createSetGameEvaluatorAction(origin, clientID, gameID, evaluator) {
+  return {
+    type: SET_GAME_EVALUATOR,
+    origin,
+    clientID,
+    payload: {
+      gameID,
+      evaluator
+    }
   };
 }
