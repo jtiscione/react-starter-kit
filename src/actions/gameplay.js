@@ -10,8 +10,10 @@ import {
 export function newGameAction(origin, clientID, gameID) {
   return {
     type: NEW_GAME,
-    payload: {
+    meta: {
       origin,
+    },
+    payload: {
       clientID,
       gameID,
     },
@@ -21,8 +23,10 @@ export function newGameAction(origin, clientID, gameID) {
 export function makeMoveAction(origin, clientID, gameID, move, evaluator) {
   return {
     type: MAKE_MOVE,
-    payload: {
+    meta: {
       origin,
+    },
+    payload: {
       clientID,
       gameID,
       move,
@@ -34,8 +38,10 @@ export function makeMoveAction(origin, clientID, gameID, move, evaluator) {
 export function moveCursorAction(origin, clientID, gameID, cursor) {
   return {
     type: MOVE_CURSOR,
-    payload: {
+    meta: {
       origin,
+    },
+    payload: {
       clientID,
       gameID,
       cursor,
@@ -46,8 +52,10 @@ export function moveCursorAction(origin, clientID, gameID, cursor) {
 export function setGameEvaluatorAction(origin, clientID, gameID, evaluator) {
   return {
     type: SET_GAME_EVALUATOR,
-    payload: {
+    meta: {
       origin,
+    },
+    payload: {
       clientID,
       gameID,
       evaluator
@@ -55,21 +63,26 @@ export function setGameEvaluatorAction(origin, clientID, gameID, evaluator) {
   };
 }
 
-export function requestBookMoves(clientID, gameID) {
+export function requestBookMovesAction(clientID, gameID) {
   return {
     type: REQUEST_BOOK_MOVES,
+    meta: {
+      origin: 'browser',
+    },
     payload: {
-      origin: 'client'
+      clientID, gameID,
     }
-  }
+  };
 }
 
-export function setBookMoves(origin, clientID, gameID) {
+export function setBookMovesAction(clientID, gameID, bookMoves) {
   return {
     type: SET_BOOK_MOVES,
+    meta: {
+      origin: 'server',
+    },
     payload: {
-      origin: 'server'
+      clientID, gameID, bookMoves,
     }
-  }
-
+  };
 }

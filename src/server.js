@@ -49,7 +49,7 @@ console.timeEnd("BOOK LOADED:");
 
 import socketIoServerMiddlewareManager from './middleware/socketIoServerMiddlewareManager';
 
-const manager = socketIoServerMiddlewareManager((type,action) => (action.payload && (action.payload.origin == 'server')));
+const manager = socketIoServerMiddlewareManager((type,action) => (action.meta && (action.meta.origin == 'server')));
 
 const serverStore = configureServerStore(Map(), manager.middleware());
 
