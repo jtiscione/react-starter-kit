@@ -1,11 +1,11 @@
 import Chess from '../../libs/chess.js';
-import {List, Map} from 'immutable';
+import {List, Map, fromJS} from 'immutable';
 
 export const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 export class GameState {
 
-  constructor(_initialFEN = DEFAULT_FEN, _history = [], _cursor, white = 'YOU', black='COMPUTER', evaluator='player') {
+  constructor(_initialFEN = DEFAULT_FEN, _history = [], _cursor, white = 'YOU', black='COMPUTER', evaluator='player', request = '', bookMoves = {}) {
     this.initialFEN = _initialFEN;
     this.history = _history;
     if (_cursor === undefined) {
@@ -16,10 +16,12 @@ export class GameState {
     this.white = white;
     this.black = black;
     this.evaluator = evaluator;
+    this.request = request;
+    this.bookMoves = bookMoves;
   }
 
   toImmutable() {
-    return Map(this).set('history', List(this.history));
+    return Map(this).set('history', List(this.history)).set('bookMoves', fromJS(this.bookMoves));
   }
 
   toChessObject() {
@@ -57,7 +59,7 @@ export class GameState {
       obj.fen = chess.fen();
       const truncHistory = this.history.slice(0, this.cursor);
       truncHistory.push(obj);
-      return new GameState(this.initialFEN, truncHistory, this.cursor + 1, this.white, this.black, evaluator);
+      return new GameState(this.initialFEN, truncHistory, this.cursor + 1, this.white, this.black, evaluator, this.request, this.bookMoves);
     }
     // illegal move
     return null;
@@ -83,11 +85,19 @@ export class GameState {
   }
 
   moveCursor(_cursor) {
-    return new GameState(this.initialFEN, this.history, _cursor, this.white, this.black, this.evaluator);
+    return new GameState(this.initialFEN, this.history, _cursor, this.white, this.black, this.evaluator, this.request, this.bookMoves);
   }
 
   setEvaluator(_evaluator) {
-    return new GameState(this.initialFEN, this.history, this.cursor, this.white, this.black, _evaluator);
+    return new GameState(this.initialFEN, this.history, this.cursor, this.white, this.black, _evaluator, this.request, this.bookMoves);
+  }
+
+  setRequest(_request) {
+    return new GameState(this.initialFEN, this.history, this.cursor, this.white, this.black, this.evaluator, _request, this.bookMoves);
+  }
+
+  setBookMoves(_bookMoves) {
+    return new GameState(this.initialFEN, this.history, this.cursor, this.white, this.black, this.evaluator, this.request, _bookMoves);
   }
 }
 
@@ -97,7 +107,9 @@ export function gameFromImmutable(immutable) {
                       immutable.get('cursor'),
                       immutable.get('white'),
                       immutable.get('black'),
-                      immutable.get('evaluator'));
+                      immutable.get('evaluator'),
+                      immutable.get('request'),
+                      immutable.get('bookMoves').toJS());
 }
 
 export function fromPGN(pgn, initialFEN = DEFAULT_FEN) {
