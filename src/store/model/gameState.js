@@ -57,12 +57,11 @@ export class GameState {
     }
     if (obj !== null) {
       obj.fen = chess.fen();
-      const truncHistory = this.history.slice(0, this.cursor);
-      truncHistory.push(obj);
-      return new GameState(this.initialFEN, truncHistory, this.cursor + 1, this.white, this.black, evaluator, this.request, this.bookMoves);
+      this.history = this.history.slice(0, this.cursor);
+      this.history.push(obj);
+      this.cursor++;
+      this.evaluator = evaluator;
     }
-    // illegal move
-    return null;
   }
 
   currentMove() {
@@ -85,19 +84,19 @@ export class GameState {
   }
 
   moveCursor(_cursor) {
-    return new GameState(this.initialFEN, this.history, _cursor, this.white, this.black, this.evaluator, this.request, this.bookMoves);
+    this.cursor = _cursor;
   }
 
   setEvaluator(_evaluator) {
-    return new GameState(this.initialFEN, this.history, this.cursor, this.white, this.black, _evaluator, this.request, this.bookMoves);
+    this.evaluator = _evaluator;
   }
 
   setRequest(_request) {
-    return new GameState(this.initialFEN, this.history, this.cursor, this.white, this.black, this.evaluator, _request, this.bookMoves);
+    this.request = _request;
   }
 
   setBookMoves(_bookMoves) {
-    return new GameState(this.initialFEN, this.history, this.cursor, this.white, this.black, this.evaluator, this.request, _bookMoves);
+    this.bookMoves = _bookMoves;
   }
 }
 

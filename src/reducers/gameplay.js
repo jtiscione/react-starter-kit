@@ -42,35 +42,34 @@ export default function gameplay(state = Map(), action) {
       const move = action.payload.move;
       const evaluator = action.payload.evaluator;
       if (gameState) {
-        let next = gameState.makeMove(move, evaluator);
-        if (next) {
-          state = state.setIn([clientID, 'games', gameID], next.toImmutable());
-        }
+        gameState.makeMove(move, evaluator);
+        state = state.setIn([clientID, 'games', gameID], gameState.toImmutable());
       }
-      return state; // failure
+      return state;
     case MOVE_CURSOR:
       if (gameState) {
-        const next = gameState.moveCursor(action.payload.cursor);
-        return state.setIn([clientID, 'games', gameID], next.toImmutable());
+        gameState.moveCursor(action.payload.cursor);
+        return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
       }
       return state;
     case SET_GAME_EVALUATOR:
       if (gameState) {
-        const next = gameState.setEvaluator(action.payload.evaluator);
-        return state.setIn([clientID, 'games', gameID], next.toImmutable());
+        gameState.setEvaluator(action.payload.evaluator);
+        return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
       }
       return state;
     case REQUEST_BOOK_MOVES: {
       if (gameState) {
-        const next = gameState.setRequest(REQUEST_BOOK_MOVES); // just use the constant
-        return state.setIn([clientID, 'games', gameID], next.toImmutable());
+        gameState.setRequest(REQUEST_BOOK_MOVES); // just use the constant
+        return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
       }
       return state;
     }
     case SET_BOOK_MOVES: {
       if (gameState) {
-        const next = gameState.setBookMoves(action.payload.bookMoves).setRequest('');
-        return state.setIn([clientID, 'games', gameID], next.toImmutable());
+        gameState.setBookMoves(action.payload.bookMoves);
+        gameState.setRequest('');
+        return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
       }
     }
     default:
