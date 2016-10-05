@@ -35,17 +35,14 @@ import configureServerStore from './store/configureServerStore';
 import serverListener from './subscribers/serverListener';
 import { setRuntimeVariable } from './actions/runtime';
 import { newGameAction } from './actions/gameplay';
-import { port, auth } from './config';
+import { bookFile, port, auth } from './config';
+import fs from 'fs';
+import Promise from 'bluebird';
 import { Map } from 'immutable';
 import pruneState from './store/pruneState';
-
 const uuid = require('uuid');
-
 import socketIO from 'socket.io';
 
-console.time("BOOK LOADED:");
-const BOOK = require('../tiny_book');
-console.timeEnd("BOOK LOADED:");
 
 import socketIoServerMiddlewareManager from './middleware/socketIoServerMiddlewareManager';
 
@@ -53,7 +50,31 @@ const manager = socketIoServerMiddlewareManager((type,action) => (action.meta &&
 
 const serverStore = configureServerStore(Map(), manager.middleware());
 
-serverStore.subscribe(serverListener(serverStore, BOOK));
+const readFile = Promise.promisify(fs.readFile);
+
+async function readBook(fileName) {
+  const book = await readFile(fileName, { encoding: 'utf8' })
+    .then(JSON.parse);
+  return book;
+}
+
+const useDefaultBook = ()=>{serverStore.subscribe(serverListener(serverStore, require('../tiny_book')))};
+
+if (bookFile !== null) {
+  readBook(bookFile).then( book => {
+    serverStore.subscribe(serverListener(serverStore, book));
+    console.log("LOADED BOOK: "+bookFile);
+  }).catch( (err) => {
+      console.log(err);
+      console.log("using default book....");
+      useDefaultBook();
+    }
+  )
+} else {
+  console.log("using default book...");
+  useDefaultBook();
+}
+
 
 const app = express();
 const httpServer = http.Server(app);
