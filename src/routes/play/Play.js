@@ -11,7 +11,8 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import { newGameAction,
   makeMoveAction,
-  moveCursorAction } from '../../actions/gameplay.js';
+  moveCursorAction,
+  requestBookMovesAction} from '../../actions/gameplay.js';
 
 import {
   Grid, Row, Col,
@@ -52,6 +53,7 @@ class Play extends Component {
     const gameID = 'defaultGame';
     if (!this.props.gameplay.getIn([clientID, 'games', gameID])) {
       this.props.dispatchNewGame(clientID, gameID);
+      this.props.dispatchRequestBookMovesAction(clientID, gameID);
     } else {
       // The user wasn't allowed to make this move, but chessboard.js is showing the bad position.
       // This should get it to re-render.
@@ -129,6 +131,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     dispatchMoveCursor: (clientID, gameID, cursor) => {
       dispatch(moveCursorAction('browser', clientID, gameID, cursor));
+    },
+    dispatchRequestBookMovesAction: (clientID, gameID) => {
+      dispatch(requestBookMovesAction('browser', clientID, gameID, cursor));
     }
   };
 };

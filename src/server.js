@@ -34,7 +34,7 @@ import configureStore from './store/configureStore';
 import configureServerStore from './store/configureServerStore';
 import serverListener from './subscribers/serverListener';
 import { setRuntimeVariable } from './actions/runtime';
-import { newGameAction } from './actions/gameplay';
+import { newGameAction, requestBookMovesAction } from './actions/gameplay';
 import { bookFile, port, auth } from './config';
 import fs from 'fs';
 import Promise from 'bluebird';
@@ -228,6 +228,9 @@ app.get('*', async (req, res, next) => {
       const action = newGameAction('pageload', clientID, 'defaultGame');
       serverStore.dispatch(action);
       store.dispatch(action);
+      const action2 = requestBookMovesAction('pageload', clientID, 'defaultGame');
+      serverStore.dispatch(action2);
+      store.dispatch(action2);
     }
 
     const css = new Set();

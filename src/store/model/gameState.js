@@ -5,7 +5,7 @@ export const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -
 
 export class GameState {
 
-  constructor(_initialFEN = DEFAULT_FEN, _history = [], _cursor, white = 'YOU', black='COMPUTER', evaluator='player', request = '', bookMoves = {}) {
+  constructor(_initialFEN = DEFAULT_FEN, _history = [], _cursor, white = 'YOU', black='COMPUTER', evaluator='player', request = '', bookMoves = null) {
     this.initialFEN = _initialFEN;
     this.history = _history;
     if (_cursor === undefined) {
@@ -21,7 +21,11 @@ export class GameState {
   }
 
   toImmutable() {
-    return Map(this).set('history', List(this.history)).set('bookMoves', fromJS(this.bookMoves));
+    const it = Map(this).set('history', List(this.history));
+    if (this.bookMoves !== null) {
+      return it.set('bookMoves', List(this.bookMoves));
+    }
+    return it;
   }
 
   toChessObject() {
@@ -98,17 +102,25 @@ export class GameState {
   setBookMoves(_bookMoves) {
     this.bookMoves = _bookMoves;
   }
+
+  clearBookMoves() {
+    this.bookMoves = null;
+  }
 }
 
 export function gameFromImmutable(immutable) {
+  let bookMoves = immutable.get('bookMoves', null);
+  if (bookMoves) {
+    bookMoves = bookMoves.toJS();
+  }
   return new GameState(immutable.get('initialFEN'),
-                      immutable.get('history').toJS(),
-                      immutable.get('cursor'),
-                      immutable.get('white'),
-                      immutable.get('black'),
-                      immutable.get('evaluator'),
-                      immutable.get('request'),
-                      immutable.get('bookMoves').toJS());
+    immutable.get('history').toJS(),
+    immutable.get('cursor'),
+    immutable.get('white'),
+    immutable.get('black'),
+    immutable.get('evaluator'),
+    immutable.get('request'),
+    bookMoves);
 }
 
 export function fromPGN(pgn, initialFEN = DEFAULT_FEN) {

@@ -63,11 +63,11 @@ export function setGameEvaluatorAction(origin, clientID, gameID, evaluator) {
   };
 }
 
-export function requestBookMovesAction(clientID, gameID) {
+export function requestBookMovesAction(origin, clientID, gameID) {
   return {
     type: REQUEST_BOOK_MOVES,
     meta: {
-      origin: 'browser',
+      origin,
     },
     payload: {
       clientID, gameID,

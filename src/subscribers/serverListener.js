@@ -63,9 +63,9 @@ export default (store, BOOK) => {
             }
           }
         } else if ((game.evaluator == 'player') && (game.request == 'REQUEST_BOOK_MOVES')) {
-          bookMoves = [];
-          var book = BOOK;
-          for (let move of game.history.slice(0, cursor)) {
+          const bookMoves = [];
+          let book = BOOK;
+          for (let move of game.history.slice(0, game.cursor)) {
             if (book[move.san]) {
               book = book[move.san];
             } else {
@@ -74,7 +74,7 @@ export default (store, BOOK) => {
             }
           }
           if (book) {
-            for (move in book) {
+            for (let move in book) {
               if (move == 's' || move == 'game') {
                 continue;
               }
@@ -85,8 +85,10 @@ export default (store, BOOK) => {
                 losses,
                 draws,
               });
-              store.dispatch(setBookMovesAction('server', clientID, gameID, bookMove, 'player'));
             }
+            store.dispatch(setBookMovesAction(clientID, gameID, bookMoves, 'player'));
+          } else {
+            store.dispatch(setBookMovesAction(clientID, gameID, [], 'player'));
           }
         }
       }
