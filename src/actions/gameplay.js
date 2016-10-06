@@ -3,7 +3,7 @@ import {
   MAKE_MOVE,
   MOVE_CURSOR,
   SET_GAME_EVALUATOR,
-  REQUEST_BOOK_MOVES,
+  SET_INITIAL_BOOK_MOVES,
   SET_BOOK_MOVES
 } from '../constants';
 
@@ -63,26 +63,26 @@ export function setGameEvaluatorAction(origin, clientID, gameID, evaluator) {
   };
 }
 
-export function requestBookMovesAction(origin, clientID, gameID) {
+export function setInitialBookMovesAction(clientID, gameID, initialBookMoves) {
   return {
-    type: REQUEST_BOOK_MOVES,
+    type: SET_INITIAL_BOOK_MOVES,
     meta: {
-      origin,
+      origin: 'server',
     },
     payload: {
-      clientID, gameID,
+      clientID, gameID, initialBookMoves
     }
   };
 }
 
-export function setBookMovesAction(clientID, gameID, bookMoves) {
+export function setBookMovesAction(clientID, gameID, books) {
   return {
     type: SET_BOOK_MOVES,
     meta: {
       origin: 'server',
     },
     payload: {
-      clientID, gameID, bookMoves,
+      clientID, gameID, cursor, books
     }
   };
 }

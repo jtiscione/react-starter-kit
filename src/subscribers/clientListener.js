@@ -1,6 +1,6 @@
 import { GameState, gameFromImmutable } from '../store/model/gameState.js';
 
-import {makeMoveAction, requestBookMovesAction} from '../actions/gameplay.js';
+import {makeMoveAction} from '../actions/gameplay.js';
 
 export default function(store, engine) {
 
@@ -62,13 +62,6 @@ export default function(store, engine) {
             }
           }
         }
-      }
-      if (game.bookMoves === null) {
-        if (game.evaluator == 'player' && game.request != "REQUEST_BOOK_MOVES") {
-          store.dispatch(requestBookMovesAction('browser', clientID, gameID));
-        }
-      } else {
-        console.log("FOUND BOOK MOVES: " + JSON.stringify(game.get('bookMoves').toJS()));
       }
     }
   });

@@ -1,6 +1,6 @@
-import { GameState, gameFromImmutable } from '../store/model/gameState.js';
+import { GameState, gameFromImmutable, generateInitialBookMoves, generateBookMoves } from '../store/model/gameState.js';
 
-import { makeMoveAction, setGameEvaluatorAction, setBookMovesAction } from '../actions/gameplay.js';
+import { makeMoveAction, setGameEvaluatorAction, setBookMovesAction ,setInitialBookMovesAction } from '../actions/gameplay.js';
 
 export default (store, BOOK) => {
   return (() => {
@@ -12,17 +12,17 @@ export default (store, BOOK) => {
     for (let [clientID, value] of gameplay.entries()) {
       const games = value.get('games');
       for (let [gameID, immutableGame] of games.entries()) {
-        const game = gameFromImmutable(immutableGame);
-        const playerIsWhite = (game.white === 'YOU' && game.black === 'COMPUTER');
-        const playerIsBlack = (game.white === 'COMPUTER' && game.black === 'YOU');
-        const chessjs = game.toChessObject();
-        if (game.evaluator == 'book') {
-          if (game.history.length === game.cursor) {
+        const gameState = gameFromImmutable(immutableGame);
+        const playerIsWhite = (gameState.white === 'YOU' && gameState.black === 'COMPUTER');
+        const playerIsBlack = (gameState.white === 'COMPUTER' && gameState.black === 'YOU');
+        const chessjs = gameState.toChessObject();
+        if (gameState.evaluator == 'book') {
+          if (gameState.history.length === gameState.cursor) {
             if (!chessjs.game_over()) {
               if ((chessjs.turn == 'w' && playerIsBlack) || (chessjs.turn() == 'b' && playerIsWhite)) {
                 // ok
                 var book = BOOK;
-                for (let move of game.history) {
+                for (let move of gameState.history) {
                   if (book[move.san]) {
                     book = book[move.san];
                   } else {
@@ -40,7 +40,7 @@ export default (store, BOOK) => {
                     }
                     const [whiteWins, blackWins, draws] = book[possibleMove].s;
                     let wins = (chessjs.turn == 'w' ? whiteWins : blackWins);
-                    for (let i=0; i < (2 * wins + draws); i++) {
+                    for (let i = 0; i < (2 * wins + draws); i++) {
                       slotArray.push(possibleMove);
                     }
                   }
@@ -62,37 +62,15 @@ export default (store, BOOK) => {
               }
             }
           }
-        } else if ((game.evaluator == 'player') && (game.request == 'REQUEST_BOOK_MOVES')) {
-          const bookMoves = [];
-          let book = BOOK;
-          for (let move of game.history.slice(0, game.cursor)) {
-            if (book[move.san]) {
-              book = book[move.san];
-            } else {
-              book = null;
-              break;
-            }
+        } else {
+          // still have gameID, gameState, gameState, chessjs
+          if (gameState.initialBookMoves === null) {
+            store.dispatch(setInitialBookMovesAction(clientID, gameID, _initalBookMoves, generateInitialBookMoves(BOOK)));
           }
-          if (book) {
-            for (let move in book) {
-              if (move == 's' || move == 'game') {
-                continue;
-              }
-              let [wins, losses, draws] = book[move].s;
-              bookMoves.push({
-                san: move,
-                wins,
-                losses,
-                draws,
-              });
-            }
-            store.dispatch(setBookMovesAction(clientID, gameID, bookMoves, 'player'));
-          } else {
-            store.dispatch(setBookMovesAction(clientID, gameID, [], 'player'));
-          }
+          const books = generateBookMoves(BOOK, gameState)
+          store.dispatch(setBookMovesAction(clientID, gameID, books));
         }
       }
     }
-
   });
 }

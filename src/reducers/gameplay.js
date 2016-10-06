@@ -3,7 +3,7 @@ import { INITIALIZE_GAMES,
         MAKE_MOVE,
         MOVE_CURSOR,
         SET_GAME_EVALUATOR,
-        REQUEST_BOOK_MOVES,
+        SET_INITIAL_BOOK_MOVES,
         SET_BOOK_MOVES
       } from '../constants';
 
@@ -60,18 +60,15 @@ export default function gameplay(state = Map(), action) {
         return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
       }
       return state;
-    case REQUEST_BOOK_MOVES: {
+    case SET_INITIAL_BOOK_MOVES:
+      // TODO...
       if (gameState) {
-        gameState.setRequest(REQUEST_BOOK_MOVES); // just use the constant
-        gameState.setBookMoves(null);
-        return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
+        gameState.setInitialBookMoves = action.payload.initialBookMoves
       }
-      return state;
-    }
+      return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
     case SET_BOOK_MOVES: {
       if (gameState) {
-        gameState.setBookMoves(action.payload.bookMoves);
-        gameState.setRequest('');
+        gameState.setBookMoves(action.payload.books);
         return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
       }
     }

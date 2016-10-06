@@ -5,8 +5,9 @@ export const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -
 
 export class GameState {
 
-  constructor(_initialFEN = DEFAULT_FEN, _history = [], _cursor, white = 'YOU', black='COMPUTER', evaluator='player', request = '', bookMoves = null) {
+  constructor(_initialFEN = DEFAULT_FEN, _history = [], _cursor, white = 'YOU', black='COMPUTER', evaluator='player') {
     this.initialFEN = _initialFEN;
+    this.initialBookMoves = null; // the bookMoves[] array for the initial position, should always be the same
     this.history = _history;
     if (_cursor === undefined) {
       this.cursor = this.history.length;
@@ -16,14 +17,14 @@ export class GameState {
     this.white = white;
     this.black = black;
     this.evaluator = evaluator;
-    this.request = request;
-    this.bookMoves = bookMoves;
   }
 
   toImmutable() {
-    const it = Map(this).set('history', List(this.history));
-    if (this.bookMoves !== null) {
-      return it.set('bookMoves', List(this.bookMoves));
+    const it = Map(this).set('history', fromJS(this.history));
+    if (this.initialBookMoves !== null) {
+      it.set('initialBookMoves', fromJS(this.initialBookMoves));
+    } else {
+      it.set('initialBookMoves', null);
     }
     return it;
   }
@@ -61,6 +62,7 @@ export class GameState {
     }
     if (obj !== null) {
       obj.fen = chess.fen();
+      obj.bookMoves = null;
       this.history = this.history.slice(0, this.cursor);
       this.history.push(obj);
       this.cursor++;
@@ -95,32 +97,30 @@ export class GameState {
     this.evaluator = _evaluator;
   }
 
-  setRequest(_request) {
-    this.request = _request;
+  setInitialBookMoves(_bookMoves) {
+    this.initialBookMoves = _bookMoves;
   }
 
-  setBookMoves(_bookMoves) {
-    this.bookMoves = _bookMoves;
+  setBookMoves(_books) {
+    // TODO: handle 2D array _books to populate bookMoves[] arrays in each move
+    // e.g. loop thru this.history set history[_cursor].bookMoves = books[i];
+    // First check for nulls in _books
   }
 
-  clearBookMoves() {
-    this.bookMoves = null;
-  }
 }
 
 export function gameFromImmutable(immutable) {
-  let bookMoves = immutable.get('bookMoves', null);
-  if (bookMoves) {
-    bookMoves = bookMoves.toJS();
-  }
-  return new GameState(immutable.get('initialFEN'),
+  // Check for allowed null case with initialBookMoves
+  let initialBookMoves = immutable.get('initialBookMoves', null);
+  initialBookMoves = ( initialBookMoves ? initialBookMoves.toJS() : null );
+  const it = new GameState(immutable.get('initialFEN'),
+    initialBookMoves,
     immutable.get('history').toJS(),
     immutable.get('cursor'),
     immutable.get('white'),
     immutable.get('black'),
-    immutable.get('evaluator'),
-    immutable.get('request'),
-    bookMoves);
+    immutable.get('evaluator'));
+  return it;
 }
 
 export function fromPGN(pgn, initialFEN = DEFAULT_FEN) {
@@ -147,4 +147,68 @@ export function legalTargetSquares(fen, square) {
   return moves.map((move) => {
     return move.to;
   });
+}
+
+export function generateInitialBookMoves(BOOK) {
+  const bookMoves = [];
+  for (let move in BOOK) {
+    if (move == 's' || move == 'game') {
+      continue;
+    }
+    let [whiteWins, blackWins, draws] = BOOK[move].s;
+    bookMoves.push( {
+      san: move,
+      whiteWins,
+      blackWins,
+      draws
+    });
+  }
+  return bookMoves;
+}
+
+// Does not alter its arguments. Returns an array of bookMoves[] arrays which will be converted to setBookMoves actions
+export function generateBookMoves(BOOK, gameState) {
+
+  const books = [];
+  let node = BOOK;
+  let outOfBook = false;
+  for (let move of gameState.history) {
+    if (move.bookMoves !== null) {
+      // it's already there, just stick a null placeholder into the returned array
+      // to indicate no update is required here
+      if (!outOfBook) {
+        books.push(null);
+      } else {
+        if (move.bookMoves.length > 0) {
+          // we're out of book at this point; but entries are here they shouldn't be (prob. never happens)
+          books.push([]);
+        } else {
+          books.push(null); // empty array already there
+        }
+      }
+    } else {
+      const bookMoves = [];
+      if (node[move.san]) {
+        node = node[move.san];
+        for (let possibleMove in node) {
+          if (possibleMove == 's' || possibleMove == 'game') {
+            continue;
+          }
+          let [whiteWins, blackWins, draws] = node[possibleMove].s;
+          bookMoves.push({
+            san: possibleMove,
+            whiteWins,
+            blackWins,
+            draws
+          });
+        }
+      }
+      if (bookNodes.length === 0) {
+        outOfBook = true;
+      }
+      books.push(bookNodes);
+    }
+  }
+  return books;
+
 }
