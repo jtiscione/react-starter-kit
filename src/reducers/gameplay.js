@@ -43,14 +43,12 @@ export default function gameplay(state = Map(), action) {
       const evaluator = action.payload.evaluator;
       if (gameState) {
         gameState.makeMove(move, evaluator);
-        gameState.clearBookMoves();
         state = state.setIn([clientID, 'games', gameID], gameState.toImmutable());
       }
       return state;
     case MOVE_CURSOR:
       if (gameState) {
         gameState.moveCursor(action.payload.cursor);
-        gameState.clearBookMoves();
         return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
       }
       return state;
@@ -61,9 +59,8 @@ export default function gameplay(state = Map(), action) {
       }
       return state;
     case SET_INITIAL_BOOK_MOVES:
-      // TODO...
       if (gameState) {
-        gameState.setInitialBookMoves = action.payload.initialBookMoves
+        gameState.setInitialBookMoves(action.payload.initialBookMoves);
       }
       return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
     case SET_BOOK_MOVES: {

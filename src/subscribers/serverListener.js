@@ -65,10 +65,18 @@ export default (store, BOOK) => {
         } else {
           // still have gameID, gameState, gameState, chessjs
           if (gameState.initialBookMoves === null) {
-            store.dispatch(setInitialBookMovesAction(clientID, gameID, _initalBookMoves, generateInitialBookMoves(BOOK)));
+            store.dispatch(setInitialBookMovesAction(clientID, gameID, generateInitialBookMoves(BOOK)));
           }
-          const books = generateBookMoves(BOOK, gameState)
-          store.dispatch(setBookMovesAction(clientID, gameID, books));
+          const books = generateBookMoves(BOOK, gameState);
+          let foundSomething = false;
+          for (let i = 0; i < books.length; i++) {
+            if (books[i] !== null) {
+              foundSomething = true;
+            }
+          }
+          if (foundSomething) {
+            store.dispatch(setBookMovesAction(clientID, gameID, books));
+          }
         }
       }
     }

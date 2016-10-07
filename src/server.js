@@ -93,6 +93,14 @@ io.on('connection', function(socket){
   socket.on('clientID', (clientID) => {
     manager.registerSocket(clientID, socket);
   });
+  socket.on('error', (err) => {
+    if (err) {
+      console.log('Socket error: ' + err);
+    } else {
+      console.log("Socket error.");
+    }
+  });
+
 
 });
 

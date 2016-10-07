@@ -22,6 +22,13 @@ if (clientID) {
   // tell server which clientID the socket is associated with
   socket.emit('clientID', clientID);
 }
+socket.on('error', (err) => {
+  if (err) {
+    console.log('Socket error: ' + err);
+  } else {
+    console.log("Socket error.");
+  }
+});
 
 // Navigation manager, e.g. history.push('/home')
 // https://github.com/mjackson/history

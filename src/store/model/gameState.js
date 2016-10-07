@@ -5,9 +5,9 @@ export const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -
 
 export class GameState {
 
-  constructor(_initialFEN = DEFAULT_FEN, _history = [], _cursor, white = 'YOU', black='COMPUTER', evaluator='player') {
+  constructor(_initialFEN = DEFAULT_FEN, _initialBookMoves = null, _history = [], _cursor, white = 'YOU', black='COMPUTER', evaluator='player') {
     this.initialFEN = _initialFEN;
-    this.initialBookMoves = null; // the bookMoves[] array for the initial position, should always be the same
+    this.initialBookMoves = _initialBookMoves; // the bookMoves[] array for the initial position, should always be the same
     this.history = _history;
     if (_cursor === undefined) {
       this.cursor = this.history.length;
@@ -20,11 +20,11 @@ export class GameState {
   }
 
   toImmutable() {
-    const it = Map(this).set('history', fromJS(this.history));
+    let it = Map(this).set('history', fromJS(this.history));
     if (this.initialBookMoves !== null) {
-      it.set('initialBookMoves', fromJS(this.initialBookMoves));
+      it = it.set('initialBookMoves', List(this.initialBookMoves));
     } else {
-      it.set('initialBookMoves', null);
+      it = it.set('initialBookMoves', null);
     }
     return it;
   }
@@ -102,20 +102,22 @@ export class GameState {
   }
 
   setBookMoves(_books) {
-    // TODO: handle 2D array _books to populate bookMoves[] arrays in each move
-    // e.g. loop thru this.history set history[_cursor].bookMoves = books[i];
-    // First check for nulls in _books
+    for (let i = 0; i < this.history.length; i++) {
+      if (_books[i] !== null) {
+        this.history[i].bookMoves = _books[i];
+      }
+    }
   }
-
 }
 
 export function gameFromImmutable(immutable) {
   // Check for allowed null case with initialBookMoves
   let initialBookMoves = immutable.get('initialBookMoves', null);
   initialBookMoves = ( initialBookMoves ? initialBookMoves.toJS() : null );
+  const history = immutable.get('history');
   const it = new GameState(immutable.get('initialFEN'),
     initialBookMoves,
-    immutable.get('history').toJS(),
+    history.toJS(),
     immutable.get('cursor'),
     immutable.get('white'),
     immutable.get('black'),
@@ -191,7 +193,7 @@ export function generateBookMoves(BOOK, gameState) {
       if (node[move.san]) {
         node = node[move.san];
         for (let possibleMove in node) {
-          if (possibleMove == 's' || possibleMove == 'game') {
+          if (possibleMove == 's' || possibleMove == 'game' || possibleMove == '*') {
             continue;
           }
           let [whiteWins, blackWins, draws] = node[possibleMove].s;
@@ -203,10 +205,10 @@ export function generateBookMoves(BOOK, gameState) {
           });
         }
       }
-      if (bookNodes.length === 0) {
+      if (bookMoves.length === 0) {
         outOfBook = true;
       }
-      books.push(bookNodes);
+      books.push(bookMoves);
     }
   }
   return books;

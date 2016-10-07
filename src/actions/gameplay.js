@@ -82,7 +82,7 @@ export function setBookMovesAction(clientID, gameID, books) {
       origin: 'server',
     },
     payload: {
-      clientID, gameID, cursor, books
+      clientID, gameID, books
     }
   };
 }
