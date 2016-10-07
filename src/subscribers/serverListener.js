@@ -8,10 +8,10 @@ export default (store, BOOK) => {
 
     const gameplay = state.get('gameplay');
 
-    // Look for games flagged to have their next move searched for in the book
     for (let [clientID, value] of gameplay.entries()) {
       const games = value.get('games');
       for (let [gameID, immutableGame] of games.entries()) {
+        // Look for games flagged to have their next move searched for in the book
         const gameState = gameFromImmutable(immutableGame);
         const playerIsWhite = (gameState.white === 'YOU' && gameState.black === 'COMPUTER');
         const playerIsBlack = (gameState.white === 'COMPUTER' && gameState.black === 'YOU');
@@ -53,16 +53,17 @@ export default (store, BOOK) => {
                 if (bookMove === null) {
                   // Mark the game as awaiting a move from the engine
                   console.log("Out of book.");
-                  store.dispatch(setGameEvaluatorAction('server', clientID, gameID, 'engine'));
+                  store.dispatch(setGameEvaluatorAction('client', clientID, gameID, 'engine'));
                 } else {
                   // Found a book move
                   console.log("Found book move: " + bookMove);
-                  store.dispatch(makeMoveAction('server', clientID, gameID, bookMove, 'player'));
+                  store.dispatch(makeMoveAction('client', clientID, gameID, bookMove, 'player'));
                 }
               }
             }
           }
         } else {
+          // Look for games with moves having null (i.e. uncalculated) "bookMoves" fields
           // still have gameID, gameState, gameState, chessjs
           if (gameState.initialBookMoves === null) {
             store.dispatch(setInitialBookMovesAction(clientID, gameID, generateInitialBookMoves(BOOK)));

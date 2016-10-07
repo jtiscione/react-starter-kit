@@ -46,7 +46,7 @@ import socketIO from 'socket.io';
 
 import socketIoServerMiddlewareManager from './middleware/socketIoServerMiddlewareManager';
 
-const manager = socketIoServerMiddlewareManager((type,action) => (action.meta && (action.meta.origin == 'server')));
+const manager = socketIoServerMiddlewareManager((type,action) => (action.meta && (action.meta.cc == 'client')));
 
 const serverStore = configureServerStore(Map(), manager.middleware());
 

@@ -52,7 +52,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setRuntimeVariable('no3D', true));
     },
     dispatchNewGame: (clientID, gameID) => {
-      dispatch(newGameAction('browser', clientID, gameID));
+      dispatch(newGameAction('server', clientID, gameID));
     }
   }
 };

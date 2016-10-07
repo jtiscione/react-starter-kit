@@ -7,11 +7,11 @@ import {
   SET_BOOK_MOVES
 } from '../constants';
 
-export function newGameAction(origin, clientID, gameID) {
+export function newGameAction(cc, clientID, gameID) {
   return {
     type: NEW_GAME,
     meta: {
-      origin,
+      cc,
     },
     payload: {
       clientID,
@@ -20,11 +20,11 @@ export function newGameAction(origin, clientID, gameID) {
   };
 }
 
-export function makeMoveAction(origin, clientID, gameID, move, evaluator) {
+export function makeMoveAction(cc, clientID, gameID, move, evaluator) {
   return {
     type: MAKE_MOVE,
     meta: {
-      origin,
+      cc,
     },
     payload: {
       clientID,
@@ -35,11 +35,11 @@ export function makeMoveAction(origin, clientID, gameID, move, evaluator) {
   };
 }
 
-export function moveCursorAction(origin, clientID, gameID, cursor) {
+export function moveCursorAction(cc, clientID, gameID, cursor) {
   return {
     type: MOVE_CURSOR,
     meta: {
-      origin,
+      cc,
     },
     payload: {
       clientID,
@@ -49,11 +49,11 @@ export function moveCursorAction(origin, clientID, gameID, cursor) {
   };
 }
 
-export function setGameEvaluatorAction(origin, clientID, gameID, evaluator) {
+export function setGameEvaluatorAction(cc, clientID, gameID, evaluator) {
   return {
     type: SET_GAME_EVALUATOR,
     meta: {
-      origin,
+      cc,
     },
     payload: {
       clientID,
@@ -67,7 +67,7 @@ export function setInitialBookMovesAction(clientID, gameID, initialBookMoves) {
   return {
     type: SET_INITIAL_BOOK_MOVES,
     meta: {
-      origin: 'server',
+      cc: 'client',
     },
     payload: {
       clientID, gameID, initialBookMoves
@@ -79,7 +79,7 @@ export function setBookMovesAction(clientID, gameID, books) {
   return {
     type: SET_BOOK_MOVES,
     meta: {
-      origin: 'server',
+      cc: 'client',
     },
     payload: {
       clientID, gameID, books
