@@ -1,15 +1,22 @@
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './OpeningBookTable.css';
+import s from './OpeningBookEntry.css';
 
-//import {Table} from 'react-bootstrap';
-
-import {gameFromImmutable} from '../../store/model/gameState.js';
-
-function OpeningBookEntry({ clientID, gameID, gameplay, dispatchMoveCursor}) {
+function OpeningBookEntry({ key, san, whiteWins, blackWins, draws, clickFunction}) {
   return(
-    <div>
+    <div className={s.outer} onClick={clickFunction}>
+      { `${san} : ${whiteWins} / ${blackWins} / ${draws}` }
     </div>
   );
 }
 
+OpeningBookEntry.propTypes = {
+  key: PropTypes.number,
+  san: PropTypes.string.isRequired,
+  whiteWins: PropTypes.number.isRequired,
+  blackWins: PropTypes.number.isRequired,
+  draws: PropTypes.number.isRequired,
+  clickFunction: PropTypes.func.isRequired
+};
+
+export default withStyles(s)(OpeningBookEntry);

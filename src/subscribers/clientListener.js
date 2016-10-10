@@ -5,11 +5,8 @@ import {makeMoveAction} from '../actions/gameplay.js';
 export default function(store, engine) {
 
   return (() => {
-
     const state = store.getState();
-
     const clientID = state.getIn(['runtime', 'clientID']);
-
     // Check store to see if we need to fire the chess engine
     const games = state.getIn(['gameplay', clientID, 'games']);
     for (let gameID of games.keys()) {
@@ -27,9 +24,16 @@ export default function(store, engine) {
               engine.postMessage('position fen ' + chessjs.fen());
               engine.postMessage('go movetime 1');
               engine.onmessage = (event) => {
+
+                // Check whether state is in sync
+                const currentGame = gameFromImmutable(store.getState().getIn(['gameplay', clientID, 'games', gameID]));
+                if (currentGame.fen() != game.fen()) {
+                  return;
+                }
                 const line = event.data;
 
                 const parseBestMove = (line) => {
+                  // See if the game is in the same state as before
                   var match = line.match(/bestmove\s([a-h][1-8][a-h][1-8])(n|N|b|B|r|R|q|Q)?/);
                   if (match) {
                     var bestMove = match[1];
@@ -56,7 +60,9 @@ export default function(store, engine) {
                 const best = parseBestMove(line);
                 if (best !== undefined) {
                   const move = chessjs.move(best);
-                  store.dispatch(makeMoveAction('server', clientID, gameID, move, 'player'));
+                  if (move) {
+                    store.dispatch(makeMoveAction('server', clientID, gameID, move, 'player'));
+                  }
                 }
               };
             }
