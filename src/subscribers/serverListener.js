@@ -56,7 +56,6 @@ export default (store, BOOK) => {
                   store.dispatch(setGameEvaluatorAction('client', clientID, gameID, 'engine'));
                 } else {
                   // Found a book move
-                  console.log("Found book move: " + bookMove);
                   store.dispatch(makeMoveAction('client', clientID, gameID, bookMove, 'player'));
                 }
               }

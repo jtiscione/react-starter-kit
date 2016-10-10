@@ -21,7 +21,6 @@ function OpeningBookTable({ clientID, gameID, gameplay, dispatchMakeMove}) {
     const game = gameFromImmutable(gameData)
     const bookMoves = (game.history.length === 0 ? game.initialBookMoves : game.history[game.cursor - 1].bookMoves);
     if (bookMoves !== null && bookMoves.length > 0 ) {
-      console.log("bookMoves: "+bookMoves);
       const val =
         <div className={s.outer}>
           {
