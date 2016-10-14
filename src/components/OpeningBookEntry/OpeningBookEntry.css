@@ -1,5 +1,19 @@
 @import '../variables.css';
 
 .outer {
-  brorder: 1px solid black;
+  font-size: small;
+  border: 1px solid black;
 }
+
+.row {
+  background-color: #ffffff;
+}
+
+.black {
+  background-color: #555555;
+}
+
+.gray {
+  background-color: #A0A0A0;
+}
+

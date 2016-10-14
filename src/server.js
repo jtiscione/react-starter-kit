@@ -207,10 +207,6 @@ app.get('*', async (req, res, next) => {
      initialState = Map();
   }
 
-  if (req.user) {
-    initialState = initialState.set('user', JSON.parse(JSON.stringify(req.user)));
-  }
-
   try {
     const store = configureStore(initialState, {
       cookie: req.headers.cookie,

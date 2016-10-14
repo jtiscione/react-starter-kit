@@ -4,36 +4,48 @@ import s from './OpeningBookTable.css';
 import {gameFromImmutable} from '../../store/model/gameState.js';
 import OpeningBookEntry from '../OpeningBookEntry';
 
+import { Table } from 'react-bootstrap';
 
 function OpeningBookTable({ clientID, gameID, gameplay, dispatchMakeMove}) {
 
   function clickFunction(game, san) {
     return () => {
-      if (game.cursor === game.history.length - 1) {
+      if (game.cursor === game.history.length) {
         dispatchMakeMove(clientID, gameID, san);
       }
-    }
+    };
   }
 
   const gameData = gameplay.getIn([clientID, 'games', gameID]);
 
   if (gameData) {
-    const game = gameFromImmutable(gameData)
+    const game = gameFromImmutable(gameData);
     const bookMoves = (game.history.length === 0 ? game.initialBookMoves : game.history[game.cursor - 1].bookMoves);
-    if (bookMoves !== null && bookMoves.length > 0 ) {
-      const val =
-        <div className={s.outer}>
-          {
-            bookMoves.map((e, i) => <OpeningBookEntry key={i}
-                                                 san={e.san}
+    if (bookMoves !== null) {
+      if (bookMoves.length === 0 ) {
+        return <div className={s.outer}>OUT OF BOOK.</div>
+      }
+      const rows =
+            bookMoves.map((e, i) => <OpeningBookEntry key = {i}
+                                                 san = {e.san}
                                                  whiteWins = {e.whiteWins}
                                                  blackWins = {e.blackWins}
                                                  draws = {e.draws}
-                                                 clickFunction = {clickFunction(game, e.san)} />)
-          }
+                                                 clickFunction = {clickFunction(game, e.san)} />);
+      return (
+        <div className={s.outer}>
+          <Table striped condensed hover>
+            <thead>
+              <tr>
+                <td>Move</td><td>Games</td><td>White/Draw/Black</td>
+              </tr>
+            </thead>
+            <tbody>
+              {rows}
+            </tbody>
+          </Table>
         </div>
-      ;
-      return val;
+      )
     }
   }
 

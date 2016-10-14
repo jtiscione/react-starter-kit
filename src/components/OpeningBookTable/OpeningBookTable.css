@@ -2,4 +2,27 @@
 
 .outer {
   box-shadow: 5px 5px 5px black;
+  font-family: 'Lucida Sans', 'Geneva', "Verdana", "sans-serif";
+  font-size: 12px;
 }
+
+.table {
+  color: black;
+  border: 1px solid black;
+}
+
+tbody {
+  height: 550px;
+  overflow-y: scroll;
+  display: block;
+}
+
+thead {
+  display: block;
+}
+
+th {
+  color: #000000;
+  border: 1px solid black;
+}
+

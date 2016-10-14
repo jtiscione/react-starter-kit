@@ -16,7 +16,7 @@ import { newGameAction,
 
 import {
   Grid, Row, Col,
-  Tabs, Tab
+  Tabs, Tab, Accordion, Panel
 } from 'react-bootstrap';
 import s from './Play.css';
 
@@ -94,12 +94,16 @@ class Play extends Component {
                 />
               </Col>
               <Col xsHidden smHidden md={2}>
-                <OpeningBookTable
-                  clientID={clientID}
-                  gameID={gameID}
-                  gameplay={this.props.gameplay}
-                  dispatchMakeMove={this.handleTabSelect.bind(this)}
-                />
+                <Accordion>
+                  <Panel header="opening book" eventKey="1">
+                    <OpeningBookTable
+                      clientID={clientID}
+                      gameID={gameID}
+                      gameplay={this.props.gameplay}
+                      dispatchMakeMove={this.makeUserMove.bind(this)}
+                    />
+                  </Panel>
+                </Accordion>
               </Col>
             </Row>
           </Grid>
