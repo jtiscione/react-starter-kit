@@ -19,7 +19,6 @@ import jwt from 'jsonwebtoken';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import UniversalRouter from 'universal-router';
-import createMemoryHistory from 'history/createMemoryHistory';
 import PrettyError from 'pretty-error';
 import App from './components/App';
 import Html from './components/Html';
@@ -210,7 +209,6 @@ app.get('*', async (req, res, next) => {
   try {
     const store = configureStore(initialState, {
       cookie: req.headers.cookie,
-      history,
     });
 
     store.dispatch(setRuntimeVariable({
@@ -239,9 +237,6 @@ app.get('*', async (req, res, next) => {
     // Global (context) variables that can be easily accessed from any React component
     // https://facebook.github.io/react/docs/context.html
     const context = {
-      // Navigation manager, e.g. history.push('/home')
-      // https://github.com/mjackson/history
-      history,
       // Enables critical path CSS rendering
       // https://github.com/kriasoft/isomorphic-style-loader
       insertCss: (...styles) => {
@@ -254,9 +249,15 @@ app.get('*', async (req, res, next) => {
     };
 
     const route = await UniversalRouter.resolve(routes, {
+      ...context,
       path: req.path,
       query: req.query,
     });
+
+    if (route.redirect) {
+      res.redirect(route.status || 302, route.redirect);
+      return;
+    }
 
     const data = { ...route };
     data.children = ReactDOM.renderToString(<App context={context}>{route.component}</App>);
@@ -269,8 +270,6 @@ app.get('*', async (req, res, next) => {
     res.send(`<!doctype html>${html}`);
   } catch (err) {
     next(err);
-  } finally {
-    removeHistoryListener();
   }
 });
 

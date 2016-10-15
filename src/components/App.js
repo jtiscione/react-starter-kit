@@ -7,12 +7,9 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import React, { PropTypes } from 'react';
+import React, { Children, PropTypes } from 'react';
 
 const ContextType = {
-  // Navigation manager, e.g. history.push('/home')
-  // https://github.com/mjackson/history
-  history: PropTypes.object.isRequired,
   // Enables critical path CSS rendering
   // https://github.com/kriasoft/isomorphic-style-loader
   insertCss: PropTypes.func.isRequired,
@@ -56,7 +53,7 @@ class App extends React.Component {
   render() {
     // NOTE: If you need to add or modify header, footer etc. of the app,
     // please do that inside the Layout component.
-    return React.Children.only(this.props.children);
+    return Children.only(this.props.children);
   }
 
 }
