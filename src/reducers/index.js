@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux';
 import user from './user';
 import { combineReducers } from 'redux-immutable';
 import runtime from './runtime';

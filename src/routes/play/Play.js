@@ -94,16 +94,16 @@ class Play extends Component {
                 />
               </Col>
               <Col xsHidden smHidden md={2}>
-                <Accordion>
-                  <Panel header="opening book" eventKey="1">
+                <Tabs defaultActiveKey={0} id="side-tabs">
+                  <Tab eventKey={0} title="opening book">
                     <OpeningBookTable
                       clientID={clientID}
                       gameID={gameID}
                       gameplay={this.props.gameplay}
                       dispatchMakeMove={this.makeUserMove.bind(this)}
                     />
-                  </Panel>
-                </Accordion>
+                  </Tab>
+                </Tabs>
               </Col>
             </Row>
           </Grid>

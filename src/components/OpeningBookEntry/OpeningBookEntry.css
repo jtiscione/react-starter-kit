@@ -6,14 +6,41 @@
 }
 
 .row {
+  width: 95%;
+}
+
+.cell {
+  width: 95%;
+}
+
+.san {
+  clear: both;
+  float: left;
+}
+
+.gameCount {
+  float:right;
+}
+
+.bar {
+  display:block;
+  border: 1px solid black;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.white {
+  float:left;
+  clear: both;
   background-color: #ffffff;
 }
 
-.black {
-  background-color: #555555;
-}
-
 .gray {
+  float:left;
   background-color: #A0A0A0;
 }
 
+.black {
+  float:left;
+  background-color: #555555;
+}

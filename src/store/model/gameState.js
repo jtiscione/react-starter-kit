@@ -164,6 +164,11 @@ export function generateInitialBookMoves(BOOK) {
       blackWins,
       draws
     });
+    bookMoves.sort((a, b) => {
+      const aGames = a.whiteWins + a.blackWins + a.draws;
+      const bGames = b.whiteWins + b.blackWins + b.draws;
+      return (aGames < bGames?  1: -1);
+    });
   }
   return bookMoves;
 }
@@ -208,6 +213,11 @@ export function generateBookMoves(BOOK, gameState) {
       if (bookMoves.length === 0) {
         outOfBook = true;
       }
+      bookMoves.sort((a, b) => {
+        const aGames = a.whiteWins + a.blackWins + a.draws;
+        const bGames = b.whiteWins + b.blackWins + b.draws;
+        return (aGames < bGames? 1 : -1);
+      });
       books.push(bookMoves);
     }
   }

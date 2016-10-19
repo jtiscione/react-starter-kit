@@ -156,24 +156,6 @@ app.use('/graphql', expressGraphQL(req => ({
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------
 app.get('*', async (req, res, next) => {
-  const history = createMemoryHistory({
-    initialEntries: [req.url],
-  });
-  // let currentLocation = history.getCurrentLocation();
-  let sent = false;
-  const removeHistoryListener = history.listen(location => {
-    const newUrl = `${location.pathname}${location.search}`;
-    if (req.originalUrl !== newUrl) {
-      // console.log(`R ${req.originalUrl} -> ${newUrl}`); // eslint-disable-line no-console
-      if (!sent) {
-        res.redirect(303, newUrl);
-        sent = true;
-        next();
-      } else {
-        console.error(`${req.path}: Already sent!`); // eslint-disable-line no-console
-      }
-    }
-  });
 
   let initialState = null;
 
@@ -205,6 +187,8 @@ app.get('*', async (req, res, next) => {
   } else {
      initialState = Map();
   }
+
+  initialState = initialState.set('user', req.user || null);
 
   try {
     const store = configureStore(initialState, {
