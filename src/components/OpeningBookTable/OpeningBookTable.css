@@ -8,6 +8,10 @@
   height: 570px;
 }
 
+.message {
+  padding: 30px;
+}
+
 .table {
   color: black;
   border: 1px solid black;

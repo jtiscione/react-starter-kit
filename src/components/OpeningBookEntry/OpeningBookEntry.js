@@ -19,9 +19,15 @@ function OpeningBookEntry({ key, san, whiteWins, blackWins, draws, clickFunction
     <div className={s.row}>
       <div className={s.san} onClick={clickFunction}><code>{san}</code></div>&nbsp;&nbsp;&nbsp;<div className={s.gameCount}>{all}</div>
       <div className={s.bar}>
-        <div className={s.white} style={{width: whitePercentage + '%'}} onClick={clickFunction}>&nbsp;</div>
-        <div className={s.gray} style={{width : drawPercentage + '%'}} onClick={clickFunction}>&nbsp;</div>
-        <div className={s.black} style={{width: blackPercentage + '%'}} onClick={clickFunction}>&nbsp;</div>
+        <div className={s.white} style={{width: whitePercentage + '%'}} onClick={clickFunction}>
+          {(whitePercentage < 20 ? '' : whitePercentage + '%')}
+        </div>
+        <div className={s.gray} style={{width : drawPercentage + '%'}} onClick={clickFunction}>
+          {(drawPercentage < 20 ? '' : drawPercentage + '%')}
+        </div>
+        <div className={s.black} style={{width: blackPercentage + '%'}} onClick={clickFunction}>
+          {(blackPercentage < 20 ? '' : blackPercentage + '%')}
+        </div>
       </div>
     </div>
   );

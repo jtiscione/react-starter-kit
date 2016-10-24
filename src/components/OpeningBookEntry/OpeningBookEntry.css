@@ -16,6 +16,7 @@
 .san {
   clear: both;
   float: left;
+  cursor: pointer;
 }
 
 .gameCount {
@@ -23,24 +24,28 @@
 }
 
 .bar {
-  display:block;
+  cursor: pointer;
+  display: block;
   border: 1px solid black;
   overflow: hidden;
   margin-bottom: 10px;
 }
 
 .white {
+  color: #000000;
   float:left;
   clear: both;
   background-color: #ffffff;
 }
 
 .gray {
+  color: #FFFFFF;
   float:left;
   background-color: #A0A0A0;
 }
 
 .black {
+  color: #CCCCCC;
   float:left;
   background-color: #555555;
 }

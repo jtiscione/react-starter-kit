@@ -3,8 +3,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './OpeningBookTable.css';
 import {gameFromImmutable} from '../../store/model/gameState.js';
 import OpeningBookEntry from '../OpeningBookEntry';
-
-import { Table } from 'react-bootstrap';
+import cx from 'classnames';
 
 function OpeningBookTable({ clientID, gameID, gameplay, dispatchMakeMove}) {
 
@@ -23,7 +22,11 @@ function OpeningBookTable({ clientID, gameID, gameplay, dispatchMakeMove}) {
     const bookMoves = (game.history.length === 0 ? game.initialBookMoves : game.history[game.cursor - 1].bookMoves);
     if (bookMoves !== null) {
       if (bookMoves.length === 0 ) {
-        return <div className={s.outer}>OUT OF BOOK.</div>
+        return <div className={s.outer}>
+          <div className={s.message}>
+            OUT OF BOOK.
+          </div>
+        </div>;
       }
       const rows =
             bookMoves.map((e, i) => <OpeningBookEntry key = {i}
