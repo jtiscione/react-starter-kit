@@ -20,7 +20,6 @@ export default (store, BOOK) => {
           if (gameState.history.length === gameState.cursor) {
             if (!chessjs.game_over()) {
               if ((chessjs.turn == 'w' && playerIsBlack) || (chessjs.turn() == 'b' && playerIsWhite)) {
-                // ok
                 var book = BOOK;
                 for (let move of gameState.history) {
                   if (book[move.san]) {
@@ -32,27 +31,32 @@ export default (store, BOOK) => {
                 }
                 let bookMove = null;
                 if (book) {
-                  // Tally up wins, losses, draws
-                  const slotArray = [];
+                  // Choose a random move weighted by 2 * wins + draws
+                  const moveArray = [];
+                  const positionArray = [];
+                  let slider = 0;
                   for (let possibleMove in book) {
-                    if (possibleMove == 's' || possibleMove == 'game') {
+                    if (possibleMove == 's' || possibleMove == 'game' || possibleMove == '*') {
                       continue;
                     }
                     const [whiteWins, blackWins, draws] = book[possibleMove].s;
                     let wins = (chessjs.turn == 'w' ? whiteWins : blackWins);
-                    for (let i = 0; i < (2 * wins + draws); i++) {
-                      slotArray.push(possibleMove);
-                    }
+                    slider += 2 * wins + draws;
+                    moveArray.push(possibleMove);
+                    positionArray.push(slider);
                   }
-                  if (slotArray.length > 0) {
-                    // pick a random element from slotArray
-                    const i = Math.floor(slotArray.length * Math.random());
-                    bookMove = slotArray[i];
+                  if (moveArray.length > 0) {
+                    const randomIndex = Math.floor(slider * Math.random());
+                    for (let i = 0; i < moveArray.length; i++) {
+                      if (randomIndex < positionArray[i]) {
+                        bookMove = moveArray[i];
+                        break;
+                      }
+                    }
                   }
                 }
                 if (bookMove === null) {
                   // Mark the game as awaiting a move from the engine
-                  console.log("Out of book.");
                   store.dispatch(setGameEvaluatorAction('client', clientID, gameID, 'engine'));
                 } else {
                   // Found a book move

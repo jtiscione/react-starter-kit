@@ -180,6 +180,14 @@ export function generateBookMoves(BOOK, gameState) {
   let node = BOOK;
   let outOfBook = false;
   for (let move of gameState.history) {
+    if (node === null || node[move.san] === undefined) {
+      books.push(null);
+      node = null;
+      continue;
+    }
+
+    node = node[move.san];
+
     if (move.bookMoves !== null) {
       // it's already there, just stick a null placeholder into the returned array
       // to indicate no update is required here
@@ -193,34 +201,31 @@ export function generateBookMoves(BOOK, gameState) {
           books.push(null); // empty array already there
         }
       }
-    } else {
-      const bookMoves = [];
-      if (node[move.san]) {
-        node = node[move.san];
-        for (let possibleMove in node) {
-          if (possibleMove == 's' || possibleMove == 'game' || possibleMove == '*') {
-            continue;
-          }
-          let [whiteWins, blackWins, draws] = node[possibleMove].s;
-          bookMoves.push({
-            san: possibleMove,
-            whiteWins,
-            blackWins,
-            draws
-          });
-        }
-      }
-      if (bookMoves.length === 0) {
-        outOfBook = true;
-      }
-      bookMoves.sort((a, b) => {
-        const aGames = a.whiteWins + a.blackWins + a.draws;
-        const bGames = b.whiteWins + b.blackWins + b.draws;
-        return (aGames < bGames? 1 : -1);
-      });
-      books.push(bookMoves);
+      continue;
     }
+
+    const bookMoves = [];
+    for (let possibleMove in node) {
+      if (possibleMove == 's' || possibleMove == 'game' || possibleMove == '*') {
+        continue;
+      }
+      let [whiteWins, blackWins, draws] = node[possibleMove].s;
+      bookMoves.push({
+        san: possibleMove,
+        whiteWins,
+        blackWins,
+        draws
+      });
+    }
+    if (bookMoves.length === 0) {
+      outOfBook = true;
+    }
+    bookMoves.sort((a, b) => {
+      const aGames = a.whiteWins + a.blackWins + a.draws;
+      const bGames = b.whiteWins + b.blackWins + b.draws;
+      return (aGames < bGames? 1 : -1);
+    });
+    books.push(bookMoves);
   }
   return books;
-
 }
