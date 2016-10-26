@@ -33,12 +33,14 @@ class Start extends Component {
   render() {
     const clientID = this.props.clientID;
     const gameID = 'defaultGame';
-    return 'placeholder';
+    return <Layout>
+        <div>placeholder</div>
+      </Layout>;
   }
 }
 const mapStateToProps = (state) => {
 
-  clientID = state.getIn(['runtime', 'clientID']);
+  const clientID = state.getIn(['runtime', 'clientID']);
 
   return {
     clientID,

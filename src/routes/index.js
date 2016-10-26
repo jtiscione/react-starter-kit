@@ -17,6 +17,7 @@ export default {
   // Keep in mind, routes are evaluated in order
   children: [
     require('./home').default,
+    require('./start').default,
     require('./play').default,
     require('./contact').default,
     require('./login').default,
@@ -38,7 +39,7 @@ export default {
     } while (!route);
 
     // Provide default values for title, description etc.
-    route.title = `${route.title || 'Untitled Page'} - www.reactstarterkit.com`;
+    route.title = `${route.title || 'Redux Chess'}`;
     route.description = route.description || '';
 
     return route;

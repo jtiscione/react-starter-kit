@@ -8,12 +8,12 @@ const title = 'Play Against Computer';
 
 export default {
 
-  path: '/play',
+  path: '/',
 
   action() {
     return {
       title,
-      component: <PlayContainer/>
+      component: <StartContainer/>
     };
   },
 
