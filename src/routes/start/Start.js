@@ -14,7 +14,7 @@ import { setRuntimeVariable } from '../../actions/runtime.js';
 
 import {
   Grid, Row, Col,
-  Tabs, Tab
+  Button, Jumbotron
 } from 'react-bootstrap';
 import s from './Start.css';
 
@@ -26,7 +26,7 @@ class Start extends Component {
 
   componentDidMount() {
     if (!window.ChessBoard3.webGLEnabled()) {
-      this.props.dispatchSetRuntimeVariable('no3D', true);
+      this.props.dispatchNo3D('no3D', true);
     }
   }
 
@@ -34,7 +34,16 @@ class Start extends Component {
     const clientID = this.props.clientID;
     const gameID = 'defaultGame';
     return <Layout>
-        <div>placeholder</div>
+        <Grid>
+          <Jumbotron>
+            <h1>
+              Redux Chess
+            </h1>
+            <p>
+            </p>
+            <p><Button bsStyle="primary">New Game...</Button></p>
+          </Jumbotron>
+        </Grid>
       </Layout>;
   }
 }
@@ -50,7 +59,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchSetRuntimeVariable(name, value) {
+    dispatchNo3D: () => {
       dispatch(setRuntimeVariable('no3D', true));
     },
     dispatchNewGame: (clientID, gameID) => {

@@ -11,6 +11,7 @@ import path from 'path';
 import webpack from 'webpack';
 import extend from 'extend';
 import AssetsPlugin from 'assets-webpack-plugin';
+import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
 
 const DEBUG = !process.argv.includes('--release');
 const VERBOSE = process.argv.includes('--verbose');
@@ -266,6 +267,11 @@ const clientConfig = extend(true, {}, config, {
       // https://webpack.github.io/docs/list-of-plugins.html#aggressivemergingplugin
       new webpack.optimize.AggressiveMergingPlugin(),
     ],
+    new WebpackBuildNotifierPlugin({
+      title: "Redux-Chess Build",
+      logo: path.resolve("./img/favicon.png"),
+      suppressSuccess: true
+    }),
   ],
 
   // Choose a developer tool to enhance debugging

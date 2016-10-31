@@ -37,7 +37,9 @@ function OpeningBookTable({ clientID, gameID, gameplay, dispatchMakeMove}) {
                                                  clickFunction = {clickFunction(game, e.san)} />);
       return (
         <div className={s.outer}>
-             {rows}
+          <div className={s.message}>
+            {rows}
+          </div>
         </div>
       );
     }
