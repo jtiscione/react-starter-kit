@@ -12,6 +12,7 @@ import webpack from 'webpack';
 import extend from 'extend';
 import AssetsPlugin from 'assets-webpack-plugin';
 import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
+//import WebpackNotifierPlugin from 'webpack-notifier';
 
 const DEBUG = !process.argv.includes('--release');
 const VERBOSE = process.argv.includes('--verbose');
@@ -272,6 +273,7 @@ const clientConfig = extend(true, {}, config, {
       logo: path.resolve("./img/favicon.png"),
       suppressSuccess: true
     }),
+    //new WebpackNotifierPlugin(),
   ],
 
   // Choose a developer tool to enhance debugging

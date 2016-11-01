@@ -37,15 +37,18 @@ function OpeningBookTable({ clientID, gameID, gameplay, dispatchMakeMove}) {
                                                  clickFunction = {clickFunction(game, e.san)} />);
       return (
         <div className={s.outer}>
-          <div className={s.message}>
             {rows}
-          </div>
         </div>
       );
     }
   }
 
-  return <div className={s.outer}>OUT OF BOOK.</div>
+  return <div className={s.outer}>
+            <div className={s.message}>
+              OUT OF BOOK.
+            </div>
+          </div>
+
 }
 
 OpeningBookTable.propTypes = {
