@@ -3,23 +3,28 @@
 
 import React from 'react';
 import { expect } from 'chai';
-import { shallow } from 'enzyme';
+import { render } from 'enzyme';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import App from '../App';
-import { createStore } from 'redux';
 import Layout from './Layout';
 
-describe('Layout', () => {
+const middlewares = [thunk];
+const mockStore = configureStore(middlewares);
+const initialState = {};
 
+describe('Layout', () => {
   it('renders children correctly', () => {
-    const wrapper = shallow(
-      <App context={{ store: createStore(() => {}), insertCss: () => {} }}>
+    const store = mockStore(initialState);
+
+    const wrapper = render(
+      <App context={{ insertCss: () => {}, store }}>
         <Layout>
           <div className="child" />
         </Layout>
       </App>
     );
-
-    expect(wrapper.contains(<div className="child" />)).to.be.true;
+    expect(wrapper.find('div.child').length).to.eq(1);
   });
 
 });
