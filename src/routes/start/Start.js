@@ -4,7 +4,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Layout from '../../components/Layout';
-
+import history from '../../core/history';
 
 import { gameFromImmutable } from '../../store/model/gameState';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
@@ -30,19 +30,65 @@ class Start extends Component {
     }
   }
 
+  handleNewGameClick = (event) => {
+    if (isModifiedEvent(event) || !isLeftClickEvent(event)) {
+      return;
+    }
+    if (event.defaultPrevented === true) {
+      return;
+    }
+    event.preventDefault();
+    this.props.dispatchNewGame(this.props.clientID, 'defaultGame');
+    history.push('/play');
+  };
+
+  handleResumeGameClick = (event) => {
+    if (isModifiedEvent(event) || !isLeftClickEvent(event)) {
+      return;
+    }
+    if (event.defaultPrevented === true) {
+      return;
+    }
+    event.preventDefault();
+    history.push('/play');
+  };
+
   render() {
     const clientID = this.props.clientID;
     const gameID = 'defaultGame';
+    const gameplay = this.props.gameplay;
+    const currentGame = gameplay.getIn([clientID, 'games', gameID]);
+    console.log("currentGame: " + currentGame);
+    console.log("JSON: " + JSON.stringify(currentGame));
+    let btn = '';
+    if (currentGame) {
+      const gm = gameFromImmutable(currentGame);
+      // See if existing game is blank
+      if (gm.history.length > 0) {
+        btn = <Button href="/play" bsStyle="primary" onClick={this.handleResumeGameClick.bind(this)}>Resume Game</Button>;
+      }
+    }
+
     return <Layout>
         <Grid>
-          <Jumbotron>
-            <h1>
-              Redux Chess
-            </h1>
-            <p>
-            </p>
-            <p><Button bsStyle="primary">New Game...</Button></p>
-          </Jumbotron>
+          <Row>
+            <Col md={4}>
+              <Jumbotron>
+                <h1>
+                  Redux Chess
+                </h1>
+                <p>
+                  <Button href='/play'
+                          bsStyle="primary"
+                          onClick={this.handleNewGameClick.bind(this)}>New Game...</Button>
+                  {btn}
+                </p>
+              </Jumbotron>
+            </Col>
+            <Col md={8}>
+              <img src="/redux_chess.jpg"></img>
+            </Col>
+          </Row>
         </Grid>
       </Layout>;
   }
