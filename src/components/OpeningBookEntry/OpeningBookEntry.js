@@ -1,11 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './OpeningBookEntry.css';
+import {Tooltip, OverlayTrigger, Badge} from 'react-bootstrap';
+import cx from 'classnames';
 
-function OpeningBookEntry({ key, san, whiteWins, blackWins, draws, clickFunction}) {
-
-
-  //<td>Move</td><td>Games</td><td>White/Draw/Black</td>
+function OpeningBookEntry({ key, san, whiteWins, blackWins, draws, totalGames, clickFunction}) {
 
   const all = whiteWins + blackWins + draws;
 
@@ -14,20 +13,38 @@ function OpeningBookEntry({ key, san, whiteWins, blackWins, draws, clickFunction
   const drawPercentage = 100 - whitePercentage - blackPercentage; // avoid roundoff errors
 
   //const percentages = whitePercentage + "/" + blackPercentage + "/" + drawPercentage;
+  const whitePercentageLabel = (whitePercentage < 20 ? '' : whitePercentage + '%');
+  const drawPercentageLabel = (drawPercentage < 20 ? '' : drawPercentage + '%');
+  const blackPercentageLabel = (blackPercentage < 20 ? '' : blackPercentage + '%');
+
+  const whiteTooltip = <Tooltip id="whiteToolTip">{`${whitePercentageLabel} won by white`}</Tooltip>;
+  const drawTooltip = <Tooltip id="blackToolTip">{`${blackPercentageLabel} draws`}</Tooltip>;
+  const blackTooltip = <Tooltip id="blackToolTip">{`${blackPercentageLabel} won by black`}</Tooltip>;
+
+  const gameCountToolTip = <Tooltip id="gameCountTooltip">{`${all} games out of ${totalGames}`}</Tooltip>
 
   return(
     <div className={s.row}>
-      <div className={s.san} onClick={clickFunction}><code>{san}</code></div>&nbsp;&nbsp;&nbsp;<div className={s.gameCount}>{all}</div>
+      <div className={cx(s.san, 'text-danger')} onClick={clickFunction}>{san}</div>
+      <OverlayTrigger placement="top" overlay={gameCountToolTip}>
+        <div className={s.gameCount}><Badge pullRight bsClass={cx(s.badge, 'badge')}>{all}</Badge></div>
+      </OverlayTrigger>
       <div className={s.bar}>
-        <div className={s.white} style={{width: whitePercentage + '%'}} onClick={clickFunction}>
-          {(whitePercentage < 20 ? '' : whitePercentage + '%')}
-        </div>
-        <div className={s.gray} style={{width : drawPercentage + '%'}} onClick={clickFunction}>
-          {(drawPercentage < 20 ? '' : drawPercentage + '%')}
-        </div>
-        <div className={s.black} style={{width: blackPercentage + '%'}} onClick={clickFunction}>
-          {(blackPercentage < 20 ? '' : blackPercentage + '%')}
-        </div>
+        <OverlayTrigger placement="left" overlay={whiteTooltip}>
+          <div className={s.white} style={{width: whitePercentage + '%'}} onClick={clickFunction}>
+            {whitePercentageLabel}
+          </div>
+        </OverlayTrigger>
+        <OverlayTrigger placement="bottom" overlay={drawTooltip}>
+          <div className={s.gray} style={{width : drawPercentage + '%'}} onClick={clickFunction}>
+            {drawPercentageLabel}
+          </div>
+        </OverlayTrigger>
+        <OverlayTrigger placement="right" overlay={blackTooltip}>
+          <div className={s.black} style={{width: blackPercentage + '%'}} onClick={clickFunction}>
+            {blackPercentageLabel}
+          </div>
+        </OverlayTrigger>
       </div>
     </div>
   );
@@ -39,7 +56,8 @@ OpeningBookEntry.propTypes = {
   whiteWins: PropTypes.number.isRequired,
   blackWins: PropTypes.number.isRequired,
   draws: PropTypes.number.isRequired,
-  clickFunction: PropTypes.func.isRequired
+  totalGames: PropTypes.number.isRequired,
+  clickFunction: PropTypes.func.isRequired,
 };
 
 export default withStyles(s)(OpeningBookEntry);

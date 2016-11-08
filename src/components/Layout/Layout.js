@@ -14,12 +14,15 @@ import Header from '../Header';
 import Feedback from '../Feedback';
 import Footer from '../Footer';
 
+/*
+ Removed <Feedback />
+ */
+
 function Layout({ children }) {
   return (
     <div>
       <Header />
       {Children.only(children)}
-      <Feedback />
       <Footer />
     </div>
   );

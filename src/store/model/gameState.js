@@ -5,7 +5,13 @@ export const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -
 
 export class GameState {
 
-  constructor(_initialFEN = DEFAULT_FEN, _initialBookMoves = null, _history = [], _cursor, white = 'YOU', black='COMPUTER', evaluator='player') {
+  constructor(_initialFEN = DEFAULT_FEN,
+              _initialBookMoves = null,
+              _history = [],
+              _cursor,
+              white = 'YOU',
+              black='COMPUTER',
+              evaluator='player') {
     this.initialFEN = _initialFEN;
     this.initialBookMoves = _initialBookMoves; // the bookMoves[] array for the initial position, should always be the same
     this.history = _history;
@@ -17,6 +23,7 @@ export class GameState {
     this.white = white;
     this.black = black;
     this.evaluator = evaluator;
+    this.highlightSquares = [];
   }
 
   toImmutable() {

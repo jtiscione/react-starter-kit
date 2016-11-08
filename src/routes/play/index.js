@@ -4,7 +4,7 @@
 import React from 'react';
 import { PlayContainer } from './Play';
 
-const title = 'Play Against Computer';
+const title = 'Redux Chess';
 
 export default {
 

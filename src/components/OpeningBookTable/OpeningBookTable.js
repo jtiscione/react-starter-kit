@@ -28,12 +28,17 @@ function OpeningBookTable({ clientID, gameID, gameplay, dispatchMakeMove}) {
           </div>
         </div>;
       }
+      let totalGames = 0;
+      bookMoves.forEach((e) => {
+        totalGames += (e.whiteWins + e.blackWins + e.draws);
+      });
       const rows =
             bookMoves.map((e, i) => <OpeningBookEntry key = {i}
                                                  san = {e.san}
                                                  whiteWins = {e.whiteWins}
                                                  blackWins = {e.blackWins}
                                                  draws = {e.draws}
+                                                 totalGames = {totalGames}
                                                  clickFunction = {clickFunction(game, e.san)} />);
       return (
         <div className={s.outer}>

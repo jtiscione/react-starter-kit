@@ -16,7 +16,8 @@ import { newGameAction,
 
 import {
   Grid, Row, Col,
-  Tabs, Tab, Accordion, Panel
+  Tabs, Tab,
+  GlyphIcon
 } from 'react-bootstrap';
 import s from './Play.css';
 
@@ -95,7 +96,7 @@ class Play extends Component {
               </Col>
               <Col xsHidden smHidden md={2}>
                 <Tabs defaultActiveKey={0} id="side-tabs">
-                  <Tab eventKey={0} title="opening book">
+                  <Tab eventKey={0} title='book'>
                     <OpeningBookTable
                       clientID={clientID}
                       gameID={gameID}

@@ -7,6 +7,7 @@
 
 .row {
   width: 95%;
+  border: 1px solid black;
 }
 
 .cell {
@@ -17,18 +18,28 @@
   clear: both;
   float: left;
   cursor: pointer;
+  font-size: large;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-left: 5px;
 }
 
 .gameCount {
   float:right;
+  margin: 5px;
+}
+
+.badge {
+  background-color: blue;
 }
 
 .bar {
+  clear: both;
   cursor: pointer;
   display: block;
   border: 1px solid black;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin: 10px;
 }
 
 .white {

@@ -41,7 +41,7 @@ import { Map } from 'immutable';
 import pruneState from './store/pruneState';
 const uuid = require('uuid');
 import socketIO from 'socket.io';
-
+import notifier from 'node-notifier';
 
 import socketIoServerMiddlewareManager from './middleware/socketIoServerMiddlewareManager';
 
@@ -63,6 +63,7 @@ if (bookFile !== null) {
   readBook(bookFile).then( book => {
     serverStore.subscribe(serverListener(serverStore, book));
     console.log("LOADED BOOK: "+bookFile);
+    notifier.notify("LOADED BOOK " + bookFile);
   }).catch( (err) => {
       console.log(err);
       console.log("using default book....");
