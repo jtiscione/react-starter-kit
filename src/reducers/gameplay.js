@@ -4,7 +4,8 @@ import { INITIALIZE_GAMES,
         MOVE_CURSOR,
         SET_GAME_EVALUATOR,
         SET_INITIAL_BOOK_MOVES,
-        SET_BOOK_MOVES
+        SET_BOOK_MOVES,
+        SET_HIGHLIGHT_SAN,
       } from '../constants';
 
 import {Map} from 'immutable';
@@ -66,6 +67,12 @@ export default function gameplay(state = Map(), action) {
     case SET_BOOK_MOVES: {
       if (gameState) {
         gameState.setBookMoves(action.payload.books);
+        return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
+      }
+    }
+    case SET_HIGHLIGHT_SAN: {
+      if (gameState) {
+        gameState.setHighlightSAN(action.payload.san);
         return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
       }
     }

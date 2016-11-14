@@ -12,6 +12,7 @@ class Board extends Component {
     dimensions: PropTypes.number.isRequired,
     allowMoves: PropTypes.bool.isRequired,
     targetSquares: PropTypes.func.isRequired,
+    sanSquares: PropTypes.func.isRequired,
     makeMove: PropTypes.func.isRequired, // Will dispatch event
   };
 
@@ -72,6 +73,18 @@ class Board extends Component {
       this.chessboard = new window.ChessBoard3(this.props.divID, cfg);
     } else {
       this.chessboard = new window.ChessBoard(this.props.divID, cfg);
+
+      this.chessboard.greySquare = (sq) => {
+        var squareEl = $('#board .square-' + sq);
+        var background = '#a9a9a9';
+        if (squareEl.hasClass('black-3c85d') === true) {
+          background = '#696969';
+        }
+        squareEl.css('background', background);
+      };
+      this.chessboard.removeGreySquares = () => {
+        $('#board .square-55d63').css('background', '');
+      };
     }
 
     $(window).resize(() => {
@@ -83,7 +96,20 @@ class Board extends Component {
   // However it needs to intercept the new FEN so it can send any changes to the chessboard object.
   shouldComponentUpdate(nextProps) { // , nextState) {
     if (this.chessboard) {
-      this.chessboard.position(nextProps.fen);
+      if (nextProps.fen.indexOf(this.chessboard.fen()) === -1) {
+        this.chessboard.position(nextProps.fen);
+      } else {
+        console.log("no change");
+      }
+      const highlightedSquares = this.props.sanSquares();
+      highlightedSquares.forEach((e) => console.log(e));
+      this.chessboard.removeGreySquares();
+      if (highlightedSquares === null) {
+      } else {
+        highlightedSquares.forEach((sq) => {
+          this.chessboard.greySquare(sq);
+        })
+      }
       return false;
     }
     return true;

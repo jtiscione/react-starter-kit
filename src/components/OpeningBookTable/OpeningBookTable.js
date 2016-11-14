@@ -3,16 +3,25 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './OpeningBookTable.css';
 import {gameFromImmutable} from '../../store/model/gameState.js';
 import OpeningBookEntry from '../OpeningBookEntry';
-import cx from 'classnames';
 
-function OpeningBookTable({ clientID, gameID, gameplay, dispatchMakeMove}) {
+function OpeningBookTable({ clientID, gameID, gameplay, dispatchMakeMove, dispatchSetHighlightSAN}) {
 
-  function clickFunction(game, san) {
+  function clickFunction(san) {
     return () => {
-      if (game.cursor === game.history.length) {
-        dispatchMakeMove(clientID, gameID, san);
-      }
-    };
+      dispatchMakeMove(clientID, gameID, san);
+    }
+  }
+
+  function mouseEnterFunction(san) {
+    return () => {
+      dispatchSetHighlightSAN(clientID, gameID, san);
+    }
+  }
+
+  function mouseLeaveFunction() {
+    return () => {
+      dispatchSetHighlightSAN(clientID, gameID, null);
+    }
   }
 
   const gameData = gameplay.getIn([clientID, 'games', gameID]);
@@ -39,7 +48,9 @@ function OpeningBookTable({ clientID, gameID, gameplay, dispatchMakeMove}) {
                                                  blackWins = {e.blackWins}
                                                  draws = {e.draws}
                                                  totalGames = {totalGames}
-                                                 clickFunction = {clickFunction(game, e.san)} />);
+                                                 clickFunction = {clickFunction(e.san)}
+                                                 mouseEnterFunction={mouseEnterFunction(e.san)}
+                                                 mouseLeaveFunction={mouseLeaveFunction()} />);
       return (
         <div className={s.outer}>
             {rows}
@@ -60,7 +71,8 @@ OpeningBookTable.propTypes = {
   clientID: PropTypes.string.isRequired,
   gameID: PropTypes.string.isRequired,
   gameplay: PropTypes.object.isRequired,
-  dispatchMakeMove: PropTypes.func.isRequired
+  dispatchMakeMove: PropTypes.func.isRequired,
+  dispatchSetHighlightSAN: PropTypes.func.isRequired,
 };
 
 export default withStyles(s)(OpeningBookTable);

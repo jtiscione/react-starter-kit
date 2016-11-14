@@ -4,7 +4,8 @@ import {
   MOVE_CURSOR,
   SET_GAME_EVALUATOR,
   SET_INITIAL_BOOK_MOVES,
-  SET_BOOK_MOVES
+  SET_BOOK_MOVES,
+  SET_HIGHLIGHT_SAN,
 } from '../constants';
 
 export function newGameAction(cc, clientID, gameID) {
@@ -83,6 +84,18 @@ export function setBookMovesAction(clientID, gameID, books) {
     },
     payload: {
       clientID, gameID, books
+    }
+  };
+}
+
+export function setHighlightSANAction(clientID, gameID, san) {
+  return {
+    type: SET_HIGHLIGHT_SAN,
+    meta: {
+      cc: 'none'
+    },
+    payload: {
+      clientID, gameID, san
     }
   };
 }

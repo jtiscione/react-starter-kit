@@ -12,7 +12,8 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import { newGameAction,
   makeMoveAction,
-  moveCursorAction } from '../../actions/gameplay.js';
+  moveCursorAction,
+  setHighlightSANAction} from '../../actions/gameplay.js';
 
 import {
   Grid, Row, Col,
@@ -42,6 +43,10 @@ class Play extends Component {
     if ((game.white == 'YOU' && turn == 'w') || (game.black == 'YOU' && turn == 'b')) {
       this.props.dispatchMakeMove(clientID, gameID, move);
     }
+  }
+
+  setHighlightSAN(clientID, gameID, san) {
+    this.props.dispatchSetHighlightSAN(clientID, gameID, san);
   }
 
   componentDidMount() {
@@ -102,6 +107,7 @@ class Play extends Component {
                       gameID={gameID}
                       gameplay={this.props.gameplay}
                       dispatchMakeMove={this.makeUserMove.bind(this)}
+                      dispatchSetHighlightSAN={this.setHighlightSAN.bind(this)}
                     />
                   </Tab>
                 </Tabs>
@@ -137,6 +143,9 @@ const mapDispatchToProps = (dispatch) => {
     dispatchMoveCursor: (clientID, gameID, cursor) => {
       dispatch(moveCursorAction('server', clientID, gameID, cursor));
     },
+    dispatchSetHighlightSAN: (clientID, gameID, san) => {
+      dispatch(setHighlightSANAction(clientID, gameID, san));
+    }
   };
 };
 

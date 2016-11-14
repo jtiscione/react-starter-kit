@@ -9,9 +9,10 @@ export class GameState {
               _initialBookMoves = null,
               _history = [],
               _cursor,
-              white = 'YOU',
-              black='COMPUTER',
-              evaluator='player') {
+              _white = 'YOU',
+              _black='COMPUTER',
+              _highlightSAN = null,
+              _evaluator='player') {
     this.initialFEN = _initialFEN;
     this.initialBookMoves = _initialBookMoves; // the bookMoves[] array for the initial position, should always be the same
     this.history = _history;
@@ -20,10 +21,10 @@ export class GameState {
     } else {
       this.cursor = _cursor;
     }
-    this.white = white;
-    this.black = black;
-    this.evaluator = evaluator;
-    this.highlightSquares = [];
+    this.white = _white;
+    this.black = _black;
+    this.highlightSAN = _highlightSAN;
+    this.evaluator = _evaluator;
   }
 
   toImmutable() {
@@ -115,6 +116,11 @@ export class GameState {
       }
     }
   }
+
+  setHighlightSAN(_san = null) {
+    this.highlightSAN = _san;
+  }
+
 }
 
 export function gameFromImmutable(immutable) {
@@ -128,6 +134,7 @@ export function gameFromImmutable(immutable) {
     immutable.get('cursor'),
     immutable.get('white'),
     immutable.get('black'),
+    immutable.get('highlightSAN'),
     immutable.get('evaluator'));
   return it;
 }
@@ -156,6 +163,16 @@ export function legalTargetSquares(fen, square) {
   return moves.map((move) => {
     return move.to;
   });
+}
+
+// Given an arbitrary FEN and a SAN move to highlight, return its target squares.
+export function sanHighlightSquares(fen, san) {
+  if (san === null) {
+    return [];
+  }
+  const chess = new Chess(fen);
+  const {from, to} = chess.move(san);
+  return [from, to];
 }
 
 export function generateInitialBookMoves(BOOK) {

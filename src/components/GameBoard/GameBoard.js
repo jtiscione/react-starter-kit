@@ -8,11 +8,10 @@ const uuid = require ('uuid');
 import {
   gameFromImmutable,
   legalTargetSquares,
+  sanHighlightSquares
 } from '../../store/model/gameState.js';
 
 import Board from '../Board';
-
-const $ = require('jquery');
 
 export class GameBoard extends Component {
 
@@ -41,10 +40,16 @@ export class GameBoard extends Component {
     this.props.dispatchMakeMove(this.props.clientID, this.props.gameID, { from, to });
   }
 
-  targetSquares(sq) {
+  targetSquares(mouseover_sq) {
     const gameData = this.props.gameplay.getIn([this.props.clientID, 'games', this.props.gameID]);
     const game = gameFromImmutable(gameData);
-    return legalTargetSquares(game.fen(), sq);
+    return legalTargetSquares(game.fen(), mouseover_sq);
+  }
+
+  sanSquares() {
+    const gameData = this.props.gameplay.getIn([this.props.clientID, 'games', this.props.gameID]);
+    const game = gameFromImmutable(gameData);
+    return sanHighlightSquares(game.fen(), game.highlightSAN);
   }
 
   render() {
@@ -87,6 +92,7 @@ export class GameBoard extends Component {
               dimensions={this.props.dimensions}
               allowMoves={true}
               targetSquares={this.targetSquares.bind(this)}
+              sanSquares={this.sanSquares.bind(this)}
               makeMove={this.makeMove.bind(this)}
             />
           </div>
@@ -101,6 +107,7 @@ export class GameBoard extends Component {
                 dimensions={this.props.dimensions}
                 allowMoves={true}
                 targetSquares={this.targetSquares.bind(this)}
+                sanSquares={this.sanSquares.bind(this)}
                 makeMove={this.makeMove.bind(this)}
               />
             </div>

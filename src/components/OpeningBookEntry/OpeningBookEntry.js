@@ -4,7 +4,8 @@ import s from './OpeningBookEntry.css';
 import {Tooltip, OverlayTrigger, Badge} from 'react-bootstrap';
 import cx from 'classnames';
 
-function OpeningBookEntry({ key, san, whiteWins, blackWins, draws, totalGames, clickFunction}) {
+function OpeningBookEntry({ key, san, whiteWins, blackWins, draws, totalGames,
+                            clickFunction, mouseEnterFunction, mouseLeaveFunction }) {
 
   const all = whiteWins + blackWins + draws;
 
@@ -24,8 +25,11 @@ function OpeningBookEntry({ key, san, whiteWins, blackWins, draws, totalGames, c
   const gameCountToolTip = <Tooltip id="gameCountTooltip">{`${all} games out of ${totalGames}`}</Tooltip>
 
   return(
-    <div className={s.row}>
-      <div className={cx(s.san, 'text-danger')} onClick={clickFunction}>{san}</div>
+    <div className={s.row} onMouseEnter={mouseEnterFunction} onMouseLeave={mouseLeaveFunction} onClick={clickFunction}>
+      <div className={cx(s.san, 'text-danger')}>
+        {san}
+      </div>
+
       <OverlayTrigger placement="top" overlay={gameCountToolTip}>
         <div className={s.gameCount}><Badge pullRight bsClass={cx(s.badge, 'badge')}>{all}</Badge></div>
       </OverlayTrigger>
@@ -58,6 +62,8 @@ OpeningBookEntry.propTypes = {
   draws: PropTypes.number.isRequired,
   totalGames: PropTypes.number.isRequired,
   clickFunction: PropTypes.func.isRequired,
+  mouseEnterFunction: PropTypes.func.isRequired,
+  mouseLeaveFunction: PropTypes.func.isRequired,
 };
 
 export default withStyles(s)(OpeningBookEntry);

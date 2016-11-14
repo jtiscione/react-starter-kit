@@ -10,6 +10,11 @@
   border: 1px solid black;
 }
 
+.row:hover {
+  border: 1px solid red;
+  background-color: #b9bbff;
+}
+
 .cell {
   width: 95%;
 }
