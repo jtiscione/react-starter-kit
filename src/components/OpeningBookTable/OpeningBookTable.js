@@ -28,7 +28,7 @@ function OpeningBookTable({ clientID, gameID, gameplay, dispatchMakeMove, dispat
 
   if (gameData) {
     const game = gameFromImmutable(gameData);
-    const bookMoves = (game.history.length === 0 ? game.initialBookMoves : game.history[game.cursor - 1].bookMoves);
+    const bookMoves = (game.cursor === 0 ? game.initialBookMoves : game.history[game.cursor - 1].bookMoves);
     if (bookMoves !== null) {
       if (bookMoves.length === 0 ) {
         return <div className={s.outer}>
@@ -37,9 +37,18 @@ function OpeningBookTable({ clientID, gameID, gameplay, dispatchMakeMove, dispat
           </div>
         </div>;
       }
+      let opening = '';
       let totalGames = 0;
       bookMoves.forEach((e) => {
         totalGames += (e.whiteWins + e.blackWins + e.draws);
+        if (e.game) {
+          if (e.game.white) {
+            opening = e.game.white;
+          }
+          if (e.game.black) {
+            opening += ' / ' + e.game.black;
+          }
+        }
       });
       const rows =
             bookMoves.map((e, i) => <OpeningBookEntry key = {i}
@@ -48,6 +57,7 @@ function OpeningBookTable({ clientID, gameID, gameplay, dispatchMakeMove, dispat
                                                  blackWins = {e.blackWins}
                                                  draws = {e.draws}
                                                  totalGames = {totalGames}
+                                                 opening={opening}
                                                  clickFunction = {clickFunction(e.san)}
                                                  mouseEnterFunction={mouseEnterFunction(e.san)}
                                                  mouseLeaveFunction={mouseLeaveFunction()} />);

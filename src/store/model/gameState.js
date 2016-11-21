@@ -234,12 +234,16 @@ export function generateBookMoves(BOOK, gameState) {
         continue;
       }
       let [whiteWins, blackWins, draws] = node[possibleMove].s;
-      bookMoves.push({
-        san: possibleMove,
-        whiteWins,
-        blackWins,
-        draws
-      });
+      const moveObj = {
+                        san: possibleMove,
+                        whiteWins,
+                        blackWins,
+                        draws,
+                      };
+      if (node[possibleMove].game) {
+        moveObj.game = node[possibleMove].game
+      }
+      bookMoves.push(moveObj);
     }
     if (bookMoves.length === 0) {
       outOfBook = true;

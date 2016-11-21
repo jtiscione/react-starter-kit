@@ -4,7 +4,7 @@ import s from './OpeningBookEntry.css';
 import {Tooltip, OverlayTrigger, Badge} from 'react-bootstrap';
 import cx from 'classnames';
 
-function OpeningBookEntry({ key, san, whiteWins, blackWins, draws, totalGames,
+function OpeningBookEntry({ key, san, whiteWins, blackWins, draws, totalGames, opening,
                             clickFunction, mouseEnterFunction, mouseLeaveFunction }) {
 
   const all = whiteWins + blackWins + draws;
@@ -22,8 +22,11 @@ function OpeningBookEntry({ key, san, whiteWins, blackWins, draws, totalGames,
   const drawTooltip = <Tooltip id="blackToolTip">{`${blackPercentageLabel} draws`}</Tooltip>;
   const blackTooltip = <Tooltip id="blackToolTip">{`${blackPercentageLabel} won by black`}</Tooltip>;
 
-  const gameCountToolTip = <Tooltip id="gameCountTooltip">{`${all} games out of ${totalGames}`}</Tooltip>
+  const gameCountToolTip = <Tooltip id="gameCountTooltip">{`${all} games out of ${totalGames}`}</Tooltip>;
 
+  if (opening === null) {
+    opening='';
+  }
   return(
     <div className={s.row} onMouseEnter={mouseEnterFunction} onMouseLeave={mouseLeaveFunction} onClick={clickFunction}>
       <div className={cx(s.san, 'text-danger')}>
@@ -50,6 +53,7 @@ function OpeningBookEntry({ key, san, whiteWins, blackWins, draws, totalGames,
           </div>
         </OverlayTrigger>
       </div>
+      <div>{opening}</div>
     </div>
   );
 }
