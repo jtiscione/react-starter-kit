@@ -16,3 +16,8 @@
   top: 0px;
   left: 0px;
 }
+
+.spacedbutton {
+  left-margin: 5px;
+  right-margin: 5px;
+}

@@ -14,7 +14,7 @@ import { setRuntimeVariable } from '../../actions/runtime.js';
 
 import {
   Grid, Row, Col,
-  Button, Jumbotron
+  Button, ButtonGroup, Jumbotron
 } from 'react-bootstrap';
 import s from './Start.css';
 
@@ -58,14 +58,17 @@ class Start extends Component {
     const gameID = 'defaultGame';
     const gameplay = this.props.gameplay;
     const currentGame = gameplay.getIn([clientID, 'games', gameID]);
-    console.log("currentGame: " + currentGame);
-    console.log("JSON: " + JSON.stringify(currentGame));
-    let btn = '';
+    //console.log("currentGame: " + currentGame);
+    //console.log("JSON: " + JSON.stringify(currentGame));
+    let btn = <Button href='/play' bsStyle="primary" onClick={this.handleNewGameClick.bind(this)}>New Game...</Button>;
     if (currentGame) {
       const gm = gameFromImmutable(currentGame);
       // See if existing game is blank
       if (gm.history.length > 0) {
-        btn = <Button href="/play" bsStyle="primary" onClick={this.handleResumeGameClick.bind(this)}>Resume Game</Button>;
+        btn = <ButtonGroup>
+                {btn}
+                <Button href="/play" bsStyle="primary" onClick={this.handleResumeGameClick.bind(this)}>Resume Game</Button>
+              </ButtonGroup>;
       }
     }
 
@@ -78,9 +81,6 @@ class Start extends Component {
                   Redux Chess
                 </h1>
                 <p>
-                  <Button href='/play'
-                          bsStyle="primary"
-                          onClick={this.handleNewGameClick.bind(this)}>New Game...</Button>
                   {btn}
                 </p>
               </Jumbotron>

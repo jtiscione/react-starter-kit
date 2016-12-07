@@ -64,14 +64,15 @@ class Header extends React.Component {
           </Brand>
         </Hdr>
         <Nav bsStyle="tabs">
-          <NavItem eventKey={1} href="/play">Play</NavItem>
-          <NavItem eventKey={2} href="/about">About</NavItem>
-          <NavItem eventKey={3} href="/contact">Contact</NavItem>
-          <NavItem eventKey={4} href="/login">Log In</NavItem>
-          <NavItem eventKey={5} href="/register">Sign Up</NavItem>
+          <NavItem eventKey={1} href="/about">About</NavItem>
+          <NavItem eventKey={2} href="/contact">Contact</NavItem>
         </Nav>
       </Navbar>
     );
+    /*
+     <NavItem eventKey={3} href="/login">Log In</NavItem>
+     <NavItem eventKey={4} href="/register">Sign Up</NavItem>
+     */
   }
 }
 
