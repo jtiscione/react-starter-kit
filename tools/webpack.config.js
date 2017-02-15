@@ -12,7 +12,7 @@ import webpack from 'webpack';
 import extend from 'extend';
 import AssetsPlugin from 'assets-webpack-plugin';
 import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
-//import WebpackNotifierPlugin from 'webpack-notifier';
+// import WebpackNotifierPlugin from 'webpack-notifier';
 
 const isDebug = !process.argv.includes('--release');
 const isVerbose = process.argv.includes('--verbose');
@@ -95,6 +95,10 @@ const config = {
           })}`,
           'postcss-loader?pack=default',
         ],
+      },
+      {
+        test: /\.md$/,
+        loader: path.resolve(__dirname, './lib/markdown-loader.js'),
       },
       {
         test: /\.json$/,
@@ -283,9 +287,9 @@ const clientConfig = extend(true, {}, config, {
       }),
     ],
     new WebpackBuildNotifierPlugin({
-      title: "Redux-Chess Build",
-      logo: path.resolve("./img/favicon.png"),
-      suppressSuccess: true
+      title: 'Redux-Chess Build',
+      logo: path.resolve('./img/favicon.png'),
+      suppressSuccess: true,
     }),
     //new WebpackNotifierPlugin(),
   ],
