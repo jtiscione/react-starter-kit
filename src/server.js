@@ -19,7 +19,7 @@ import passport from './core/passport';
 import models from './data/models';
 import schema from './data/schema';
 import routes from './routes';
-import assets from './assets'; // eslint-disable-line import/no-unresolved
+import assets from './assets.json'; // eslint-disable-line import/no-unresolved
 import configureStore from './store/configureStore';
 import configureServerStore from './store/configureServerStore';
 import serverListener from './subscribers/serverListener';
@@ -121,7 +121,7 @@ app.use(expressJwt({
 }));
 app.use(passport.initialize());
 
-if (process.env.NODE_ENV !== 'production') {
+if (__DEV__) {
   app.enable('trust proxy');
 }
 app.get('/login/facebook',
@@ -142,9 +142,9 @@ app.get('/login/facebook/return',
 // -----------------------------------------------------------------------------
 app.use('/graphql', expressGraphQL(req => ({
   schema,
-  graphiql: process.env.NODE_ENV !== 'production',
+  graphiql: __DEV__,
   rootValue: { request: req },
-  pretty: process.env.NODE_ENV !== 'production',
+  pretty: __DEV__,
 })));
 
 //
@@ -240,7 +240,9 @@ app.get('*', async (req, res, next) => {
 
     const data = { ...route };
     data.children = ReactDOM.renderToString(<App context={context}>{route.component}</App>);
-    data.style = [...css].join('');
+    data.styles = [
+      { id: 'css', cssText: [...css].join('') },
+    ];
     data.scripts = [
       assets.vendor.js,
       assets.client.js,
@@ -271,7 +273,7 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     <Html
       title="Internal Server Error"
       description={err.message}
-      style={errorPageStyle._getCss()} // eslint-disable-line no-underscore-dangle
+      styles={[{ id: 'css', cssText: errorPageStyle._getCss() }]} // eslint-disable-line no-underscore-dangle
     >
       {ReactDOM.renderToString(<ErrorPageWithoutStyle error={err} />)}
     </Html>,

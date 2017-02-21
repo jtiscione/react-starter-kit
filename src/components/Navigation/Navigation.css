@@ -1,5 +1,6 @@
 .root {
-  margin: 0;
+  float: right;
+  margin: 6px 0 0;
 }
 
 .link {
