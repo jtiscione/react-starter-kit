@@ -6,6 +6,7 @@ const $ = require('jquery');
 
 class Board extends Component {
 
+  /* eslint-disable react/no-unused-prop-types */
   static propTypes = {
     fen: PropTypes.string.isRequired,
     divID: PropTypes.string.isRequired,
@@ -15,6 +16,7 @@ class Board extends Component {
     sanSquares: PropTypes.func.isRequired,
     makeMove: PropTypes.func.isRequired, // Will dispatch event
   };
+  /* eslint-enable */
 
   constructor(...args) {
     super(...args);
@@ -24,9 +26,9 @@ class Board extends Component {
   componentDidMount() {
     const props = this.props;
 
-    var cfg = {
+    const cfg = {
       cameraControls: true,
-        position: props.fen,
+      position: props.fen,
       pieceTheme: '../../chess/img/wikipedia/{piece}.png',
       fontData: '../../chess/assets/fonts/helvetiker_regular.typeface.json',
       pieceSet: '../../chess/assets/chesspieces/iconic/{piece}.json',
@@ -53,7 +55,7 @@ class Board extends Component {
         if (targetSquares.length === 0) {
           return;
         }
-        if (this.chessboard.hasOwnProperty('greySquare')) {
+        if (this.chessboard.greySquare) {
           // highlight the square they moused over
           this.chessboard.greySquare(square);
           // highlight the possible squares for this piece
@@ -63,7 +65,7 @@ class Board extends Component {
         }
       },
       onMouseoutSquare: () => { // square, piece) => {
-        if (this.chessboard.hasOwnProperty('removeGreySquares')) {
+        if (this.chessboard.removeGreySquares) {
           this.chessboard.removeGreySquares();
         }
       },
@@ -75,8 +77,8 @@ class Board extends Component {
       this.chessboard = new window.ChessBoard(this.props.divID, cfg);
 
       this.chessboard.greySquare = (sq) => {
-        var squareEl = $('#board .square-' + sq);
-        var background = '#a9a9a9';
+        const squareEl = $(`#board .square-${sq}`);
+        let background = '#a9a9a9';
         if (squareEl.hasClass('black-3c85d') === true) {
           background = '#696969';
         }
@@ -98,17 +100,13 @@ class Board extends Component {
     if (this.chessboard) {
       if (nextProps.fen.indexOf(this.chessboard.fen()) === -1) {
         this.chessboard.position(nextProps.fen);
-      } else {
-        console.log("no change");
       }
       const highlightedSquares = this.props.sanSquares();
-      highlightedSquares.forEach((e) => console.log(e));
       this.chessboard.removeGreySquares();
-      if (highlightedSquares === null) {
-      } else {
+      if (highlightedSquares !== null) {
         highlightedSquares.forEach((sq) => {
           this.chessboard.greySquare(sq);
-        })
+        });
       }
       return false;
     }
@@ -118,7 +116,7 @@ class Board extends Component {
   render() {
     const css = this.props.dimensions === 2 ? s.divClass2 : s.divClass3;
     return (
-      <div className={css} id={this.props.divID}></div>
+      <div className={css} id={this.props.divID} />
     );
   }
 

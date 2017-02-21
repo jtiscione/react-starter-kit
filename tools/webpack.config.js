@@ -11,7 +11,7 @@ import path from 'path';
 import webpack from 'webpack';
 import AssetsPlugin from 'assets-webpack-plugin';
 import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
-//import WebpackNotifierPlugin from 'webpack-notifier';
+// import WebpackNotifierPlugin from 'webpack-notifier';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import pkg from '../package.json';
 
@@ -264,9 +264,9 @@ const clientConfig = {
       logLevel: 'info',
     }),
     new WebpackBuildNotifierPlugin({
-      title: "Redux-Chess Build",
-      logo: path.resolve("./img/favicon.png"),
-      suppressSuccess: true
+      title: 'Redux-Chess Build',
+      logo: path.resolve('./img/favicon.png'),
+      suppressSuccess: true,
     }),
     //new WebpackNotifierPlugin(),
   ],
@@ -331,7 +331,7 @@ const serverConfig = {
     /^\.\/assets\.json$/,
     (context, request, callback) => {
       const isExternal =
-        request.match(/^[@a-z][a-z\/\.\-0-9]*$/i) &&
+        request.match(/^[@a-z][a-z\/\.\-0-9]*$/i) &&   // eslint-disable-line no-useless-escape
         !request.match(/\.(css|less|scss|sss)$/i);
       callback(null, Boolean(isExternal));
     },
@@ -369,6 +369,6 @@ const serverConfig = {
   },
 
   devtool: 'source-map',
-});
+};
 
 export default [clientConfig, serverConfig];

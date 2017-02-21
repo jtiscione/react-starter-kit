@@ -1,6 +1,5 @@
+import { Map } from 'immutable';
 import { SET_RUNTIME_VARIABLE } from '../constants';
-
-import {Map} from 'immutable';
 
 export default function runtime(state = Map(), action) {
   switch (action.type) {

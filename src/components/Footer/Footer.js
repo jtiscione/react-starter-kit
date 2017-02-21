@@ -12,7 +12,14 @@ class Footer extends React.Component {
           <span className={s.spacer}>·</span>
           <Link className={s.link} to="/">Home</Link>
           <span className={s.spacer}>·</span>
-          <a target="_blank" className={s.link} href="https://github.com/jtiscione/redux-chess/tree/feature/redux">Github</a>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            className={s.link}
+            href="https://github.com/jtiscione/redux-chess/tree/feature/redux"
+          >
+            Github
+          </a>
         </div>
       </div>);
   }

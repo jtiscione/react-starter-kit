@@ -3,23 +3,20 @@
  */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import {
+  Grid, Row, Col,
+  Tabs, Tab,
+} from 'react-bootstrap';
 import Layout from '../../components/Layout';
 import GameBoard from '../../components/GameBoard';
 import MoveHistoryTable from '../../components/MoveHistoryTable';
 import OpeningBookTable from '../../components/OpeningBookTable';
 import { gameFromImmutable } from '../../store/model/gameState';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
-
 import { newGameAction,
   makeMoveAction,
   moveCursorAction,
-  setHighlightSANAction} from '../../actions/gameplay.js';
-
-import {
-  Grid, Row, Col,
-  Tabs, Tab,
-  GlyphIcon
-} from 'react-bootstrap';
+  setHighlightSANAction } from '../../actions/gameplay.js';
 import s from './Play.css';
 
 class Play extends Component {
@@ -28,25 +25,8 @@ class Play extends Component {
     super(props, context);
     this.state = {
       tabKey: 3,
-      renderCount: 0
-    }
-  }
-
-  handleTabSelect(tabKey) {
-    this.setState({tabKey});
-  }
-
-  makeUserMove(clientID, gameID, move) {
-    const immGame = this.props.gameplay.getIn([clientID, 'games', gameID]);
-    const game = gameFromImmutable(immGame);
-    const turn = game.toChessObject().turn();
-    if ((game.white == 'YOU' && turn == 'w') || (game.black == 'YOU' && turn == 'b')) {
-      this.props.dispatchMakeMove(clientID, gameID, move);
-    }
-  }
-
-  setHighlightSAN(clientID, gameID, san) {
-    this.props.dispatchSetHighlightSAN(clientID, gameID, san);
+      renderCount: 0,
+    };
   }
 
   componentDidMount() {
@@ -62,8 +42,26 @@ class Play extends Component {
     } else {
       // The user wasn't allowed to make this move, but chessboard.js is showing the bad position.
       // This should get it to re-render.
+      // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ renderCount: this.state.renderCount + 1 });
     }
+  }
+
+  setHighlightSAN(clientID, gameID, san) {
+    this.props.dispatchSetHighlightSAN(clientID, gameID, san);
+  }
+
+  makeUserMove(clientID, gameID, move) {
+    const immGame = this.props.gameplay.getIn([clientID, 'games', gameID]);
+    const game = gameFromImmutable(immGame);
+    const turn = game.toChessObject().turn();
+    if ((game.white === 'YOU' && turn === 'w') || (game.black === 'YOU' && turn === 'b')) {
+      this.props.dispatchMakeMove(clientID, gameID, move);
+    }
+  }
+
+  handleTabSelect(tabKey) {
+    this.setState({ tabKey });
   }
 
   render() {
@@ -84,11 +82,9 @@ class Play extends Component {
                 />
               </Col>
               <Col md={8} lg={8}>
-                <Tabs defaultActiveKey={this.state.tabKey} onSelect={this.handleTabSelect.bind(this)} id="board-dimension">
-                  <Tab eventKey={2} title="2D">
-                  </Tab>
-                  <Tab eventKey={3} title="3D">
-                  </Tab>
+                <Tabs defaultActiveKey={this.state.tabKey} onSelect={(...args) => this.handleTabSelect(...args)} id="board-dimension">
+                  <Tab eventKey={2} title="2D" />
+                  <Tab eventKey={3} title="3D" />
                 </Tabs>
                 <GameBoard
                   clientID={clientID}
@@ -96,18 +92,18 @@ class Play extends Component {
                   dimensions={this.state.tabKey}
                   gameplay={this.props.gameplay}
                   dispatchNewGame={this.props.dispatchNewGame}
-                  dispatchMakeMove={this.makeUserMove.bind(this)}
+                  dispatchMakeMove={(...args) => this.makeUserMove(...args)}
                 />
               </Col>
               <Col xsHidden smHidden md={2}>
                 <Tabs defaultActiveKey={0} id="side-tabs">
-                  <Tab eventKey={0} title='book'>
+                  <Tab eventKey={0} title="book">
                     <OpeningBookTable
                       clientID={clientID}
                       gameID={gameID}
                       gameplay={this.props.gameplay}
-                      dispatchMakeMove={this.makeUserMove.bind(this)}
-                      dispatchSetHighlightSAN={this.setHighlightSAN.bind(this)}
+                      dispatchMakeMove={(...args) => this.makeUserMove(...args)}
+                      dispatchSetHighlightSAN={(...args) => this.setHighlightSAN(...args)}
                     />
                   </Tab>
                 </Tabs>
@@ -120,6 +116,16 @@ class Play extends Component {
   }
 }
 
+Play.propTypes = {
+  clientID: PropTypes.string.isRequired,
+  gameplay: PropTypes.object.isRequired,   // eslint-disable-line react/forbid-prop-types
+  dispatchNewGame: PropTypes.func.isRequired,
+  dispatchMakeMove: PropTypes.func.isRequired,
+  dispatchSetHighlightSAN: PropTypes.func.isRequired,
+  dispatchMoveCursor: PropTypes.func.isRequired,
+};
+
+Play.defaultProps = {};
 
 let clientID;
 
@@ -128,25 +134,27 @@ const mapStateToProps = (state) => {
 
   return {
     clientID,
-    gameplay: state.get('gameplay')
+    gameplay: state.get('gameplay'),
   };
 };
 
+// eslint-disable-next-line arrow-body-style
 const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchNewGame: (clientID, gameID) => {
-      dispatch(newGameAction('server', clientID, gameID));
+    dispatchNewGame: (_clientID, _gameID) => {
+      dispatch(newGameAction('server', _clientID, _gameID));
     },
-    dispatchMakeMove: (clientID, gameID, move) => {
-      dispatch(makeMoveAction('server', clientID, gameID, move, 'book'));
+    dispatchMakeMove: (_clientID, _gameID, move) => {
+      dispatch(makeMoveAction('server', _clientID, _gameID, move, 'book'));
     },
-    dispatchMoveCursor: (clientID, gameID, cursor) => {
-      dispatch(moveCursorAction('server', clientID, gameID, cursor));
+    dispatchMoveCursor: (_clientID, _gameID, cursor) => {
+      dispatch(moveCursorAction('server', _clientID, _gameID, cursor));
     },
-    dispatchSetHighlightSAN: (clientID, gameID, san) => {
-      dispatch(setHighlightSANAction(clientID, gameID, san));
-    }
+    dispatchSetHighlightSAN: (_clientID, _gameID, san) => {
+      dispatch(setHighlightSANAction(_clientID, _gameID, san));
+    },
   };
 };
 
+// eslint-disable-next-line import/prefer-default-export
 export const PlayContainer = withStyles(s)(connect(mapStateToProps, mapDispatchToProps)(Play));

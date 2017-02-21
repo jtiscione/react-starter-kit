@@ -31,7 +31,7 @@ export function makeMoveAction(cc, clientID, gameID, move, evaluator) {
       clientID,
       gameID,
       move,
-      evaluator
+      evaluator,
     },
   };
 }
@@ -59,8 +59,8 @@ export function setGameEvaluatorAction(cc, clientID, gameID, evaluator) {
     payload: {
       clientID,
       gameID,
-      evaluator
-    }
+      evaluator,
+    },
   };
 }
 
@@ -71,8 +71,8 @@ export function setInitialBookMovesAction(clientID, gameID, initialBookMoves) {
       cc: 'client',
     },
     payload: {
-      clientID, gameID, initialBookMoves
-    }
+      clientID, gameID, initialBookMoves,
+    },
   };
 }
 
@@ -83,8 +83,8 @@ export function setBookMovesAction(clientID, gameID, books) {
       cc: 'client',
     },
     payload: {
-      clientID, gameID, books
-    }
+      clientID, gameID, books,
+    },
   };
 }
 
@@ -92,10 +92,10 @@ export function setHighlightSANAction(clientID, gameID, san) {
   return {
     type: SET_HIGHLIGHT_SAN,
     meta: {
-      cc: 'none'
+      cc: 'none',
     },
     payload: {
-      clientID, gameID, san
-    }
+      clientID, gameID, san,
+    },
   };
 }

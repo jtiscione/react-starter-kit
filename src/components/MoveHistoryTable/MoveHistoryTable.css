@@ -14,27 +14,29 @@
 }
 
 .no_bottom_margin {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 table {
   color: black;
   border: 1px solid black;
   table-layout: fixed;
-  background: #BBBBBB;
-  margin-bottom: 0px;
+  background: #bbb;
+  margin-bottom: 0;
 }
 
 tbody {
-  height:550px; overflow-y:scroll; display:block;
+  height: 550px;
+  overflow-y: scroll;
+  display: block;
 }
 
 thead {
-  display:block;
+  display: block;
 }
 
 th {
-  color: #000000;
+  color: #000;
   border: 1px solid black;
 }
 

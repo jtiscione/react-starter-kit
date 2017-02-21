@@ -1,10 +1,5 @@
 @import '../variables.css';
 
-.outer {
-  font-size: small;
-  border: 1px solid black;
-}
-
 .row {
   width: 95%;
   border: 1px solid black;
@@ -15,9 +10,16 @@
   background-color: #b9bbff;
 }
 
+/*
+.outer {
+  font-size: small;
+  border: 1px solid black;
+}
+
 .cell {
   width: 95%;
 }
+*/
 
 .san {
   clear: both;
@@ -30,7 +32,7 @@
 }
 
 .gameCount {
-  float:right;
+  float: right;
   margin: 5px;
 }
 
@@ -48,20 +50,20 @@
 }
 
 .white {
-  color: #000000;
-  float:left;
+  color: #000;
+  float: left;
   clear: both;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 
 .gray {
-  color: #FFFFFF;
-  float:left;
-  background-color: #A0A0A0;
+  color: #fff;
+  float: left;
+  background-color: #a0a0a0;
 }
 
 .black {
-  color: #CCCCCC;
-  float:left;
-  background-color: #555555;
+  color: #ccc;
+  float: left;
+  background-color: #555;
 }

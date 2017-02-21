@@ -1,3 +1,4 @@
+import { Map } from 'immutable';
 import { INITIALIZE_GAMES,
         NEW_GAME,
         MAKE_MOVE,
@@ -7,16 +8,16 @@ import { INITIALIZE_GAMES,
         SET_BOOK_MOVES,
         SET_HIGHLIGHT_SAN,
       } from '../constants';
-
-import {Map} from 'immutable';
-
 import {
   gameFromImmutable,
   GameState,
 } from '../store/model/gameState.js';
 
 export default function gameplay(state = Map(), action) {
-  let gameID = null, clientID = null, gameData = null, gameState;
+  let gameID = null;
+  let clientID = null;
+  let gameData = null;
+  let gameState = null;
   if (action.payload) {
     clientID = action.payload.clientID;
     gameID = action.payload.gameID;
@@ -33,17 +34,16 @@ export default function gameplay(state = Map(), action) {
       return state.setIn([clientID, 'games'], Map());
     case NEW_GAME:
       if (!state.get(clientID)) {
-        state = state.set(clientID, Map());
+        state = state.set(clientID, Map()); // eslint-disable-line no-param-reassign
       }
       if (!state.get(clientID).get('games')) {
-        state = state.setIn([clientID, 'games'], Map());
+        state = state.setIn([clientID, 'games'], Map()); // eslint-disable-line no-param-reassign
       }
       return state.setIn([clientID, 'games', gameID], new GameState().toImmutable());
     case MAKE_MOVE:
-      const move = action.payload.move;
-      const evaluator = action.payload.evaluator;
       if (gameState) {
-        gameState.makeMove(move, evaluator);
+        gameState.makeMove(action.payload.move, action.payload.evaluator);
+        // eslint-disable-next-line no-param-reassign
         state = state.setIn([clientID, 'games', gameID], gameState.toImmutable());
       }
       return state;
@@ -69,12 +69,14 @@ export default function gameplay(state = Map(), action) {
         gameState.setBookMoves(action.payload.books);
         return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
       }
+      return state;
     }
     case SET_HIGHLIGHT_SAN: {
       if (gameState) {
         gameState.setHighlightSAN(action.payload.san);
         return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
       }
+      return state;
     }
     default:
       return state;

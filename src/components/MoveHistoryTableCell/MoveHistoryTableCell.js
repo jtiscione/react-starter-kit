@@ -1,38 +1,43 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
+import { Glyphicon } from 'react-bootstrap';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './MoveHistoryTableCell.css';
 import cx from 'classnames';
-
-import {Glyphicon} from 'react-bootstrap';
+import s from './MoveHistoryTableCell.css';
 
 function MoveHistoryTableCell({ side, san, clickFunction, faint, hot }) {
-
   if (!san) {
-    return <td><span></span></td>;
+    return <td />;
   }
   let glyph = '';
   if (san.match(/^K/) || san.match(/^O-O/)) {
-    glyph = <Glyphicon glyph="king"></Glyphicon>
+    glyph = <Glyphicon glyph="king" />;
   } else if (san.match(/^Q/)) {
-    glyph = <Glyphicon glyph="queen"></Glyphicon>
+    glyph = <Glyphicon glyph="queen" />;
   } else if (san.match(/^R/)) {
-    glyph = <Glyphicon glyph="tower"></Glyphicon>
+    glyph = <Glyphicon glyph="tower" />;
   } else if (san.match(/^B/)) {
-    glyph = <Glyphicon glyph="bishop"></Glyphicon>
+    glyph = <Glyphicon glyph="bishop" />;
   } else if (san.match(/^N/)) {
-    glyph = <Glyphicon glyph="knight"></Glyphicon>
+    glyph = <Glyphicon glyph="knight" />;
   } else {
-    glyph = <Glyphicon glyph="pawn"></Glyphicon>
+    glyph = <Glyphicon glyph="pawn" />;
   }
 
-  const sideClassIcon = faint ? "faint"+side : side;
-  const sideClassText = faint ? "faintblack" : "black";
+  let sideClassIcon;
+  if (faint) {
+    sideClassIcon = (side === 'white' ? s.faintwhite : s.faintblack);
+  } else {
+    sideClassIcon = (side === 'white' ? s.white : s.black);
+  }
 
-  const classes = cx(s.cell, s[sideClassIcon]);
-  return <td className={classes} onClick={clickFunction}>
+  const sideClassText = faint ? s.faintblack : s.black;
+
+  const classes = cx(s.cell, sideClassIcon);
+  // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+  return (<td className={classes} onClick={clickFunction}>
     {glyph}
-    <span className={hot ? cx(s.current, s[sideClassText]) : s[sideClassText]}>{san}</span>
-  </td>;
+    <span className={hot ? cx(s.current, sideClassText) : sideClassText}>{san}</span>
+  </td>);
 }
 
 MoveHistoryTableCell.propTypes = {
@@ -40,7 +45,12 @@ MoveHistoryTableCell.propTypes = {
   san: PropTypes.string.isRequired,
   clickFunction: PropTypes.func.isRequired,
   faint: PropTypes.bool,
-  hot: PropTypes.bool
+  hot: PropTypes.bool,
+};
+
+MoveHistoryTableCell.defaultProps = {
+  faint: false,
+  hot: false,
 };
 
 export default withStyles(s)(MoveHistoryTableCell);

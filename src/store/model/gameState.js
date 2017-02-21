@@ -1,20 +1,20 @@
+import { List, Map, fromJS } from 'immutable';
 import Chess from '../../libs/chess.js';
-import {List, Map, fromJS} from 'immutable';
 
 export const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 export class GameState {
 
   constructor(_initialFEN = DEFAULT_FEN,
-              _initialBookMoves = null,
-              _history = [],
-              _cursor,
-              _white = 'YOU',
-              _black='COMPUTER',
-              _highlightSAN = null,
-              _evaluator='player') {
+    _initialBookMoves = null,
+    _history = [],
+    _cursor,
+    _white = 'YOU',
+    _black = 'COMPUTER',
+    _highlightSAN = null,
+    _evaluator = 'player') {
     this.initialFEN = _initialFEN;
-    this.initialBookMoves = _initialBookMoves; // the bookMoves[] array for the initial position, should always be the same
+    this.initialBookMoves = _initialBookMoves; // a bookMoves[] array for the initial position
     this.history = _history;
     if (_cursor === undefined) {
       this.cursor = this.history.length;
@@ -39,7 +39,7 @@ export class GameState {
 
   toChessObject() {
     const chess = new Chess(this.initialFEN);
-    for (let c = 0; c < this.cursor; c++) {
+    for (let c = 0; c < this.cursor; c++) { // eslint-disable-line no-plusplus
       chess.move(this.history[c].san);
     }
     return chess;
@@ -63,17 +63,15 @@ export class GameState {
     let obj = null;
     if (typeof move === 'string') {
       obj = chess.move(move, { sloppy: true });
-    } else {
-      if (typeof move === 'object') {
-        obj = chess.move(move);
-      }
+    } else if (typeof move === 'object') {
+      obj = chess.move(move);
     }
     if (obj !== null) {
       obj.fen = chess.fen();
       obj.bookMoves = null;
       this.history = this.history.slice(0, this.cursor);
       this.history.push(obj);
-      this.cursor++;
+      this.cursor++; // eslint-disable-line no-plusplus
       this.evaluator = evaluator;
     }
   }
@@ -110,7 +108,7 @@ export class GameState {
   }
 
   setBookMoves(_books) {
-    for (let i = 0; i < this.history.length; i++) {
+    for (let i = 0; i < this.history.length; i++) { // eslint-disable-line no-plusplus
       if (_books[i] !== null) {
         this.history[i].bookMoves = _books[i];
       }
@@ -126,7 +124,7 @@ export class GameState {
 export function gameFromImmutable(immutable) {
   // Check for allowed null case with initialBookMoves
   let initialBookMoves = immutable.get('initialBookMoves', null);
-  initialBookMoves = ( initialBookMoves ? initialBookMoves.toJS() : null );
+  initialBookMoves = (initialBookMoves ? initialBookMoves.toJS() : null);
   const history = immutable.get('history');
   const it = new GameState(immutable.get('initialFEN'),
     initialBookMoves,
@@ -160,9 +158,7 @@ export function legalTargetSquares(fen, square) {
     square,
     verbose: true,
   });
-  return moves.map((move) => {
-    return move.to;
-  });
+  return moves.map(move => move.to);
 }
 
 // Given an arbitrary FEN and a SAN move to highlight, return its target squares.
@@ -171,43 +167,42 @@ export function sanHighlightSquares(fen, san) {
     return [];
   }
   const chess = new Chess(fen);
-  const {from, to} = chess.move(san);
+  const { from, to } = chess.move(san);
   return [from, to];
 }
 
 export function generateInitialBookMoves(BOOK) {
   const bookMoves = [];
-  for (let move in BOOK) {
-    if (move == 's' || move == 'game') {
-      continue;
+  for (const move in BOOK) {  // eslint-disable-line no-restricted-syntax
+    if (move !== 's' && move !== 'game') {
+      const [whiteWins, blackWins, draws] = BOOK[move].s;
+      bookMoves.push({
+        san: move,
+        whiteWins,
+        blackWins,
+        draws,
+      });
+      bookMoves.sort((a, b) => {
+        const aGames = a.whiteWins + a.blackWins + a.draws;
+        const bGames = b.whiteWins + b.blackWins + b.draws;
+        return (aGames < bGames ? 1 : -1);
+      });
     }
-    let [whiteWins, blackWins, draws] = BOOK[move].s;
-    bookMoves.push( {
-      san: move,
-      whiteWins,
-      blackWins,
-      draws
-    });
-    bookMoves.sort((a, b) => {
-      const aGames = a.whiteWins + a.blackWins + a.draws;
-      const bGames = b.whiteWins + b.blackWins + b.draws;
-      return (aGames < bGames?  1: -1);
-    });
   }
   return bookMoves;
 }
 
-// Does not alter its arguments. Returns an array of bookMoves[] arrays which will be converted to setBookMoves actions
+// Does not alter its arguments.
+// Returns an array of bookMoves[] arrays which will be converted to setBookMoves actions
 export function generateBookMoves(BOOK, gameState) {
-
   const books = [];
   let node = BOOK;
   let outOfBook = false;
-  for (let move of gameState.history) {
+  for (const move of gameState.history) { // eslint-disable-line no-restricted-syntax
     if (node === null || node[move.san] === undefined) {
       books.push(null);
       node = null;
-      continue;
+      continue; // eslint-disable-line no-continue
     }
 
     node = node[move.san];
@@ -217,31 +212,29 @@ export function generateBookMoves(BOOK, gameState) {
       // to indicate no update is required here
       if (!outOfBook) {
         books.push(null);
+      } else if (move.bookMoves.length > 0) {
+        // out of book at this point; but entries are here they shouldn't be (prob. never happens)
+        books.push([]);
       } else {
-        if (move.bookMoves.length > 0) {
-          // we're out of book at this point; but entries are here they shouldn't be (prob. never happens)
-          books.push([]);
-        } else {
-          books.push(null); // empty array already there
-        }
+        books.push(null); // empty array already there
       }
-      continue;
+      continue; // eslint-disable-line no-continue
     }
 
     const bookMoves = [];
-    for (let possibleMove in node) {
-      if (possibleMove == 's' || possibleMove == 'game' || possibleMove == '*') {
-        continue;
+    for (const possibleMove in node) { // eslint-disable-line no-restricted-syntax
+      if (possibleMove === 's' || possibleMove === 'game' || possibleMove === '*') {
+        continue; // eslint-disable-line no-continue
       }
-      let [whiteWins, blackWins, draws] = node[possibleMove].s;
+      const [whiteWins, blackWins, draws] = node[possibleMove].s;
       const moveObj = {
-                        san: possibleMove,
-                        whiteWins,
-                        blackWins,
-                        draws,
-                      };
+        san: possibleMove,
+        whiteWins,
+        blackWins,
+        draws,
+      };
       if (node[possibleMove].game) {
-        moveObj.game = node[possibleMove].game
+        moveObj.game = node[possibleMove].game;
       }
       bookMoves.push(moveObj);
     }
@@ -251,7 +244,7 @@ export function generateBookMoves(BOOK, gameState) {
     bookMoves.sort((a, b) => {
       const aGames = a.whiteWins + a.blackWins + a.draws;
       const bGames = b.whiteWins + b.blackWins + b.draws;
-      return (aGames < bGames? 1 : -1);
+      return (aGames < bGames ? 1 : -1);
     });
     books.push(bookMoves);
   }

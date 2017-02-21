@@ -1,11 +1,10 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from '../reducers';
-import { setRuntimeVariable } from '../actions/runtime';
 import createLogger from './logger';
 
+// import { setRuntimeVariable } from '../actions/runtime';
 export default function configureServerStore(initialState, ...extraMiddleware) {
-
   const helpers = {}; // put stuff in later
   let middleware = [thunk.withExtraArgument(helpers)];
 
@@ -17,7 +16,7 @@ export default function configureServerStore(initialState, ...extraMiddleware) {
     middleware.push(createLogger());
   }
   const enhancer = compose(
-    applyMiddleware(...middleware)
+    applyMiddleware(...middleware),
   );
 
   const store = createStore(rootReducer, initialState, enhancer);
@@ -30,9 +29,9 @@ export default function configureServerStore(initialState, ...extraMiddleware) {
   }));
    */
 
-  if(__DEV__ && module.hot) {
+  if (__DEV__ && module.hot) {
     module.hot.accept('../reducers/server', () =>
-      store.replaceReducer(require('../reducers').default) // eslint-disable-line global-require
+      store.replaceReducer(require('../reducers').default), // eslint-disable-line global-require
     );
   }
 

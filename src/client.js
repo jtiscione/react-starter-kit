@@ -5,20 +5,25 @@ import FastClick from 'fastclick';
 import UniversalRouter from 'universal-router';
 import queryString from 'query-string';
 import { createPath } from 'history/PathUtils';
+import createSocketIoMiddleware from 'redux-socket.io';
+import io from 'socket.io-client';
+import { fromJS } from 'immutable';
 import history from './core/history';
 import App from './components/App';
 import configureStore from './store/configureStore';
 import { updateMeta } from './core/DOMUtils';
 import { ErrorReporter, deepForceUpdate } from './core/devUtils';
-import createSocketIoMiddleware from 'redux-socket.io';
-import io from 'socket.io-client';
-import { fromJS } from 'immutable';
 
+// Global (context) variables that can be easily accessed from any React component
+// https://facebook.github.io/react/docs/context.html
+import clientListener from './subscribers/clientListener.js';
 
 const socket = io();
-const socketIoMiddleware = createSocketIoMiddleware(socket, (type, action) => (action.meta && (action.meta.cc == 'server')));
-
-const clientID = (window.APP_STATE? (window.APP_STATE.runtime ? window.APP_STATE.runtime.clientID : null) : null);
+const socketIoMiddleware = createSocketIoMiddleware(socket,
+                            (type, action) => (action.meta && (action.meta.cc === 'server')));
+const clientID = window.APP_STATE && window.APP_STATE.runtime
+  ? window.APP_STATE.runtime.clientID
+  : null;
 
 if (clientID) {
   // tell server which clientID the socket is associated with
@@ -26,16 +31,11 @@ if (clientID) {
 }
 socket.on('error', (err) => {
   if (err) {
-    console.log('Socket error: ' + err);
+    console.error('Socket error', err); // eslint-disable-line no-console
   } else {
-    console.log("Socket error.");
+    console.error('Socket error.'); // eslint-disable-line no-console
   }
 });
-import { ErrorReporter, deepForceUpdate } from './core/devUtils';
-
-// Global (context) variables that can be easily accessed from any React component
-// https://facebook.github.io/react/docs/context.html
-import clientListener from './subscribers/clientListener.js';
 
 const context = {
   // Enables critical path CSS rendering
@@ -50,7 +50,7 @@ const context = {
   store: configureStore(fromJS(window.APP_STATE), { history }, socketIoMiddleware),
 };
 
-const engine = new Worker("chess/engines/lozza_patches.js");
+const engine = new Worker('chess/engines/lozza_patches.js');
 
 context.store.subscribe(clientListener(context.store, engine));
 

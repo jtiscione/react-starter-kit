@@ -1,37 +1,33 @@
-/**
- * Created by jason on 9/30/16.
- */
-import {fromJS, Map} from 'immutable';
+import { fromJS } from 'immutable';
 
-export default function(state, clientID) {
-
+export default function (state, clientID) {
   const jsState = state.toJS();
 
   let foundFlag = false;
 
-  function prune(object, clientID) {
-    if (typeof object === 'array') {
-      for (let element of object) {
-        prune(element, clientID);
+  function prune(object, _clientID) {
+    if (Array.isArray(object)) {
+      for (const element of object) {  // eslint-disable-line no-restricted-syntax
+        prune(element, _clientID);
       }
       return;
     }
     if (typeof object === 'object') {
       let found = false;
-      for (let field in object) {
-        if (field == clientID) {
+      for (const field in object) { // eslint-disable-line no-restricted-syntax
+        if (field === _clientID) {
           found = true;
           foundFlag = true;
         }
       }
-      for (let field in object) {
+      for (const field in object) { // eslint-disable-line no-restricted-syntax
         if (found) {
-          if (field != clientID) {
-            delete object[field];
-            continue;
+          if (field !== _clientID) {
+            delete object[field];  // eslint-disable-line no-param-reassign
+            continue;  // eslint-disable-line no-continue
           }
         }
-        prune(object[field], clientID);
+        prune(object[field], _clientID);
       }
     }
   }
@@ -43,5 +39,4 @@ export default function(state, clientID) {
     return null;
   }
   return fromJS(jsState);
-
 }

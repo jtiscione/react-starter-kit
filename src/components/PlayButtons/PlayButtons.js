@@ -1,15 +1,11 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
+import { Button, ButtonGroup, Glyphicon } from 'react-bootstrap';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './PlayButtons.css';
 import cx from 'classnames';
+import { gameFromImmutable } from '../../store/model/gameState.js';
+import s from './PlayButtons.css';
 
-import {Button, ButtonGroup, Glyphicon} from 'react-bootstrap';
-
-import {gameFromImmutable} from '../../store/model/gameState.js';
-
-
-function PlayButtons({clientID, gameID, gameplay, dispatchMoveCursor}) {
-
+function PlayButtons({ clientID, gameID, gameplay, dispatchMoveCursor }) {
   function currentCursorValue() {
     return gameFromImmutable(gameplay.getIn([clientID, 'games', gameID])).cursor;
   }
@@ -19,11 +15,11 @@ function PlayButtons({clientID, gameID, gameplay, dispatchMoveCursor}) {
   }
 
   function stepBack() {
-    dispatchMoveCursor(clientID, gameID, currentCursorValue()-1);
+    dispatchMoveCursor(clientID, gameID, currentCursorValue() - 1);
   }
 
   function stepForward() {
-    dispatchMoveCursor(clientID, gameID, currentCursorValue()+1);
+    dispatchMoveCursor(clientID, gameID, currentCursorValue() + 1);
   }
 
   function moveToStart() {
@@ -34,11 +30,12 @@ function PlayButtons({clientID, gameID, gameplay, dispatchMoveCursor}) {
     dispatchMoveCursor(clientID, gameID, historyLength());
   }
 
-  const ccv = currentCursorValue(), histLength = historyLength();
+  const ccv = currentCursorValue();
+  const histLength = historyLength();
   const cannotMoveBack = (ccv === 0);
   const cannotMoveForward = (ccv === histLength);
-  return(
-    <div className={cx(["panel-footer", "clearfix", "btn-block", s.nowrap, s.margin_bottom_30])}>
+  return (
+    <div className={cx(['panel-footer', 'clearfix', 'btn-block', s.nowrap])}>
       <ButtonGroup>
         <Button bsClass={cx('btn', 'btn-default', s.quarterwidth)} disabled={cannotMoveBack} onClick={moveToStart}>
           <Glyphicon glyph="fast-backward" />
@@ -60,8 +57,8 @@ function PlayButtons({clientID, gameID, gameplay, dispatchMoveCursor}) {
 PlayButtons.propTypes = {
   clientID: PropTypes.string.isRequired,
   gameID: PropTypes.string.isRequired,
-  gameplay: PropTypes.object.isRequired,
-  dispatchMoveCursor: PropTypes.func.isRequired
+  gameplay: PropTypes.object.isRequired,  // eslint-disable-line react/forbid-prop-types
+  dispatchMoveCursor: PropTypes.func.isRequired,
 };
 
 export default withStyles(s)(PlayButtons);

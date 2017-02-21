@@ -19,6 +19,40 @@
   font-size: 1.5rem;
 }
 
+h1.newsDesc {
+  font-size: 1.125rem;
+}
+
+h2.newsDesc {
+  font-size: 1.125rem;
+}
+
+h3.newsDesc {
+  font-size: 1.125rem;
+}
+
+h4.newsDesc {
+  font-size: 1.125rem;
+}
+
+h5.newsDesc {
+  font-size: 1.125rem;
+}
+
+h6.newsDesc {
+  font-size: 1.125rem;
+}
+
+pre.newsDesc {
+  white-space: pre-wrap;
+  font-size: 0.875rem;
+}
+
+img.newsDesc {
+  max-width: 100%;
+}
+
+/*
 .newsDesc {
   h1,
   h2,
@@ -38,3 +72,4 @@
     max-width: 100%;
   }
 }
+*/

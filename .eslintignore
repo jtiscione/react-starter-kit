@@ -7,3 +7,4 @@ src/libs/chess.js
 src/public/chess/engines/lozza.js
 src/public/chess/engines/lozza_patches.js
 src/public/chess/engines/stockfish.js
+src/store/model/gameState.test.js

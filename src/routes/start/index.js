@@ -13,7 +13,7 @@ export default {
   action() {
     return {
       title,
-      component: <StartContainer/>
+      component: <StartContainer />,
     };
   },
 

@@ -74,7 +74,6 @@ describe('game logic', () => {
     const reconstituted = fromPGN(pgn);
     expect(reconstituted).eql(Nf6);
   });
-
   it('generates legal moves correctly',() => {
     const start = new GameState();
     const startMoves = start.legalMoves();
@@ -83,7 +82,6 @@ describe('game logic', () => {
     const e4moves = e4.legalMoves();
     expect(e4moves.length).equal(20);
   });
-
   it ('Finds target squares correctly', () => {
     const targetSquares = legalTargetSquares(DEFAULT_FEN, 'e2');
     assert(targetSquares.includes('e3'));

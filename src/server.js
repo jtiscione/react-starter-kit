@@ -1,3 +1,6 @@
+import fs from 'fs';
+import Promise from 'bluebird';
+import { Map } from 'immutable';
 import 'babel-polyfill';
 import path from 'path';
 import http from 'http';
@@ -11,6 +14,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/server';
 import UniversalRouter from 'universal-router';
 import PrettyError from 'pretty-error';
+import socketIO from 'socket.io';
+import notifier from 'node-notifier';
 import App from './components/App';
 import Html from './components/Html';
 import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
@@ -26,20 +31,13 @@ import serverListener from './subscribers/serverListener';
 import { setRuntimeVariable } from './actions/runtime';
 import { newGameAction } from './actions/gameplay';
 import { bookFile, port, auth } from './config';
-import fs from 'fs';
-import Promise from 'bluebird';
-import { Map } from 'immutable';
 import pruneState from './store/pruneState';
-const uuid = require('uuid');
-import socketIO from 'socket.io';
-import notifier from 'node-notifier';
-
 import socketIoServerMiddlewareManager from './middleware/socketIoServerMiddlewareManager';
 
-const manager = socketIoServerMiddlewareManager((type,action) => (action.meta && (action.meta.cc == 'client')));
+const uuid = require('uuid');
 
+const manager = socketIoServerMiddlewareManager((type, action) => (action.meta && (action.meta.cc === 'client')));
 const serverStore = configureServerStore(Map(), manager.middleware());
-
 const readFile = Promise.promisify(fs.readFile);
 
 async function readBook(fileName) {
@@ -48,24 +46,22 @@ async function readBook(fileName) {
   return book;
 }
 
-const useDefaultBook = ()=>{serverStore.subscribe(serverListener(serverStore, require('../tiny_book')))};
+// eslint-disable-next-line global-require
+const useDefaultBook = () => { serverStore.subscribe(serverListener(serverStore, require('../tiny_book'))); };
 
 if (bookFile !== null) {
-  readBook(bookFile).then( book => {
+  readBook(bookFile).then((book) => {
     serverStore.subscribe(serverListener(serverStore, book));
-    console.log("LOADED BOOK: "+bookFile);
-    notifier.notify("LOADED BOOK " + bookFile);
-  }).catch( (err) => {
-      console.log(err);
-      console.log("using default book....");
-      useDefaultBook();
-    }
-  )
+    // console.log("LOADED BOOK: "+bookFile);
+    notifier.notify(`LOADED BOOK ${bookFile}`);
+  }).catch((err) => {
+    console.error(err);  // eslint-disable-line no-console
+    useDefaultBook();
+  });
 } else {
-  console.log("using default book...");
+  // console.log("using default book...");
   useDefaultBook();
 }
-
 
 const app = express();
 const httpServer = http.Server(app);
@@ -79,20 +75,17 @@ setInterval(() => {
   )}, 1000);
 */
 
-io.on('connection', function(socket){
-
+io.on('connection', (socket) => {
   socket.on('clientID', (clientID) => {
     manager.registerSocket(clientID, socket);
   });
   socket.on('error', (err) => {
     if (err) {
-      console.log('Socket error: ' + err);
+      console.error('Socket error', err); // eslint-disable-line no-console
     } else {
-      console.log("Socket error.");
+      console.error('Socket error.'); // eslint-disable-line no-console
     }
   });
-
-
 });
 
 
@@ -151,7 +144,6 @@ app.use('/graphql', expressGraphQL(req => ({
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------
 app.get('*', async (req, res, next) => {
-
   let initialState = null;
 
   /*
@@ -162,25 +154,21 @@ app.get('*', async (req, res, next) => {
 
   let clientID = null;
   if (req.method === 'GET') {
-
-    // check if client sent cookie
-    var cookie = req.cookies.clientID;
+    const cookie = req.cookies.clientID;
     if (cookie === undefined) {
-      // no: set a new cookie
       clientID = uuid.v1();
-      res.cookie('clientID',clientID, { maxAge: 900000, httpOnly: true });
+      res.cookie('clientID', clientID, { maxAge: 900000, httpOnly: true });
     } else {
-    // yes, cookie was already present
       clientID = cookie;
     }
   }
 
-  let clientState = pruneState(serverStore.getState(), clientID);
+  const clientState = pruneState(serverStore.getState(), clientID);
 
   if (clientState) {
     initialState = clientState;
   } else {
-     initialState = Map();
+    initialState = Map();
   }
 
   initialState = initialState.set('user', req.user || null);
@@ -192,12 +180,12 @@ app.get('*', async (req, res, next) => {
 
     store.dispatch(setRuntimeVariable({
       name: 'user',
-      value: req.user ? JSON.parse(JSON.stringify(req.user)) : null
+      value: req.user ? JSON.parse(JSON.stringify(req.user)) : null,
     }));
 
     store.dispatch(setRuntimeVariable({
       name: 'clientID',
-      value: clientID
+      value: clientID,
     }));
 
     store.dispatch(setRuntimeVariable({

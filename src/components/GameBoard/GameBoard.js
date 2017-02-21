@@ -1,27 +1,25 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './GameBoard.css';
-
-const uuid = require ('uuid');
 
 import {
   gameFromImmutable,
   legalTargetSquares,
-  sanHighlightSquares
+  sanHighlightSquares,
 } from '../../store/model/gameState.js';
 
 import Board from '../Board';
 
-export class GameBoard extends Component {
+const uuid = require('uuid');
+
+class GameBoard extends Component {
 
   static propTypes = {
     clientID: PropTypes.string.isRequired,
     gameID: PropTypes.string.isRequired,
     dimensions: PropTypes.number.isRequired,
-    gameplay: PropTypes.object,
-    dispatchNewGame: PropTypes.func,
-    dispatchMakeMove: PropTypes.func,
+    gameplay: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+    dispatchMakeMove: PropTypes.func.isRequired,
   };
 
   constructor(...args) {
@@ -40,10 +38,10 @@ export class GameBoard extends Component {
     this.props.dispatchMakeMove(this.props.clientID, this.props.gameID, { from, to });
   }
 
-  targetSquares(mouseover_sq) {
+  targetSquares(mouseoverSq) {
     const gameData = this.props.gameplay.getIn([this.props.clientID, 'games', this.props.gameID]);
     const game = gameFromImmutable(gameData);
-    return legalTargetSquares(game.fen(), mouseover_sq);
+    return legalTargetSquares(game.fen(), mouseoverSq);
   }
 
   sanSquares() {
@@ -90,30 +88,30 @@ export class GameBoard extends Component {
               fen={fen}
               divID={uuid.v1()}
               dimensions={this.props.dimensions}
-              allowMoves={true}
-              targetSquares={this.targetSquares.bind(this)}
-              sanSquares={this.sanSquares.bind(this)}
-              makeMove={this.makeMove.bind(this)}
+              allowMoves
+              targetSquares={(...args) => this.targetSquares(...args)}
+              sanSquares={(...args) => this.sanSquares(...args)}
+              makeMove={(...args) => this.makeMove(...args)}
             />
           </div>
         );
-      } else {
-        return (
-          <div className={s.outer}>
-            <div className={s.inner}>
-              <Board
-                fen={fen}
-                divID={uuid.v1()}
-                dimensions={this.props.dimensions}
-                allowMoves={true}
-                targetSquares={this.targetSquares.bind(this)}
-                sanSquares={this.sanSquares.bind(this)}
-                makeMove={this.makeMove.bind(this)}
-              />
-            </div>
-        </div>);
       }
+      return (
+        <div className={s.outer}>
+          <div className={s.inner}>
+            <Board
+              fen={fen}
+              divID={uuid.v1()}
+              dimensions={this.props.dimensions}
+              allowMoves
+              targetSquares={(...args) => this.targetSquares(...args)}
+              sanSquares={(...args) => this.sanSquares(...args)}
+              makeMove={(...args) => this.makeMove(...args)}
+            />
+          </div>
+        </div>);
     }
+    /* eslint-disable */
     return (
       <div className={s.outer}>
         <div className={s.cs_loader}>
@@ -128,6 +126,7 @@ export class GameBoard extends Component {
         </div>
       </div>
     );
+    /* eslint-enable */
   }
 }
 

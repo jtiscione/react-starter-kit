@@ -11,22 +11,23 @@ td {
   white-space: nowrap;
 }
 
-.white {
-  color: #FFFFFF;
-}
-
-.black {
-  color: #000000;
-}
-
-.faintwhite {
-  color: #DDDDDD;
-}
-
-.faintblack {
-  color: #888888;
-}
-
 .current {
   font-weight: bold;
 }
+
+.white {
+  color: #fff;
+}
+
+.black {
+  color: #000;
+}
+
+.faintwhite {
+  color: #ddd;
+}
+
+.faintblack {
+  color: #888;
+}
+

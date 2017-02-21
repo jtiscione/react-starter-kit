@@ -1,5 +1,11 @@
 import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import {
+  Navbar,
+  Nav,
+  NavItem,
+} from 'react-bootstrap';
+
 import s from './Header.css';
 import Link from '../Link';
 
@@ -29,11 +35,6 @@ class Header extends React.Component {
 }
 */
 
-import {
-  Navbar,
-  Nav,
-  NavItem,
-} from 'react-bootstrap';
 
 const Hdr = Navbar.Header;
 const Brand = Navbar.Brand;
