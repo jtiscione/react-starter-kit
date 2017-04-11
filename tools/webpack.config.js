@@ -17,21 +17,7 @@ import pkg from '../package.json';
 
 const isDebug = !process.argv.includes('--release');
 const isVerbose = process.argv.includes('--verbose');
-const isAnalyse = process.argv.includes('--analyse') || process.argv.includes('--analyze');
-const port = parseInt(process.env.PORT || '3000', 10);
-const analyzerPort = port + 3;
-
-// Can be `server`, `static` or `disabled`.
-// In `server` mode analyzer will start HTTP server to show bundle report.
-// In `static` mode single HTML file with bundle report will be generated.
-// In `disabled` mode you can use this plugin to just generate Webpack Stats JSON
-// file by setting `generateStatsFile` to `true`.
-let analyzerMode = 'disabled';
-if (isAnalyse) {
-  analyzerMode = 'server';
-} else if (!isDebug) {
-  analyzerMode = 'static';
-}
+const isAnalyze = process.argv.includes('--analyze') || process.argv.includes('--analyse');
 
 //
 // Common configuration chunk to be used for both
@@ -39,7 +25,7 @@ if (isAnalyse) {
 // -----------------------------------------------------------------------------
 
 const config = {
-  context: path.resolve(__dirname, '../src'),
+  context: path.resolve(__dirname, '..'),
 
   output: {
     path: path.resolve(__dirname, '../build/public/assets'),
@@ -146,10 +132,6 @@ const config = {
     ],
   },
 
-  resolve: {
-    modules: [path.resolve(__dirname, '../src'), 'node_modules'],
-  },
-
   // Don't attempt to continue if there are any errors.
   bail: !isDebug,
 
@@ -179,11 +161,11 @@ const clientConfig = {
   target: 'web',
 
   entry: {
-    client: ['./libs/chessboard.js',
-      './libs/threeloader.js',
-      './libs/OrbitControls.js',
-      './libs/chessboard3.js',
-      'babel-polyfill', './client.js'],
+    client: ['./src/libs/chessboard.js',
+      './src/libs/threeloader.js',
+      './src/libs/OrbitControls.js',
+      './src/libs/chessboard3.js',
+      'babel-polyfill', './src/client.js'],
   },
 
   output: {
@@ -191,8 +173,6 @@ const clientConfig = {
     filename: isDebug ? '[name].js' : '[name].[chunkhash:8].js',
     chunkFilename: isDebug ? '[name].chunk.js' : '[name].[chunkhash:8].chunk.js',
   },
-
-  resolve: { ...config.resolve },
 
   plugins: [
     // Define free variables
@@ -239,30 +219,10 @@ const clientConfig = {
       }),
     ],
 
-    new BundleAnalyzerPlugin({
-      // See above
-      analyzerMode,
-      // Host that will be used in `server` mode to start HTTP server.
-      analyzerHost: '127.0.0.1',
-      // Port that will be used in `server` mode to start HTTP server.
-      analyzerPort,
-      // Path to bundle report file that will be generated in `static` mode.
-      // Relative to bundles output directory.
-      reportFilename: path.resolve(__dirname, '../report.html'),
-      // Automatically open report in default browser
-      openAnalyzer: true,
-      // If `true`, Webpack Stats JSON file will be generated in bundles output directory
-      generateStatsFile: !isDebug,
-      // Name of Webpack Stats JSON file that will be generated if `generateStatsFile` is `true`.
-      // Relative to bundles output directory.
-      statsFilename: path.resolve(__dirname, '../stats.json'),
-      // Options for `stats.toJson()` method.
-      // You can exclude sources of your modules from stats file with `source: false` option.
-      // See more options here: https://github.com/webpack/webpack/blob/webpack-1/lib/Stats.js#L21
-      statsOptions: null,
-      // Log level. Can be 'info', 'warn', 'error' or 'silent'.
-      logLevel: 'info',
-    }),
+    // Webpack Bundle Analyzer
+    // https://github.com/th0r/webpack-bundle-analyzer
+    ...isAnalyze ? [new BundleAnalyzerPlugin()] : [],
+
     new WebpackBuildNotifierPlugin({
       title: 'Redux-Chess Build',
       logo: path.resolve('./img/favicon.png'),
@@ -296,7 +256,7 @@ const serverConfig = {
   target: 'node',
 
   entry: {
-    server: ['babel-polyfill', './server.js'],
+    server: ['babel-polyfill', './src/server.js'],
   },
 
   output: {
@@ -324,8 +284,6 @@ const serverConfig = {
       },
     })),
   },
-
-  resolve: { ...config.resolve },
 
   externals: [
     /^\.\/assets\.json$/,

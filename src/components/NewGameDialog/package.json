@@ -1,0 +1,6 @@
+{
+  "name": "NewGameDialog",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./NewGameDialog.js"
+}
