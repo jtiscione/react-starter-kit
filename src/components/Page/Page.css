@@ -11,6 +11,7 @@
   max-width: var(--max-content-width);
 }
 
+/*
 .newsItem {
   margin: 0 0 2rem;
 }
@@ -22,7 +23,6 @@
 h1.newsDesc {
   font-size: 1.125rem;
 }
-
 h2.newsDesc {
   font-size: 1.125rem;
 }
@@ -52,7 +52,6 @@ img.newsDesc {
   max-width: 100%;
 }
 
-/*
 .newsDesc {
   h1,
   h2,

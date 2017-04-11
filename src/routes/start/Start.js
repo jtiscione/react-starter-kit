@@ -7,9 +7,11 @@ import {
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Layout from '../../components/Layout';
 import history from '../../core/history';
+import NewGameDialog from '../../components/NewGameDialog';
 import { gameFromImmutable } from '../../store/model/gameState';
 import { newGameAction } from '../../actions/gameplay.js';
 import { setRuntimeVariable } from '../../actions/runtime.js';
+
 
 import s from './Start.css';
 
@@ -24,13 +26,26 @@ function isModifiedEvent(event) {
 
 class Start extends Component {
 
+  constructor(props) {
+    super(props);
+    this.handleNewGameClick = this.handleNewGameClick.bind(this);
+    this.handleResumeGameClick = this.handleResumeGameClick.bind(this);
+    this.startNewGame = this.startNewGame.bind(this);
+  }
+
+  state = { showModal: false };
+
+  getInitialState() {
+    return { showModal: false };
+  }
+
   componentDidMount() {
     if (!window.ChessBoard3.webGLEnabled()) {
       this.props.dispatchNo3D('no3D', true);
     }
   }
 
-  handleNewGameClick = (event) => {
+  handleNewGameClick(event) {
     if (isModifiedEvent(event) || !isLeftClickEvent(event)) {
       return;
     }
@@ -38,36 +53,45 @@ class Start extends Component {
       return;
     }
     event.preventDefault();
+    // this.setState({showModal: true});
+    // NewGameDialog will call this once dialog OK click comes thru
+    this.startNewGame(null);
+  }
+
+  /* eslint-disable class-methods-use-this */
+  handleResumeGameClick(event) {
+    if (isModifiedEvent(event) || !isLeftClickEvent(event)) {
+      return;
+    }
+    if (event.defaultPrevented === true) {
+      return;
+    }
+    event.preventDefault();
+    history.push('/play');
+  }
+  /* eslint-enable class-methods-use-this */
+
+  startNewGame(/* gameParameters */) {
     this.props.dispatchNewGame(this.props.clientID, 'defaultGame');
     history.push('/play');
-  };
-
-  handleResumeGameClick = (event) => {
-    if (isModifiedEvent(event) || !isLeftClickEvent(event)) {
-      return;
-    }
-    if (event.defaultPrevented === true) {
-      return;
-    }
-    event.preventDefault();
-    history.push('/play');
-  };
+  }
 
   render() {
     const clientID = this.props.clientID;
     const gameID = 'defaultGame';
     const gameplay = this.props.gameplay;
     const currentGame = gameplay.getIn([clientID, 'games', gameID]);
+
     // console.log("currentGame: " + currentGame);
     // console.log("JSON: " + JSON.stringify(currentGame));
-    let btn = <Button href="/play" bsStyle="primary" onClick={(...args) => this.handleNewGameClick(...args)}>New Game...</Button>;
+    let btn = <Button href="/play" bsStyle="primary" onClick={this.handleNewGameClick}>New Game...</Button>;
     if (currentGame) {
       const gm = gameFromImmutable(currentGame);
       // See if existing game is blank
       if (gm.history.length > 0) {
         btn = (<ButtonGroup>
           {btn}
-          <Button href="/play" bsStyle="primary" onClick={(...args) => this.handleResumeGameClick(...args)}>Resume Game</Button>
+          <Button href="/play" bsStyle="primary" onClick={this.handleResumeGameClick}>Resume Game</Button>
         </ButtonGroup>);
       }
     }
@@ -84,6 +108,7 @@ class Start extends Component {
                 {btn}
               </p>
             </Jumbotron>
+            <NewGameDialog show={this.state.showModal} onNewGame={this.startNewGame} />
           </Col>
           <Col md={8}>
             <img alt="" src="/redux_chess.jpg" />
