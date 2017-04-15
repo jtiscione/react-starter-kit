@@ -72,6 +72,7 @@ export class GameState {
       this.history = this.history.slice(0, this.cursor);
       this.history.push(obj);
       this.cursor++; // eslint-disable-line no-plusplus
+      this.highlightSAN = null;
       this.evaluator = evaluator;
     }
   }
@@ -167,7 +168,11 @@ export function sanHighlightSquares(fen, san) {
     return [];
   }
   const chess = new Chess(fen);
-  const { from, to } = chess.move(san);
+  console.log('chess.fen', chess.fen());
+  console.log('SAN', san);
+  const mv = chess.move(san);
+  console.log(JSON.stringify(mv));
+  const { from, to } = mv;
   return [from, to];
 }
 
