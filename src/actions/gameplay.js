@@ -8,7 +8,7 @@ import {
   SET_HIGHLIGHT_SAN,
 } from '../constants';
 
-export function newGameAction(cc, clientID, gameID) {
+export function newGameAction(cc, clientID, gameID, level, white, black) {
   return {
     type: NEW_GAME,
     meta: {
@@ -17,6 +17,9 @@ export function newGameAction(cc, clientID, gameID) {
     payload: {
       clientID,
       gameID,
+      level,
+      white,
+      black,
     },
   };
 }

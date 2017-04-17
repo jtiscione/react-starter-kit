@@ -32,14 +32,24 @@ export default function gameplay(state = Map(), action) {
   switch (action.type) {
     case INITIALIZE_GAMES:
       return state.setIn([clientID, 'games'], Map());
-    case NEW_GAME:
+    case NEW_GAME: // eslint-disable-line no-case-declarations
       if (!state.get(clientID)) {
         state = state.set(clientID, Map()); // eslint-disable-line no-param-reassign
       }
       if (!state.get(clientID).get('games')) {
         state = state.setIn([clientID, 'games'], Map()); // eslint-disable-line no-param-reassign
       }
-      return state.setIn([clientID, 'games', gameID], new GameState().toImmutable());
+      const newGameObject = new GameState();
+      if (action.payload.level) {
+        newGameObject.setLevel(action.payload.level);
+      }
+      if (action.payload.white) {
+        newGameObject.setWhite(action.payload.white);
+      }
+      if (action.payload.black) {
+        newGameObject.setBlack(action.payload.black);
+      }
+      return state.setIn([clientID, 'games', gameID], newGameObject.toImmutable());
     case MAKE_MOVE:
       if (gameState) {
         gameState.makeMove(action.payload.move, action.payload.evaluator);

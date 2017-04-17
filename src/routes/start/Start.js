@@ -35,10 +35,6 @@ class Start extends Component {
 
   state = { showModal: false };
 
-  getInitialState() {
-    return { showModal: false };
-  }
-
   componentDidMount() {
     if (!window.ChessBoard3.webGLEnabled()) {
       this.props.dispatchNo3D('no3D', true);
@@ -53,9 +49,9 @@ class Start extends Component {
       return;
     }
     event.preventDefault();
-    // this.setState({showModal: true});
+    this.setState({ showModal: true });
     // NewGameDialog will call this once dialog OK click comes thru
-    this.startNewGame(null);
+    // this.startNewGame(null);
   }
 
   /* eslint-disable class-methods-use-this */
@@ -71,8 +67,12 @@ class Start extends Component {
   }
   /* eslint-enable class-methods-use-this */
 
-  startNewGame(/* gameParameters */) {
-    this.props.dispatchNewGame(this.props.clientID, 'defaultGame');
+  startNewGame(level, side) {
+    if (side === 'white' || Math.random() < 0.5) {
+      this.props.dispatchNewGame(this.props.clientID, 'defaultGame', level, 'YOU', 'COMPUTER');
+    } else {
+      this.props.dispatchNewGame(this.props.clientID, 'defaultGame', level, 'COMPUTER', 'YOU');
+    }
     history.push('/play');
   }
 
@@ -140,8 +140,8 @@ const mapDispatchToProps = (dispatch) => {
     dispatchNo3D: () => {
       dispatch(setRuntimeVariable('no3D', true));
     },
-    dispatchNewGame: (clientID, gameID) => {
-      dispatch(newGameAction('server', clientID, gameID));
+    dispatchNewGame: (clientID, gameID, level = 1, white, black) => {
+      dispatch(newGameAction('server', clientID, gameID, level, white, black));
     },
   };
 };

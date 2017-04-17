@@ -9,6 +9,7 @@ export class GameState {
     _initialBookMoves = null,
     _history = [],
     _cursor,
+    _level = 1,
     _white = 'YOU',
     _black = 'COMPUTER',
     _highlightSAN = null,
@@ -21,6 +22,7 @@ export class GameState {
     } else {
       this.cursor = _cursor;
     }
+    this.level = _level;
     this.white = _white;
     this.black = _black;
     this.highlightSAN = _highlightSAN;
@@ -100,6 +102,18 @@ export class GameState {
     this.cursor = _cursor;
   }
 
+  setLevel(_level) {
+    this.level = _level;
+  }
+
+  setWhite(_white = 'YOU') {
+    this.white = _white;
+  }
+
+  setBlack(_black = 'COMPUTER') {
+    this.black = _black;
+  }
+
   setEvaluator(_evaluator) {
     this.evaluator = _evaluator;
   }
@@ -131,6 +145,7 @@ export function gameFromImmutable(immutable) {
     initialBookMoves,
     history.toJS(),
     immutable.get('cursor'),
+    immutable.get('level'),
     immutable.get('white'),
     immutable.get('black'),
     immutable.get('highlightSAN'),
@@ -168,10 +183,7 @@ export function sanHighlightSquares(fen, san) {
     return [];
   }
   const chess = new Chess(fen);
-  console.log('chess.fen', chess.fen());
-  console.log('SAN', san);
   const mv = chess.move(san);
-  console.log(JSON.stringify(mv));
   const { from, to } = mv;
   return [from, to];
 }

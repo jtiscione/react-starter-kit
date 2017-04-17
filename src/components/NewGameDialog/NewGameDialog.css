@@ -1,1 +1,18 @@
 @import '../../components/variables.css';
+
+.center {
+  text-align: center;
+}
+
+.kings {
+  display: flex;
+  justify-content: center;
+}
+
+.selected {
+  border: 3px solid black;
+}
+
+.unselected {
+  border: 3px solid gray;
+}
