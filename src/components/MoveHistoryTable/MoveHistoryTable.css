@@ -2,6 +2,7 @@
 
 .numbercolumn {
   border: 1px solid black;
+  text-align: center;
 }
 
 .movecolumn {
@@ -11,6 +12,8 @@
 
 .outer {
   box-shadow: 5px 5px 5px black;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .no_bottom_margin {

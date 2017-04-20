@@ -24,7 +24,7 @@ export default (store, BOOK) => {
         if (gameState.evaluator === 'book') {
           if (gameState.history.length === gameState.cursor) {
             if (!chessjs.game_over()) {
-              if ((chessjs.turn === 'w' && playerIsBlack) || (chessjs.turn() === 'b' && playerIsWhite)) {
+              if ((chessjs.turn() === 'w' && playerIsBlack) || (chessjs.turn() === 'b' && playerIsWhite)) {
                 let book = BOOK;
                 // eslint-disable-next-line no-restricted-syntax
                 for (const move of gameState.history) {

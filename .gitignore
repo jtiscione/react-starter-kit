@@ -7,7 +7,7 @@ node_modules
 ncp-debug.log
 npm-debug.log
 .idea
-
+.yarnclean
 
 
 #Mac stuff

@@ -52,6 +52,7 @@ class GameBoard extends Component {
 
   render() {
     let fen = null;
+    let orientation = null;
 
     if (this.state.appIsMounted) {
       let game = null;
@@ -60,6 +61,7 @@ class GameBoard extends Component {
         gameData = this.props.gameplay.getIn([this.props.clientID, 'games', this.props.gameID]);
         game = gameFromImmutable(gameData);
         fen = game.fen();
+        orientation = (game.white === 'YOU' ? 'white' : 'black');
       }
     }
 
@@ -79,13 +81,13 @@ class GameBoard extends Component {
       }
     }
 
-
     if (fen) {
       if (this.props.dimensions === 3) {
         return (
           <div className={s.outer}>
             <Board
               fen={fen}
+              orientation={orientation}
               divID={uuid.v1()}
               dimensions={this.props.dimensions}
               allowMoves
@@ -101,6 +103,7 @@ class GameBoard extends Component {
           <div className={s.inner}>
             <Board
               fen={fen}
+              orientation={orientation}
               divID={uuid.v1()}
               dimensions={this.props.dimensions}
               allowMoves

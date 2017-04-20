@@ -32,6 +32,9 @@ function MoveHistoryTable({ clientID, gameID, gameplay, dispatchMoveCursor }) {
     const moveWhiteSAN = moveWhite ? moveWhite.san : '';
     const moveBlackSAN = moveBlack ? moveBlack.san : '';
     const fullMoveNumber = 1 + (i / 2);
+    if (fullMoveNumber > 1 && moveWhiteSAN === '' && moveBlackSAN === '') {
+      break;
+    }
     rows.push(<tr key={fullMoveNumber}>
       <td>{ fullMoveNumber }</td>
       <MoveHistoryTableCell

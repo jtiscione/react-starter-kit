@@ -34,6 +34,7 @@ class Board extends Component {
       pieceSet: '../../chess/assets/chesspieces/iconic/{piece}.json',
       draggable: true,
       zoomControls: true,
+      orientation: props.orientation,
       onDrop: (source, target) => { // , pieceCode, newPosition, priorPosition, orientation) => {
         // User's turn?
         if (!props.allowMoves) {

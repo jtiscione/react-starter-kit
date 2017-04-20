@@ -29,7 +29,6 @@ import configureStore from './store/configureStore';
 import configureServerStore from './store/configureServerStore';
 import serverListener from './subscribers/serverListener';
 import { setRuntimeVariable } from './actions/runtime';
-import { newGameAction } from './actions/gameplay';
 import { bookFile, port, auth } from './config';
 import pruneState from './store/pruneState';
 import socketIoServerMiddlewareManager from './middleware/socketIoServerMiddlewareManager';
@@ -193,11 +192,13 @@ app.get('*', async (req, res, next) => {
       value: Date.now(),
     }));
 
+    /*
     if (!clientState || clientState.getIn(['gameplay', clientID, 'defaultGame'])) {
       const action = newGameAction('pageload', clientID, 'defaultGame');
       serverStore.dispatch(action);
       store.dispatch(action);
     }
+    */
 
     const css = new Set();
 

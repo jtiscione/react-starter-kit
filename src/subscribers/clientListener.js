@@ -14,14 +14,13 @@ export default function (store, engine) {
       if (game.evaluator === 'engine') {
         if (game.history.length === game.cursor) {
           const playerIsWhite = (game.white === 'YOU' && game.black === 'COMPUTER');
-          const playerIsBlack = (game.white === 'COMPUTER' && game.black === 'YOU');
           const chessjs = game.toChessObject();
           if (!chessjs.game_over()) {
-            if ((chessjs.turn === 'w' && playerIsBlack) || (chessjs.turn() === 'b' && playerIsWhite)) {
+            if ((chessjs.turn() === 'w' && !playerIsWhite) || (chessjs.turn() === 'b' && playerIsWhite)) {
               engine.postMessage('uci');
               engine.postMessage('ucinewgame');
               engine.postMessage(`position fen ${chessjs.fen()}`);
-              engine.postMessage('go movetime 1');
+              engine.postMessage(`go movetime ${game.level * 500}`);
               engine.onmessage = (event) => {   // eslint-disable-line no-param-reassign
                 // Check whether state is in sync
                 const currentGame = gameFromImmutable(store.getState().getIn(['gameplay', clientID, 'games', gameID]));

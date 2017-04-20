@@ -49,6 +49,9 @@ export default function gameplay(state = Map(), action) {
       if (action.payload.black) {
         newGameObject.setBlack(action.payload.black);
       }
+      if (newGameObject.black === 'YOU' && newGameObject.white === 'COMPUTER') {
+        newGameObject.setEvaluator('book');
+      }
       return state.setIn([clientID, 'games', gameID], newGameObject.toImmutable());
     case MAKE_MOVE:
       if (gameState) {
