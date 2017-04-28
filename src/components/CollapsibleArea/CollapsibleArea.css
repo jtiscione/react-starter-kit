@@ -1,0 +1,28 @@
+@import '../variables.css';
+
+.outermost {
+  box-shadow: 5px 5px 5px black;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 600px;
+  border: 1px solid black;
+  padding: 2px;
+}
+
+.expanded {
+  transition: max-height 0.5s linear 0s;
+  overflow-y: hidden;
+  max-height: 1000px;
+  border: 1px solid black;
+}
+
+.contracted {
+  transition: max-height 0.5s linear 0s;
+  max-height: 0;
+  overflow-y: hidden;
+  border: 1px solid black;
+}
+
+.singlebutton {
+  margin: 5px;
+}

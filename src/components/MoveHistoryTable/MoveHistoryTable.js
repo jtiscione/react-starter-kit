@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import { Table } from 'react-bootstrap';
 
@@ -13,7 +14,6 @@ function MoveHistoryTable({ clientID, gameID, gameplay, dispatchMoveCursor }) {
       dispatchMoveCursor(clientID, gameID, moveNum);
     };
   }
-
 
   const immutable = gameplay.getIn([clientID, 'games', gameID]);
   const gameState = gameFromImmutable(immutable);

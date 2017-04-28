@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import { Modal, Button, ButtonGroup } from 'react-bootstrap';
 
@@ -6,6 +7,11 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './NewGameDialog.css';
 
 class NewGameDialog extends Component {
+
+  static propTypes = {
+    onNewGame: PropTypes.func.isRequired,
+    show: PropTypes.bool.isRequired,
+  };
 
   constructor(props) {
     super(props);
@@ -72,10 +78,5 @@ class NewGameDialog extends Component {
     );
   }
 }
-
-NewGameDialog.propTypes = {
-  onNewGame: PropTypes.func.isRequired,
-  show: PropTypes.bool.isRequired,
-};
 
 export default withStyles(s)(NewGameDialog);

@@ -1,7 +1,8 @@
 /**
  * Created by Jason on 6/16/2016.
  */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import {
@@ -11,6 +12,7 @@ import {
 import Layout from '../../components/Layout';
 import GameBoard from '../../components/GameBoard';
 import MoveHistoryTable from '../../components/MoveHistoryTable';
+import CollapsibleArea from '../../components/CollapsibleArea';
 import OpeningBookTable from '../../components/OpeningBookTable';
 import { gameFromImmutable } from '../../store/model/gameState';
 import { newGameAction,
@@ -96,17 +98,16 @@ class Play extends Component {
                 />
               </Col>
               <Col xsHidden smHidden md={2}>
-                <Tabs defaultActiveKey={0} id="side-tabs">
-                  <Tab eventKey={0} title="book">
-                    <OpeningBookTable
-                      clientID={clientID}
-                      gameID={gameID}
-                      gameplay={this.props.gameplay}
-                      dispatchMakeMove={(...args) => this.makeUserMove(...args)}
-                      dispatchSetHighlightSAN={(...args) => this.setHighlightSAN(...args)}
-                    />
-                  </Tab>
-                </Tabs>
+                <CollapsibleArea>
+                  <OpeningBookTable
+                    label="openings"
+                    clientID={clientID}
+                    gameID={gameID}
+                    gameplay={this.props.gameplay}
+                    dispatchMakeMove={(...args) => this.makeUserMove(...args)}
+                    dispatchSetHighlightSAN={(...args) => this.setHighlightSAN(...args)}
+                  />
+                </CollapsibleArea>
               </Col>
             </Row>
           </Grid>
