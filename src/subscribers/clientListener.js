@@ -2,6 +2,8 @@ import { gameFromImmutable } from '../store/model/gameState.js';
 
 import { makeMoveAction } from '../actions/gameplay.js';
 
+// This class is no longer used
+
 export default function (store, engine) {
   return (() => {
     const state = store.getState();

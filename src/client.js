@@ -11,17 +11,15 @@ import App from './components/App';
 import configureStore from './store/configureStore';
 import { updateMeta } from './core/DOMUtils';
 import { ErrorReporter, deepForceUpdate } from './core/devUtils';
-import createSocketIoMiddleware from './middleware/socketIoMiddleware';
+import createEngineMiddleware from './middleware/client/engineMiddleware';
+import createSocketIoMiddleware from './middleware/client/socketIoMiddleware';
 
 /* eslint-disable global-require */
 
 // Global (context) variables that can be easily accessed from any React component
 // https://facebook.github.io/react/docs/context.html
-import clientListener from './subscribers/clientListener.js';
 
 const socket = io();
-const socketIoMiddleware = createSocketIoMiddleware(socket,
-                            (type, action) => (action.meta && (action.meta.cc === 'server')));
 const clientID = window.APP_STATE && window.APP_STATE.runtime
   ? window.APP_STATE.runtime.clientID
   : null;
@@ -38,6 +36,18 @@ socket.on('error', (err) => {
   }
 });
 
+const socketIoMiddleware = createSocketIoMiddleware(socket,
+  (type, action) => (action.meta && (action.meta.cc === 'server')));
+
+const engine = new Worker('chess/engines/lozza_patches.js');
+const engineMiddleware = createEngineMiddleware(engine);
+
+// Initialize a new Redux store
+// http://redux.js.org/docs/basics/UsageWithReact.html
+const store = configureStore(fromJS(window.APP_STATE),
+  { history },
+  [socketIoMiddleware, engineMiddleware]);
+
 const context = {
   // Enables critical path CSS rendering
   // https://github.com/kriasoft/isomorphic-style-loader
@@ -46,14 +56,8 @@ const context = {
     const removeCss = styles.map(x => x._insertCss());
     return () => { removeCss.forEach(f => f()); };
   },
-  // Initialize a new Redux store
-  // http://redux.js.org/docs/basics/UsageWithReact.html
-  store: configureStore(fromJS(window.APP_STATE), { history }, socketIoMiddleware),
+  store,
 };
-
-const engine = new Worker('chess/engines/lozza_patches.js');
-
-context.store.subscribe(clientListener(context.store, engine));
 
 // Switch off the native scroll restoration behavior and handle it manually
 // https://developers.google.com/web/updates/2015/09/history-api-scroll-restoration

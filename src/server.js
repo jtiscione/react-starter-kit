@@ -30,7 +30,7 @@ import serverListener from './subscribers/serverListener';
 import { setRuntimeVariable } from './actions/runtime';
 import { bookFile, port, auth } from './config';
 import pruneState from './store/pruneState';
-import socketIoServerMiddlewareManager from './middleware/socketIoServerMiddlewareManager';
+import socketIoServerMiddlewareManager from './middleware/server/socketIoServerMiddlewareManager';
 
 const uuid = require('uuid');
 

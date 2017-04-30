@@ -4,7 +4,7 @@ import rootReducer from '../reducers';
 import createHelpers from './createHelpers';
 import createLogger from './logger';
 
-export default function configureStore(initialState, helpersConfig, ...extraMiddleware) {
+export default function configureStore(initialState, helpersConfig, extraMiddleware) {
   const helpers = createHelpers(helpersConfig);
   let middleware = [thunk.withExtraArgument(helpers)];
 
