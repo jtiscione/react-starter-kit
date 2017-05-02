@@ -14,6 +14,7 @@ import GameBoard from '../../components/GameBoard';
 import MoveHistoryTable from '../../components/MoveHistoryTable';
 import CollapsibleArea from '../../components/CollapsibleArea';
 import OpeningBookTable from '../../components/OpeningBookTable';
+import ScoreGauge from '../../components/ScoreGauge';
 import { gameFromImmutable } from '../../store/model/gameState';
 import { newGameAction,
   makeMoveAction,
@@ -100,12 +101,18 @@ class Play extends Component {
               <Col xsHidden smHidden md={2}>
                 <CollapsibleArea>
                   <OpeningBookTable
-                    label="openings"
+                    label="OPENINGS"
                     clientID={clientID}
                     gameID={gameID}
                     gameplay={this.props.gameplay}
                     dispatchMakeMove={(...args) => this.makeUserMove(...args)}
                     dispatchSetHighlightSAN={(...args) => this.setHighlightSAN(...args)}
+                  />
+                  <ScoreGauge
+                    label="SCORE"
+                    clientID={clientID}
+                    gameID={gameID}
+                    gameplay={this.props.gameplay}
                   />
                 </CollapsibleArea>
               </Col>

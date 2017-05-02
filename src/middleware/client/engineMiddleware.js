@@ -47,7 +47,6 @@ export default function createEngineMiddleware(enginePath) {
     const cursor = game.cursor;
     const chessjs = game.toChessObject();
     if (!chessjs.game_over()) {
-      const playingWhite = chessjs.turn() === 'w';
       chessjs.move(move);
       const engine = new Worker(enginePath);
       engine.postMessage('uci');
@@ -64,11 +63,12 @@ export default function createEngineMiddleware(enginePath) {
           if (data) {
             scoreData = data;
           }
+          /*
           if (scoreData !== null) {
             if (!playingWhite) {
               scoreData.score = -scoreData.score;
             }
-          }
+          }*/
           const best = parseBestMove(event.data);
           if (best) {
             engine.onmessage = null;
