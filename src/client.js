@@ -39,8 +39,7 @@ socket.on('error', (err) => {
 const socketIoMiddleware = createSocketIoMiddleware(socket,
   (type, action) => (action.meta && (action.meta.cc === 'server')));
 
-const engine = new Worker('chess/engines/lozza_patches.js');
-const engineMiddleware = createEngineMiddleware(engine);
+const engineMiddleware = createEngineMiddleware('chess/engines/lozza.js');
 
 // Initialize a new Redux store
 // http://redux.js.org/docs/basics/UsageWithReact.html

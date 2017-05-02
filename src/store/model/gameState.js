@@ -130,6 +130,18 @@ export class GameState {
     }
   }
 
+  setScoreData(cursor, _score, _mate, _pv, _bestMove) {
+    if (this.history.length > cursor) {
+      this.history[cursor].score = _score;
+      this.history[cursor].mate = _mate;
+      this.history[cursor].pv = _pv;
+      this.history[cursor].bestMove = _bestMove;
+    } else {
+      console.error('_cursor', cursor);                    // eslint-disable-line no-console
+      console.error('history.length', this.history.length); // eslint-disable-line no-console
+    }
+  }
+
   setHighlightSAN(_san = null) {
     this.highlightSAN = _san;
   }

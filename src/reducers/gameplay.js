@@ -6,6 +6,7 @@ import { INITIALIZE_GAMES,
         SET_GAME_EVALUATOR,
         SET_INITIAL_BOOK_MOVES,
         SET_BOOK_MOVES,
+        SET_SCORE_DATA,
         SET_HIGHLIGHT_SAN,
       } from '../constants';
 import {
@@ -84,6 +85,16 @@ export default function gameplay(state = Map(), action) {
       }
       return state;
     }
+    case SET_SCORE_DATA:
+      if (gameState) {
+        gameState.setScoreData(action.payload.cursor,
+                                action.payload.score,
+                                action.payload.mate,
+                                action.payload.pv,
+                                action.payload.bestMove);
+        return state.setIn([clientID, 'games', gameID], gameState.toImmutable());
+      }
+      return state;
     case SET_HIGHLIGHT_SAN: {
       if (gameState) {
         gameState.setHighlightSAN(action.payload.san);

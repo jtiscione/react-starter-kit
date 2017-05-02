@@ -5,6 +5,7 @@ import {
   SET_GAME_EVALUATOR,
   SET_INITIAL_BOOK_MOVES,
   SET_BOOK_MOVES,
+  SET_SCORE_DATA,
   SET_HIGHLIGHT_SAN,
 } from '../constants';
 
@@ -87,6 +88,18 @@ export function setBookMovesAction(clientID, gameID, books) {
     },
     payload: {
       clientID, gameID, books,
+    },
+  };
+}
+
+export function setScoreDataAction(clientID, gameID, cursor, score, mate, pv, bestMove) {
+  return {
+    type: SET_SCORE_DATA,
+    meta: {
+      cc: 'server',
+    },
+    payload: {
+      clientID, gameID, cursor, score, mate, pv, bestMove,
     },
   };
 }
