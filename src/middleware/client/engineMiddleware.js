@@ -1,5 +1,5 @@
-import { gameFromImmutable } from '../../store/model/gameState.js';
-import { makeMoveAction, setScoreDataAction, setGameEvaluatorAction } from '../../actions/gameplay.js';
+import { gameFromImmutable } from '../../store/model/gameState';
+import { makeMoveAction, setScoreDataAction, setGameEvaluatorAction } from '../../actions/gameplay';
 import { MAKE_MOVE, SET_GAME_EVALUATOR } from '../../constants';
 
 export default function createEngineMiddleware(enginePath) {

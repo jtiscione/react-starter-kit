@@ -12,7 +12,7 @@ import { INITIALIZE_GAMES,
 import {
   gameFromImmutable,
   GameState,
-} from '../store/model/gameState.js';
+} from '../store/model/gameState';
 
 export default function gameplay(state = Map(), action) {
   let gameID = null;

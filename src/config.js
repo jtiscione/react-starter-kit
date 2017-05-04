@@ -4,16 +4,11 @@ if (process.env.BROWSER) {
   throw new Error('Do not import `config.js` from inside the client-side code.');
 }
 
-export const port = process.env.PORT || 3000;
-export const host = process.env.WEBSITE_HOSTNAME || `localhost:${port}`;
-
-export const databaseUrl = process.env.DATABASE_URL || 'sqlite:database.sqlite';
-
-export const bookFile = process.env.BOOK_FILE || null;
-
 module.exports = {
   // Node.js app
   port: process.env.PORT || 3000,
+
+  bookFile: process.env.BOOK_FILE || null,
 
   // API Gateway
   api: {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, ButtonGroup, Glyphicon } from 'react-bootstrap';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import cx from 'classnames';
-import { gameFromImmutable } from '../../store/model/gameState.js';
+import { gameFromImmutable } from '../../store/model/gameState';
 import s from './PlayButtons.css';
 
 function PlayButtons({ clientID, gameID, gameplay, dispatchMoveCursor }) {

@@ -30,7 +30,6 @@ import configureServerStore from './store/configureServerStore';
 import serverListener from './subscribers/serverListener';
 import { setRuntimeVariable } from './actions/runtime';
 import config from './config';
-import { bookFile, port, auth } from './config';
 import pruneState from './store/pruneState';
 import socketIoServerMiddlewareManager from './middleware/server/socketIoServerMiddlewareManager';
 
@@ -49,11 +48,11 @@ async function readBook(fileName) {
 // eslint-disable-next-line global-require
 const useDefaultBook = () => { serverStore.subscribe(serverListener(serverStore, require('../tiny_book'))); };
 
-if (bookFile !== null) {
-  readBook(bookFile).then((book) => {
+if (config.bookFile !== null) {
+  readBook(config.bookFile).then((book) => {
     serverStore.subscribe(serverListener(serverStore, book));
-    // console.log("LOADED BOOK: "+bookFile);
-    notifier.notify(`LOADED BOOK ${bookFile}`);
+    // console.log("LOADED BOOK: "+config.bookFile);
+    notifier.notify(`LOADED BOOK ${config.bookFile}`);
   }).catch((err) => {
     console.error(err);  // eslint-disable-line no-console
     useDefaultBook();
@@ -135,7 +134,8 @@ app.get('/login/facebook/return',
   passport.authenticate('facebook', { failureRedirect: '/login', session: false }),
   (req, res) => {
     const expiresIn = 60 * 60 * 24 * 180; // 180 days
-    const token = jwt.sign(JSON.parse(JSON.stringify(req.user)), config.auth.jwt.secret, { expiresIn });
+    const token = jwt.sign(JSON.parse(JSON.stringify(req.user)),
+      config.auth.jwt.secret, { expiresIn });
     res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
     res.redirect('/');
   },
@@ -161,38 +161,37 @@ app.get('*', async (req, res, next) => {
     const fetch = createFetch({
       baseUrl: config.api.serverUrl,
       cookie: req.headers.cookie,
-    })
-  }
-  let initialState = null;
+    });
 
-  /*
-  console.log("req.headers.cookie:"+req.headers.cookie);
-  console.log("req.user: "+JSON.stringify(req.user));
-  console.log("req.cookies: "+JSON.stringify(req.cookies));
-  */
+    let initialState = null;
 
-  let clientID = null;
-  if (req.method === 'GET') {
-    const cookie = req.cookies.clientID;
-    if (cookie === undefined) {
-      clientID = uuid.v1();
-      res.cookie('clientID', clientID, { maxAge: 900000, httpOnly: true });
-    } else {
-      clientID = cookie;
+    /*
+    console.log("req.headers.cookie:"+req.headers.cookie);
+    console.log("req.user: "+JSON.stringify(req.user));
+    console.log("req.cookies: "+JSON.stringify(req.cookies));
+    */
+
+    let clientID = null;
+    if (req.method === 'GET') {
+      const cookie = req.cookies.clientID;
+      if (cookie === undefined) {
+        clientID = uuid.v1();
+        res.cookie('clientID', clientID, { maxAge: 900000, httpOnly: true });
+      } else {
+        clientID = cookie;
+      }
     }
-  }
 
-  const clientState = pruneState(serverStore.getState(), clientID);
+    const clientState = pruneState(serverStore.getState(), clientID);
 
-  if (clientState) {
-    initialState = clientState;
-  } else {
-    initialState = Map();
-  }
+    if (clientState) {
+      initialState = clientState;
+    } else {
+      initialState = Map();
+    }
 
-  initialState = initialState.set('user', req.user || null);
+    initialState = initialState.set('user', req.user || null);
 
-  try {
     const store = configureStore(initialState, {
       cookie: req.headers.cookie,
       fetch,

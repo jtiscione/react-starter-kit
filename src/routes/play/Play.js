@@ -19,7 +19,7 @@ import { gameFromImmutable } from '../../store/model/gameState';
 import { newGameAction,
   makeMoveAction,
   moveCursorAction,
-  setHighlightSANAction } from '../../actions/gameplay.js';
+  setHighlightSANAction } from '../../actions/gameplay';
 import s from './Play.css';
 
 class Play extends Component {

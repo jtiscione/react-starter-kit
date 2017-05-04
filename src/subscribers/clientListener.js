@@ -1,6 +1,6 @@
-import { gameFromImmutable } from '../store/model/gameState.js';
+import { gameFromImmutable } from '../store/model/gameState';
 
-import { makeMoveAction } from '../actions/gameplay.js';
+import { makeMoveAction } from '../actions/gameplay';
 
 // This class is no longer used
 

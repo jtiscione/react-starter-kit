@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import { Table } from 'react-bootstrap';
 
-import { gameFromImmutable } from '../../store/model/gameState.js';
+import { gameFromImmutable } from '../../store/model/gameState';
 import MoveHistoryTableCell from '../MoveHistoryTableCell';
 import PlayButtons from '../PlayButtons';
 import s from './MoveHistoryTable.css';

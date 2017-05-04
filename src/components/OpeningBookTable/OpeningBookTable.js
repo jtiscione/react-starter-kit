@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './OpeningBookTable.css';
-import { gameFromImmutable } from '../../store/model/gameState.js';
+import { gameFromImmutable } from '../../store/model/gameState';
 import OpeningBookEntry from '../OpeningBookEntry';
 
 function OpeningBookTable(

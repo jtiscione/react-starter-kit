@@ -1,8 +1,8 @@
 import { gameFromImmutable, generateInitialBookMoves, generateBookMoves }
-  from '../store/model/gameState.js';
+  from '../store/model/gameState';
 
 import { makeMoveAction, setGameEvaluatorAction, setBookMovesAction, setInitialBookMovesAction }
-  from '../actions/gameplay.js';
+  from '../actions/gameplay';
 
 // eslint-disable-next-line arrow-body-style
 export default (store, BOOK) => {

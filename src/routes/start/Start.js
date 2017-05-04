@@ -7,11 +7,11 @@ import {
 } from 'react-bootstrap';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Layout from '../../components/Layout';
-import history from '../../core/history';
+import history from '../../history';
 import NewGameDialog from '../../components/NewGameDialog';
 import { gameFromImmutable } from '../../store/model/gameState';
-import { newGameAction } from '../../actions/gameplay.js';
-import { setRuntimeVariable } from '../../actions/runtime.js';
+import { newGameAction } from '../../actions/gameplay';
+import { setRuntimeVariable } from '../../actions/runtime';
 
 
 import s from './Start.css';

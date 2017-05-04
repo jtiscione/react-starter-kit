@@ -7,7 +7,7 @@ import {
   gameFromImmutable,
   legalTargetSquares,
   sanHighlightSquares,
-} from '../../store/model/gameState.js';
+} from '../../store/model/gameState';
 
 import Board from '../Board';
 
