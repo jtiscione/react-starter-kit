@@ -1,3 +1,11 @@
+/**
+ * React Starter Kit (https://www.reactstarterkit.com/)
+ *
+ * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -6,11 +14,12 @@ import queryString from 'query-string';
 import { createPath } from 'history/PathUtils';
 import io from 'socket.io-client';
 import { fromJS } from 'immutable';
-import history from './core/history';
 import App from './components/App';
+import createFetch from './createFetch';
 import configureStore from './store/configureStore';
-import { updateMeta } from './core/DOMUtils';
-import { ErrorReporter, deepForceUpdate } from './core/devUtils';
+import history from './history';
+import { updateMeta } from './DOMUtils';
+import { ErrorReporter, deepForceUpdate } from './devUtils';
 import createEngineMiddleware from './middleware/client/engineMiddleware';
 import createSocketIoMiddleware from './middleware/client/socketIoMiddleware';
 
@@ -20,8 +29,8 @@ import createSocketIoMiddleware from './middleware/client/socketIoMiddleware';
 // https://facebook.github.io/react/docs/context.html
 
 const socket = io();
-const clientID = window.APP_STATE && window.APP_STATE.runtime
-  ? window.APP_STATE.runtime.clientID
+const clientID = window.App.state && window.App.state.runtime
+  ? window.App.state.runtime.clientID
   : null;
 
 if (clientID) {
@@ -43,7 +52,7 @@ const engineMiddleware = createEngineMiddleware('chess/engines/lozza.js');
 
 // Initialize a new Redux store
 // http://redux.js.org/docs/basics/UsageWithReact.html
-const store = configureStore(fromJS(window.APP_STATE),
+const store = configureStore(fromJS(window.App.state),
   { history },
   [socketIoMiddleware, engineMiddleware]);
 
@@ -55,7 +64,12 @@ const context = {
     const removeCss = styles.map(x => x._insertCss());
     return () => { removeCss.forEach(f => f()); };
   },
+  // Universal HTTP client
+  fetch: createFetch({
+    baseUrl: window.App.apiUrl,
+  }),
   store,
+  storeSubscription: null,
 };
 
 // Switch off the native scroll restoration behavior and handle it manually
@@ -114,7 +128,7 @@ FastClick.attach(document.body);
 const container = document.getElementById('app');
 let appInstance;
 let currentLocation = history.location;
-let router = require('./core/router').default;
+let router = require('./router').default;
 
 // Re-render the app when window.location changes
 async function onLocationChange(location, action) {
@@ -189,8 +203,8 @@ if (__DEV__) {
 
 // Enable Hot Module Replacement (HMR)
 if (module.hot) {
-  module.hot.accept('./core/router', () => {
-    router = require('./core/router').default;
+  module.hot.accept('./router', () => {
+    router = require('./router').default;
 
     if (appInstance) {
       try {

@@ -7,7 +7,7 @@ import http from 'http';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import expressJwt from 'express-jwt';
+import expressJwt, { UnauthorizedError as Jwt401Error } from 'express-jwt';
 import expressGraphQL from 'express-graphql';
 import jwt from 'jsonwebtoken';
 import React from 'react';
@@ -19,8 +19,9 @@ import App from './components/App';
 import Html from './components/Html';
 import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
 import errorPageStyle from './routes/error/ErrorPage.css';
-import passport from './core/passport';
-import router from './core/router';
+import createFetch from './createFetch';
+import passport from './passport';
+import router from './router';
 import models from './data/models';
 import schema from './data/schema';
 import assets from './assets.json'; // eslint-disable-line import/no-unresolved
@@ -28,6 +29,7 @@ import configureStore from './store/configureStore';
 import configureServerStore from './store/configureServerStore';
 import serverListener from './subscribers/serverListener';
 import { setRuntimeVariable } from './actions/runtime';
+import config from './config';
 import { bookFile, port, auth } from './config';
 import pruneState from './store/pruneState';
 import socketIoServerMiddlewareManager from './middleware/server/socketIoServerMiddlewareManager';
@@ -106,10 +108,21 @@ app.use(bodyParser.json());
 // Authentication
 // -----------------------------------------------------------------------------
 app.use(expressJwt({
-  secret: auth.jwt.secret,
+  secret: config.auth.jwt.secret,
   credentialsRequired: false,
   getToken: req => req.cookies.id_token,
 }));
+// Error handler for express-jwt
+app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+  if (err instanceof Jwt401Error) {
+    console.error('[express-jwt-error]', req.cookies.id_token);
+    // `clearCookie`, otherwise user can't use web-app until cookie expires
+    res.clearCookie('id_token');
+  } else {
+    next(err);
+  }
+});
+
 app.use(passport.initialize());
 
 if (__DEV__) {
@@ -122,7 +135,7 @@ app.get('/login/facebook/return',
   passport.authenticate('facebook', { failureRedirect: '/login', session: false }),
   (req, res) => {
     const expiresIn = 60 * 60 * 24 * 180; // 180 days
-    const token = jwt.sign(JSON.parse(JSON.stringify(req.user)), auth.jwt.secret, { expiresIn });
+    const token = jwt.sign(JSON.parse(JSON.stringify(req.user)), config.auth.jwt.secret, { expiresIn });
     res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
     res.redirect('/');
   },
@@ -142,6 +155,14 @@ app.use('/graphql', expressGraphQL(req => ({
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------
 app.get('*', async (req, res, next) => {
+  try {
+    const css = new Set();
+
+    const fetch = createFetch({
+      baseUrl: config.api.serverUrl,
+      cookie: req.headers.cookie,
+    })
+  }
   let initialState = null;
 
   /*
@@ -174,6 +195,8 @@ app.get('*', async (req, res, next) => {
   try {
     const store = configureStore(initialState, {
       cookie: req.headers.cookie,
+      fetch,
+      // I should not use `history` on server.. but how I do redirection? follow universal-router
     });
 
     store.dispatch(setRuntimeVariable({
@@ -191,16 +214,6 @@ app.get('*', async (req, res, next) => {
       value: Date.now(),
     }));
 
-    /*
-    if (!clientState || clientState.getIn(['gameplay', clientID, 'defaultGame'])) {
-      const action = newGameAction('pageload', clientID, 'defaultGame');
-      serverStore.dispatch(action);
-      store.dispatch(action);
-    }
-    */
-
-    const css = new Set();
-
     // Global (context) variables that can be easily accessed from any React component
     // https://facebook.github.io/react/docs/context.html
     const context = {
@@ -210,15 +223,17 @@ app.get('*', async (req, res, next) => {
         // eslint-disable-next-line no-underscore-dangle
         styles.forEach(style => css.add(style._getCss()));
       },
-      // Initialize a new Redux store
-      // http://redux.js.org/docs/basics/UsageWithReact.html
+      fetch,
+      // You can access redux through react-redux connect
       store,
+      storeSubscription: null,
     };
 
     const route = await router.resolve({
-      ...context,
       path: req.path,
       query: req.query,
+      fetch,
+      store,
     });
 
     if (route.redirect) {
@@ -227,7 +242,11 @@ app.get('*', async (req, res, next) => {
     }
 
     const data = { ...route };
-    data.children = ReactDOM.renderToString(<App context={context}>{route.component}</App>);
+    data.children = ReactDOM.renderToString(
+      <App context={context} store={store}>
+        {route.component}
+      </App>,
+    );
     data.styles = [
       { id: 'css', cssText: [...css].join('') },
     ];
@@ -235,10 +254,13 @@ app.get('*', async (req, res, next) => {
       assets.vendor.js,
       assets.client.js,
     ];
-    data.state = context.store.getState();
     if (assets[route.chunk]) {
       data.scripts.push(assets[route.chunk].js);
     }
+    data.app = {
+      apiUrl: config.api.clientUrl,
+      state: context.store.getState(),
+    };
 
     const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
     res.status(route.status || 200);
@@ -256,7 +278,7 @@ pe.skipNodeFiles();
 pe.skipPackage('express');
 
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-  console.log(pe.render(err)); // eslint-disable-line no-console
+  console.error(pe.render(err)); // eslint-disable-line no-console
   const html = ReactDOM.renderToStaticMarkup(
     <Html
       title="Internal Server Error"
@@ -273,10 +295,9 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 //
 // Launch the server
 // -----------------------------------------------------------------------------
-/* eslint-disable no-console */
 models.sync().catch(err => console.error(err.stack)).then(() => {
-  httpServer.listen(port, () => {
-    console.log(`The server is running at http://localhost:${port}/`);
+  httpServer.listen(config.port, () => {
+    console.info(`The server is running at http://localhost:${config.port}/`);
   });
 });
 /* eslint-enable no-console */
