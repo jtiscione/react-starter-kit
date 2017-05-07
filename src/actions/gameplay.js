@@ -92,14 +92,14 @@ export function setBookMovesAction(clientID, gameID, books) {
   };
 }
 
-export function setScoreDataAction(clientID, gameID, cursor, score, mate, pv, bestMove) {
+export function setScoreDataAction(clientID, gameID, cursor, fen, score, mate, pv, bestMove) {
   return {
     type: SET_SCORE_DATA,
     meta: {
       cc: 'server',
     },
     payload: {
-      clientID, gameID, cursor, score, mate, pv, bestMove,
+      clientID, gameID, cursor, fen, score, mate, pv, bestMove,
     },
   };
 }

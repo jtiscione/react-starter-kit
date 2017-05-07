@@ -50,7 +50,7 @@ class ScoreGauge extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className={s.outer}>
         <svg width="150" height="120">
           <defs>
             <linearGradient id="grad" x1="0" x2="1" y1="0" y2="0" >

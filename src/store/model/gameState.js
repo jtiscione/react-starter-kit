@@ -130,8 +130,8 @@ export class GameState {
     }
   }
 
-  setScoreData(cursor, _score, _mate, _pv, _bestMove) {
-    if (this.history.length > cursor) {
+  setScoreData(cursor, _fen, _score, _mate, _pv, _bestMove) {
+    if (this.history.length > cursor && this.history[cursor].fen === _fen) {
       this.history[cursor].score = _score;
       this.history[cursor].mate = _mate;
       this.history[cursor].pv = _pv;

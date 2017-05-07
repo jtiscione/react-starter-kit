@@ -30,7 +30,7 @@ table {
 
 tbody {
   height: 550px;
-  overflow-y: scroll;
+  overflow-y: visible;
   display: block;
 }
 

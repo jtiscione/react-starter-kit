@@ -88,6 +88,7 @@ export default function gameplay(state = Map(), action) {
     case SET_SCORE_DATA:
       if (gameState) {
         gameState.setScoreData(action.payload.cursor,
+                                action.payload.fen,
                                 action.payload.score,
                                 action.payload.mate,
                                 action.payload.pv,

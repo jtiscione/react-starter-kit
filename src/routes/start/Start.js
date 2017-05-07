@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   Grid, Row, Col,
-  Button, ButtonGroup, Jumbotron,
+  Button, Jumbotron,
 } from 'react-bootstrap';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Layout from '../../components/Layout';
@@ -31,6 +31,7 @@ class Start extends Component {
     super(props);
     this.handleNewGameClick = this.handleNewGameClick.bind(this);
     this.handleResumeGameClick = this.handleResumeGameClick.bind(this);
+    this.handleDialogCloseClick = this.handleDialogCloseClick.bind(this);
     this.startNewGame = this.startNewGame.bind(this);
   }
 
@@ -68,6 +69,10 @@ class Start extends Component {
   }
   /* eslint-enable class-methods-use-this */
 
+  handleDialogCloseClick() {
+    this.setState({ showModal: false });
+  }
+
   startNewGame(level, side) {
     if (side === 'white' || Math.random() < 0.5) {
       this.props.dispatchNewGame(this.props.clientID, 'defaultGame', level, 'YOU', 'COMPUTER');
@@ -90,10 +95,17 @@ class Start extends Component {
       const gm = gameFromImmutable(currentGame);
       // See if existing game is blank
       if (gm.history.length > 0) {
-        btn = (<ButtonGroup>
+        btn = (<div>
           {btn}
-          <Button href="/play" bsStyle="primary" onClick={this.handleResumeGameClick}>Resume Game</Button>
-        </ButtonGroup>);
+          <Button
+            href="/play"
+            bsStyle="primary"
+            style={{ borderLeft: '10px' }}
+            onClick={this.handleResumeGameClick}
+          >
+            Resume Game
+          </Button>
+        </div>);
       }
     }
 
@@ -109,7 +121,11 @@ class Start extends Component {
                 {btn}
               </p>
             </Jumbotron>
-            <NewGameDialog show={this.state.showModal} onNewGame={this.startNewGame} />
+            <NewGameDialog
+              show={this.state.showModal}
+              onHide={this.handleDialogCloseClick}
+              onNewGame={this.startNewGame}
+            />
           </Col>
           <Col md={8}>
             <img alt="" src="/redux_chess.jpg" />

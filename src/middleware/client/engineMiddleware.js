@@ -48,10 +48,12 @@ export default function createEngineMiddleware(enginePath) {
     const chessjs = game.toChessObject();
     if (!chessjs.game_over()) {
       chessjs.move(move);
+      const fen = chessjs.fen();
+      const playingWhite = (chessjs.turn() === 'w');
       const engine = new Worker(enginePath);
       engine.postMessage('uci');
       engine.postMessage('ucinewgame');
-      engine.postMessage(`position fen ${chessjs.fen()}`);
+      engine.postMessage(`position fen ${fen}`);
       engine.postMessage(`go movetime ${game.level * 500}`);
       let scoreData = null;
       engine.onmessage = (event) => { // eslint-disable-line no-param-reassign
@@ -63,18 +65,18 @@ export default function createEngineMiddleware(enginePath) {
           if (data) {
             scoreData = data;
           }
-          /*
-          if (scoreData !== null) {
-            if (!playingWhite) {
-              scoreData.score = -scoreData.score;
-            }
-          }*/
           const best = parseBestMove(event.data);
           if (best) {
             engine.onmessage = null;
+            if (scoreData !== null) {
+              if (!playingWhite) {
+                scoreData.score = -scoreData.score;
+              }
+            }
             store.dispatch(setScoreDataAction(clientID,
               gameID,
               cursor,
+              fen,
               scoreData.score,
               scoreData.mate,
               scoreData.pv,

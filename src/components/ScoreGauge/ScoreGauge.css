@@ -1,2 +1,5 @@
 @import '../variables.css';
 
+.outer {
+  padding-top: 5px;
+}

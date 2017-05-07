@@ -11,6 +11,7 @@ class NewGameDialog extends Component {
   static propTypes = {
     onNewGame: PropTypes.func.isRequired,
     show: PropTypes.bool.isRequired,
+    onHide: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -28,7 +29,7 @@ class NewGameDialog extends Component {
   }
 
   render() {
-    const { show } = this.props;
+    const { show, onHide } = this.props;
 
     const setLevel = level => e => this.setState({ level }); // eslint-disable-line no-unused-vars
 
@@ -36,7 +37,7 @@ class NewGameDialog extends Component {
 
     return (
       <div className="outermost">
-        <Modal show={show}>
+        <Modal show={show} onHide={onHide}>
           <Modal.Header closeButton>
             <Modal.Title>New Game</Modal.Title>
           </Modal.Header>
