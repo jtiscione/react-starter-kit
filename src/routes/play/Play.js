@@ -10,16 +10,12 @@ import {
   Tabs, Tab,
 } from 'react-bootstrap';
 import Layout from '../../components/Layout';
-import GameBoard from '../../components/GameBoard';
-import MoveHistoryTable from '../../components/MoveHistoryTable';
+import { GameBoardContainer } from '../../components/GameBoard';
+import { MoveHistoryTableContainer } from '../../components/MoveHistoryTable';
 import CollapsibleArea from '../../components/CollapsibleArea';
-import OpeningBookTable from '../../components/OpeningBookTable';
+import { OpeningBookTableContainer } from '../../components/OpeningBookTable';
 import ScoreGauge from '../../components/ScoreGauge';
-import { gameFromImmutable } from '../../store/model/gameState';
-import { newGameAction,
-  makeMoveAction,
-  moveCursorAction,
-  setHighlightSANAction } from '../../actions/gameplay';
+import { newGameAction } from '../../actions/gameplay';
 import s from './Play.css';
 
 class Play extends Component {
@@ -50,19 +46,6 @@ class Play extends Component {
     }
   }
 
-  setHighlightSAN(clientID, gameID, san) {
-    this.props.dispatchSetHighlightSAN(clientID, gameID, san);
-  }
-
-  makeUserMove(clientID, gameID, move) {
-    const immGame = this.props.gameplay.getIn([clientID, 'games', gameID]);
-    const game = gameFromImmutable(immGame);
-    const turn = game.toChessObject().turn();
-    if ((game.white === 'YOU' && turn === 'w') || (game.black === 'YOU' && turn === 'b')) {
-      this.props.dispatchMakeMove(clientID, gameID, move);
-    }
-  }
-
   handleTabSelect(tabKey) {
     this.setState({ tabKey });
   }
@@ -77,11 +60,9 @@ class Play extends Component {
           <Grid>
             <Row>
               <Col xsHidden smHidden md={2} >
-                <MoveHistoryTable
+                <MoveHistoryTableContainer
                   clientID={clientID}
                   gameID={gameID}
-                  gameplay={this.props.gameplay}
-                  dispatchMoveCursor={this.props.dispatchMoveCursor}
                 />
               </Col>
               <Col md={8} lg={8}>
@@ -89,30 +70,24 @@ class Play extends Component {
                   <Tab eventKey={2} title="2D" />
                   <Tab eventKey={3} title="3D" />
                 </Tabs>
-                <GameBoard
+                <GameBoardContainer
                   clientID={clientID}
                   gameID={gameID}
                   dimensions={this.state.tabKey}
-                  gameplay={this.props.gameplay}
-                  dispatchNewGame={this.props.dispatchNewGame}
-                  dispatchMakeMove={(...args) => this.makeUserMove(...args)}
                 />
               </Col>
               <Col xsHidden smHidden md={2}>
                 <CollapsibleArea>
-                  <OpeningBookTable
-                    label="OPENINGS"
-                    clientID={clientID}
-                    gameID={gameID}
-                    gameplay={this.props.gameplay}
-                    dispatchMakeMove={(...args) => this.makeUserMove(...args)}
-                    dispatchSetHighlightSAN={(...args) => this.setHighlightSAN(...args)}
-                  />
                   <ScoreGauge
                     label="SCORE"
                     clientID={clientID}
                     gameID={gameID}
                     gameplay={this.props.gameplay}
+                  />
+                  <OpeningBookTableContainer
+                    label="OPENINGS"
+                    clientID={clientID}
+                    gameID={gameID}
                   />
                 </CollapsibleArea>
               </Col>
@@ -128,9 +103,6 @@ Play.propTypes = {
   clientID: PropTypes.string.isRequired,
   gameplay: PropTypes.object.isRequired,   // eslint-disable-line react/forbid-prop-types
   dispatchNewGame: PropTypes.func.isRequired,
-  dispatchMakeMove: PropTypes.func.isRequired,
-  dispatchSetHighlightSAN: PropTypes.func.isRequired,
-  dispatchMoveCursor: PropTypes.func.isRequired,
 };
 
 Play.defaultProps = {};
@@ -151,15 +123,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatchNewGame: (_clientID, _gameID) => {
       dispatch(newGameAction('server', _clientID, _gameID));
-    },
-    dispatchMakeMove: (_clientID, _gameID, move) => {
-      dispatch(makeMoveAction('server', _clientID, _gameID, move, 'book'));
-    },
-    dispatchMoveCursor: (_clientID, _gameID, cursor) => {
-      dispatch(moveCursorAction('server', _clientID, _gameID, cursor));
-    },
-    dispatchSetHighlightSAN: (_clientID, _gameID, san) => {
-      dispatch(setHighlightSANAction(_clientID, _gameID, san));
     },
   };
 };

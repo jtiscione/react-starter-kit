@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import { Table } from 'react-bootstrap';
-
+import { moveCursorAction } from '../../actions/gameplay';
 import { gameFromImmutable } from '../../store/model/gameState';
 import MoveHistoryTableCell from '../MoveHistoryTableCell';
 import PlayButtons from '../PlayButtons';
@@ -83,4 +84,17 @@ MoveHistoryTable.propTypes = {
   dispatchMoveCursor: PropTypes.func.isRequired,
 };
 
-export default withStyles(s)(MoveHistoryTable);
+
+const mapStateToProps = state => ({ gameplay: state.get('gameplay') });
+
+const mapDispatchToProps = dispatch => ({
+  dispatchMoveCursor: (_clientID, _gameID, cursor) => {
+    dispatch(moveCursorAction('server', _clientID, _gameID, cursor));
+  },
+});
+
+const MoveHistoryTableContainer = withStyles(s)(
+  connect(mapStateToProps, mapDispatchToProps)(MoveHistoryTable),
+);
+// eslint-disable-next-line import/prefer-default-export
+export { MoveHistoryTableContainer };

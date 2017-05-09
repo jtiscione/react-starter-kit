@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './GameBoard.css';
-
+import { makeMoveAction } from '../../actions/gameplay';
 import {
   gameFromImmutable,
   legalTargetSquares,
@@ -36,7 +37,12 @@ class GameBoard extends Component {
   }
 
   makeMove(from, to) {
-    this.props.dispatchMakeMove(this.props.clientID, this.props.gameID, { from, to });
+    const immGame = this.props.gameplay.getIn([this.props.clientID, 'games', this.props.gameID]);
+    const game = gameFromImmutable(immGame);
+    const turn = game.toChessObject().turn();
+    if ((game.white === 'YOU' && turn === 'w') || (game.black === 'YOU' && turn === 'b')) {
+      this.props.dispatchMakeMove(this.props.clientID, this.props.gameID, { from, to });
+    }
   }
 
   targetSquares(mouseoverSq) {
@@ -134,4 +140,14 @@ class GameBoard extends Component {
   }
 }
 
-export default withStyles(s)(GameBoard);
+const mapStateToProps = state => ({ gameplay: state.get('gameplay') });
+
+const mapDispatchToProps = dispatch => ({
+  dispatchMakeMove: (_clientID, _gameID, move) => {
+    dispatch(makeMoveAction('server', _clientID, _gameID, move, 'book'));
+  },
+});
+
+const GameBoardContainer = withStyles(s)(connect(mapStateToProps, mapDispatchToProps)(GameBoard));
+// eslint-disable-next-line import/prefer-default-export
+export { GameBoardContainer };
