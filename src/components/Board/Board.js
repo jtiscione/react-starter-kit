@@ -28,13 +28,13 @@ class Board extends Component {
     const props = this.props;
 
     const cfg = {
+      backgroundColor: 0xB0B8C8,
       cameraControls: true,
       position: props.fen,
       pieceTheme: '../../chess/img/wikipedia/{piece}.png',
       fontData: '../../chess/assets/fonts/helvetiker_regular.typeface.json',
       pieceSet: '../../chess/assets/chesspieces/iconic/{piece}.json',
       draggable: true,
-      zoomControls: true,
       orientation: props.orientation,
       onDrop: (source, target) => { // , pieceCode, newPosition, priorPosition, orientation) => {
         // User's turn?

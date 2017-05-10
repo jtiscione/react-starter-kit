@@ -53,7 +53,7 @@ function OpeningBookEntry({ san, whiteWins, blackWins, draws, totalGames, openin
           </div>
         </OverlayTrigger>
       </div>
-      <div>{opening}</div>
+      <div className={s.caption}>{opening}</div>
     </div>
   );
   /* eslint-disable jsx-a11y/no-static-element-interactions */

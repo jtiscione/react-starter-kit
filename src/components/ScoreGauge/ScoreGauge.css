@@ -2,4 +2,5 @@
 
 .outer {
   padding-top: 5px;
+  overflow: hidden;
 }

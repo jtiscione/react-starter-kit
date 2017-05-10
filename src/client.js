@@ -54,7 +54,7 @@ const engineMiddleware = createEngineMiddleware('chess/engines/lozza.js');
 // http://redux.js.org/docs/basics/UsageWithReact.html
 const store = configureStore(fromJS(window.App.state),
   { history },
-  [socketIoMiddleware, engineMiddleware]);
+  socketIoMiddleware, engineMiddleware);
 
 const context = {
   // Enables critical path CSS rendering

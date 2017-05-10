@@ -77,19 +77,21 @@ class Play extends Component {
                 />
               </Col>
               <Col xsHidden smHidden md={2}>
-                <CollapsibleArea>
-                  <ScoreGauge
-                    label="SCORE"
-                    clientID={clientID}
-                    gameID={gameID}
-                    gameplay={this.props.gameplay}
-                  />
-                  <OpeningBookTableContainer
-                    label="OPENINGS"
-                    clientID={clientID}
-                    gameID={gameID}
-                  />
-                </CollapsibleArea>
+                <div className={s.rightPane}>
+                  <CollapsibleArea>
+                    <ScoreGauge
+                      label="SCORE"
+                      clientID={clientID}
+                      gameID={gameID}
+                      gameplay={this.props.gameplay}
+                    />
+                    <OpeningBookTableContainer
+                      label="OPENINGS"
+                      clientID={clientID}
+                      gameID={gameID}
+                    />
+                  </CollapsibleArea>
+                </div>
               </Col>
             </Row>
           </Grid>

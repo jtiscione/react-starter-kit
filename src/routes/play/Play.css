@@ -9,6 +9,11 @@
   font-family: sans-serif;
 }
 
+.rightPane {
+  background: linear-gradient(90deg, #fff, #b0b8c8);
+  height: 560px;
+}
+
 /*
   background-color: #BCD39B;
   background-color: #CE9B64;

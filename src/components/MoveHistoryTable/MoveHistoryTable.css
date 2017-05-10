@@ -14,6 +14,7 @@
   box-shadow: 5px 5px 5px black;
   overflow-y: auto;
   overflow-x: hidden;
+  background: linear-gradient(90deg, #b0b8c8, #fff);
 }
 
 .no_bottom_margin {
@@ -24,12 +25,11 @@ table {
   color: black;
   border: 1px solid black;
   table-layout: fixed;
-  background: #bbb;
   margin-bottom: 0;
 }
 
 tbody {
-  height: 550px;
+  height: 542px;
   overflow-y: visible;
   display: block;
 }
