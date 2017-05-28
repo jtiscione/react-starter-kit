@@ -1,0 +1,6 @@
+{
+  "name": "KochTetrahedron",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./KochTetrahedron.js"
+}

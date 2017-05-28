@@ -128,7 +128,7 @@ class Start extends Component {
             />
           </Col>
           <Col md={8}>
-            <img alt="" src="/redux_chess.jpg" />
+            <img alt="" src="/redux_chess.jpg" className={s.splash} />
           </Col>
         </Row>
       </Grid>

@@ -1,5 +1,8 @@
 @import '../../components/variables.css';
 
+.splash {
+  width: 100%;
+}
 /*
 .root {
   padding-left: 20px;
