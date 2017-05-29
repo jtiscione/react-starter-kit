@@ -21,7 +21,6 @@ import createFetch from './createFetch';
 import configureStore from './store/configureStore';
 import history from './history';
 import { updateMeta } from './DOMUtils';
-import { ErrorReporter, deepForceUpdate } from './devUtils';
 import createEngineMiddleware from './middleware/client/engineMiddleware';
 import createSocketIoMiddleware from './middleware/client/socketIoMiddleware';
 
