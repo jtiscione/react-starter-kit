@@ -117,9 +117,8 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     console.error('[express-jwt-error]', req.cookies.id_token);
     // `clearCookie`, otherwise user can't use web-app until cookie expires
     res.clearCookie('id_token');
-  } else {
-    next(err);
   }
+  next(err);
 });
 
 app.use(passport.initialize());
@@ -229,10 +228,9 @@ app.get('*', async (req, res, next) => {
     };
 
     const route = await router.resolve({
+      ...context,
       path: req.path,
       query: req.query,
-      fetch,
-      store,
     });
 
     if (route.redirect) {

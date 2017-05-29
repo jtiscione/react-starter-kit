@@ -6,9 +6,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
-import 'babel-polyfill';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ErrorReporter from 'redbox-react';
+import deepForceUpdate from 'react-deep-force-update';
 import FastClick from 'fastclick';
 import queryString from 'query-string';
 import { createPath } from 'history/PathUtils';

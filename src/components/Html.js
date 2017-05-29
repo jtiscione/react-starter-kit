@@ -45,13 +45,13 @@ class Html extends React.Component {
           <link rel="apple-touch-icon" href="apple-touch-icon.png" />
           <link rel="stylesheet" href="/css/bootstrap.min.css" />
           <link rel="stylesheet" href="/chess/css/chessboard.css" />
-          {styles.map(style =>
+          {styles.map(style => (
             <style
               key={style.id}
               id={style.id}
               dangerouslySetInnerHTML={{ __html: style.cssText }}
-            />,
-          )}
+            />
+          ))}
         </head>
         <body>
           <div id="app" dangerouslySetInnerHTML={{ __html: children }} />
